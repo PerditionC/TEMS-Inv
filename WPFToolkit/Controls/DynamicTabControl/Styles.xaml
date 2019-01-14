@@ -1,0 +1,326 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2009-2016 David Wendland
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE
+-->
+
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:Controls="clr-namespace:DW.WPFToolkit.Controls">
+    
+    <Style x:Key="TabItemFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="3,3,3,1" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <LinearGradientBrush x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="#F3F3F3" Offset="0"/>
+        <GradientStop Color="#EBEBEB" Offset="0.5"/>
+        <GradientStop Color="#DDDDDD" Offset="0.5"/>
+        <GradientStop Color="#CDCDCD" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="TabItemHotBackground" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop Color="#EAF6FD" Offset="0.15"/>
+        <GradientStop Color="#D9F0FC" Offset=".5"/>
+        <GradientStop Color="#BEE6FD" Offset=".5"/>
+        <GradientStop Color="#A7D9F5" Offset="1"/>
+    </LinearGradientBrush>
+    
+    <SolidColorBrush x:Key="TabControlNormalBorderBrush" Color="#8C8E94"/>
+
+    <SolidColorBrush x:Key="TabItemSelectedBackground" Color="#F9F9F9"/>
+    <SolidColorBrush x:Key="TabItemHotBorderBrush" Color="#3C7FB1"/>
+    <SolidColorBrush x:Key="TabItemDisabledBackground" Color="#F4F4F4"/>
+    <SolidColorBrush x:Key="TabItemDisabledBorderBrush" Color="#FFC9C7BA"/>
+    <SolidColorBrush x:Key="TabItemAddButtonNormalForeground" Color="#FFD0D0D0"/>
+    <SolidColorBrush x:Key="TabItemAddButtonHotBackground" Color="#FF73C135"/>
+    <SolidColorBrush x:Key="TabItemRemoveButtonNormalForeground" Color="#FFAEAEAE"/>
+    <SolidColorBrush x:Key="TabItemRemoveButtonHotBackground" Color="#FFC13535"/>
+    <SolidColorBrush x:Key="TabItemAddButtonPressedBackground" Color="#FF5C9B2A"/>
+    <SolidColorBrush x:Key="TabItemRemoveButtonPressedBackground" Color="#FF431E20"/>
+    <SolidColorBrush x:Key="TabItemButtonNormalBackground" Color="Transparent"/>
+    <SolidColorBrush x:Key="TabItemButtonNormalBorderBrush" Color="Transparent"/>
+    <SolidColorBrush x:Key="TabItemButtonDisabledForeground" Color="#ADADAD"/>
+    <SolidColorBrush x:Key="TabItemButtonDisabledBackground" Color="Transparent"/>
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    
+    <Style TargetType="{x:Type Controls:DynamicTabControl}">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter Property="Padding" Value="4,4,4,4"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{StaticResource TabControlNormalBorderBrush}"/>
+        <Setter Property="Background" Value="#F9F9F9"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="AddButtonMargin" Value="5,0,0,0"/>
+        <Setter Property="AddButtonWidth" Value="14"/>
+        <Setter Property="AddButtonHeight" Value="14"/>
+        <Setter Property="AddButtonPosition" Value="Right"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Controls:DynamicTabControl}">
+                    <Grid ClipToBounds="true" SnapsToDevicePixels="true" KeyboardNavigation.TabNavigation="Local">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Name="ColumnDefinition0"/>
+                            <ColumnDefinition x:Name="ColumnDefinition1" Width="0"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition x:Name="RowDefinition0" Height="Auto"/>
+                            <RowDefinition x:Name="RowDefinition1" Height="*"/>
+                        </Grid.RowDefinitions>
+                        <DockPanel x:Name="HeaderPanel" Grid.Column="0" Margin="2,2,2,0" Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1" HorizontalAlignment="Left">
+                            <TabPanel x:Name="TabPanel" IsItemsHost="true" DockPanel.Dock="Left" />
+                            <Controls:TabItemAddButton AutomationProperties.AutomationId="CUI_AddNewTabButton"
+                                                       Height="{TemplateBinding AddButtonHeight}"
+                                                       Width="{TemplateBinding AddButtonWidth}"
+                                                       Margin="{TemplateBinding AddButtonMargin}"
+                                                       Command="{Binding TabItemAddingCommand, RelativeSource={RelativeSource AncestorType={x:Type Controls:DynamicTabControl}}}"
+                                                       CommandParameter="{Binding TabItemAddingCommandParameter, RelativeSource={RelativeSource AncestorType={x:Type Controls:DynamicTabControl}}}"
+                                                       Visibility="{Binding ShowAddButton, RelativeSource={RelativeSource AncestorType={x:Type Controls:DynamicTabControl}}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                       DockPanel.Dock="{TemplateBinding AddButtonPosition}" />
+                            <StackPanel />
+                        </DockPanel>
+                        <Border x:Name="ContentPanel" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Column="0" KeyboardNavigation.DirectionalNavigation="Contained" Grid.Row="1" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local">
+                            <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="TabStripPlacement" Value="Bottom">
+                            <Setter Property="Grid.Row" TargetName="HeaderPanel" Value="1"/>
+                            <Setter Property="Grid.Row" TargetName="ContentPanel" Value="0"/>
+                            <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                            <Setter Property="Height" TargetName="RowDefinition1" Value="Auto"/>
+                            <Setter Property="Margin" TargetName="HeaderPanel" Value="2,0,2,2"/>
+                        </Trigger>
+                        <Trigger Property="TabStripPlacement" Value="Left">
+                            <Setter Property="Grid.Row" TargetName="HeaderPanel" Value="0"/>
+                            <Setter Property="Grid.Row" TargetName="ContentPanel" Value="0"/>
+                            <Setter Property="Grid.Column" TargetName="HeaderPanel" Value="0"/>
+                            <Setter Property="Grid.Column" TargetName="ContentPanel" Value="1"/>
+                            <Setter Property="Width" TargetName="ColumnDefinition0" Value="Auto"/>
+                            <Setter Property="Width" TargetName="ColumnDefinition1" Value="*"/>
+                            <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                            <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                            <Setter Property="Margin" TargetName="HeaderPanel" Value="2,2,0,2"/>
+                            <Setter Property="DockPanel.Dock" TargetName="TabPanel" Value="Top"/>
+                            <Setter Property="AddButtonPosition" Value="Top"/>
+                        </Trigger>
+                        <Trigger Property="TabStripPlacement" Value="Right">
+                            <Setter Property="Grid.Row" TargetName="HeaderPanel" Value="0"/>
+                            <Setter Property="Grid.Row" TargetName="ContentPanel" Value="0"/>
+                            <Setter Property="Grid.Column" TargetName="HeaderPanel" Value="1"/>
+                            <Setter Property="Grid.Column" TargetName="ContentPanel" Value="0"/>
+                            <Setter Property="Width" TargetName="ColumnDefinition0" Value="*"/>
+                            <Setter Property="Width" TargetName="ColumnDefinition1" Value="Auto"/>
+                            <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                            <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                            <Setter Property="Margin" TargetName="HeaderPanel" Value="0,2,2,2"/>
+                            <Setter Property="DockPanel.Dock" TargetName="TabPanel" Value="Top"/>
+                            <Setter Property="AddButtonPosition" Value="Top"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Controls:DynamicTabItem}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource TabItemFocusVisual}"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Padding" Value="6,1,6,1"/>
+        <Setter Property="BorderBrush" Value="{StaticResource TabControlNormalBorderBrush}"/>
+        <Setter Property="Background" Value="{StaticResource ButtonNormalBackground}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="CloseButtonPosition" Value="Right"/>
+        <Setter Property="CloseButtonMargin" Value="5,0,0,0"/>
+        <Setter Property="HorizontalCloseButtonAlignment" Value="Center"/>
+        <Setter Property="VerticalCloseButtonAlignment" Value="Center"/>
+        <Setter Property="CloseButtonWidth" Value="14"/>
+        <Setter Property="CloseButtonHeight" Value="14"/>
+        <Setter Property="ShowCloseButton" Value="{Binding ShowCloseButtons, RelativeSource={RelativeSource AncestorType={x:Type Controls:DynamicTabControl}}}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Controls:DynamicTabItem}">
+                    <Grid SnapsToDevicePixels="true">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1,1,1,0" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <DockPanel x:Name="Content">
+                                <Controls:TabItemCloseButton AutomationProperties.AutomationId="CUI_CloseTabButton"
+                                                             x:Name="CloseButton"
+                                                             Height="{TemplateBinding CloseButtonHeight}"
+                                                             Width="{TemplateBinding CloseButtonWidth}"
+                                                             VerticalAlignment="{TemplateBinding VerticalCloseButtonAlignment}"
+                                                             HorizontalAlignment="{TemplateBinding HorizontalCloseButtonAlignment}"
+                                                             Margin="{TemplateBinding CloseButtonMargin}"
+                                                             DockPanel.Dock="{TemplateBinding CloseButtonPosition}"
+                                                             Visibility="{Binding ShowCloseButton, RelativeSource={RelativeSource AncestorType={x:Type Controls:DynamicTabItem}}, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                             Command="{Binding TabItemClosingCommand, RelativeSource={RelativeSource AncestorType={x:Type Controls:DynamicTabControl}}}"
+                                                             CommandParameter="{Binding }" />
+                                <ContentPresenter ContentSource="Header" HorizontalAlignment="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+                            </DockPanel>
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource TabItemHotBackground}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Panel.ZIndex" Value="1"/>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource TabItemSelectedBackground}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="false"/>
+                                <Condition Property="IsMouseOver" Value="true"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource TabItemHotBorderBrush}"/>
+                        </MultiTrigger>
+                        <Trigger Property="TabStripPlacement" Value="Bottom">
+                            <Setter Property="BorderThickness" TargetName="Bd" Value="1,0,1,1"/>
+                        </Trigger>
+                        <Trigger Property="TabStripPlacement" Value="Left">
+                            <Setter Property="BorderThickness" TargetName="Bd" Value="1,1,0,1"/>
+                        </Trigger>
+                        <Trigger Property="TabStripPlacement" Value="Right">
+                            <Setter Property="BorderThickness" TargetName="Bd" Value="0,1,1,1"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="true"/>
+                                <Condition Property="TabStripPlacement" Value="Top"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Margin" Value="-2,-2,-2,-1"/>
+                            <Setter Property="Margin" TargetName="Content" Value="0,0,0,1"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="true"/>
+                                <Condition Property="TabStripPlacement" Value="Bottom"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Margin" Value="-2,-1,-2,-2"/>
+                            <Setter Property="Margin" TargetName="Content" Value="0,1,0,0"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="true"/>
+                                <Condition Property="TabStripPlacement" Value="Left"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Margin" Value="-2,-2,-1,-2"/>
+                            <Setter Property="Margin" TargetName="Content" Value="0,0,1,0"/>
+                        </MultiTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="true"/>
+                                <Condition Property="TabStripPlacement" Value="Right"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Margin" Value="-1,-2,-2,-2"/>
+                            <Setter Property="Margin" TargetName="Content" Value="1,0,0,0"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource TabItemDisabledBackground}"/>
+                            <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource TabItemDisabledBorderBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style TargetType="{x:Type Controls:TabItemCloseButton}">
+        <Setter Property="Foreground" Value="{StaticResource TabItemRemoveButtonNormalForeground}" />
+        <Setter Property="Background" Value="{StaticResource TabItemButtonNormalBackground}" />
+        <Setter Property="BorderBrush" Value="{StaticResource TabItemButtonNormalBorderBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="3" />
+        <Setter Property="StrokeThickness" Value="1.5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Controls:TabItemCloseButton}">
+                    <Grid >
+                        <Ellipse StrokeThickness="{TemplateBinding BorderThickness}" Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}" />
+                        <Grid Margin="{TemplateBinding Padding}">
+                            <Line Stretch="Fill" X1="0" Y1="0" X2="1" Y2="1" Stroke="{TemplateBinding Foreground}" StrokeThickness="{TemplateBinding StrokeThickness}" />
+                            <Line Stretch="Fill" X1="1" Y1="0" X2="0" Y2="1" Stroke="{TemplateBinding Foreground}" StrokeThickness="{TemplateBinding StrokeThickness}" />
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource TabItemRemoveButtonHotBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource TabItemRemoveButtonPressedBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="{StaticResource TabItemButtonDisabledForeground}"/>
+                            <Setter Property="Background" Value="{StaticResource TabItemButtonDisabledBackground}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style TargetType="{x:Type Controls:TabItemAddButton}">
+        <Setter Property="Foreground" Value="{StaticResource TabItemAddButtonNormalForeground}" />
+        <Setter Property="Background" Value="{StaticResource TabItemButtonNormalBackground}" />
+        <Setter Property="BorderBrush" Value="{StaticResource TabItemButtonNormalBorderBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="StrokeThickness" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Controls:TabItemAddButton}">
+                    <Grid>
+                        <Ellipse StrokeThickness="{TemplateBinding BorderThickness}" Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}" />
+                        <Grid Margin="{TemplateBinding Padding}">
+                            <Line HorizontalAlignment="Center" Stretch="Fill" X1="0" Y1="0" X2="0" Y2="1" Stroke="{TemplateBinding Foreground}" StrokeThickness="{TemplateBinding StrokeThickness}" />
+                            <Line VerticalAlignment="Center" Stretch="Fill" X1="0" Y1="0" X2="1" Y2="0" Stroke="{TemplateBinding Foreground}" StrokeThickness="{TemplateBinding StrokeThickness}" />
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{StaticResource TabItemAddButtonHotBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="{StaticResource TabItemAddButtonPressedBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="{StaticResource TabItemButtonDisabledForeground}"/>
+                            <Setter Property="Background" Value="{StaticResource TabItemButtonDisabledBackground}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

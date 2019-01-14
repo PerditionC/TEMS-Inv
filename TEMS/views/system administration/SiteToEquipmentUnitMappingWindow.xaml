@@ -1,0 +1,70 @@
+﻿<Window x:Class="TEMS_Inventory.views.SiteToEquipmentUnitMappingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:WPFToolkit="clr-namespace:DW.WPFToolkit.Controls;assembly=WPFToolkit"
+        mc:Ignorable="d"
+        Height="350" Width="480" WindowStartupLocation="CenterOwner"
+        Icon="{StaticResource LogoImage}"
+        Title="Manage Site Location of Equipment Units" >
+    <DockPanel>
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Bottom" >
+            <WrapPanel HorizontalAlignment="Left" Margin="0,3,0,0" Orientation="Horizontal" >
+                <Button VerticalAlignment="Center" Margin="7,0" MinWidth="80">Add Unit</Button>
+                <StackPanel Orientation="Vertical">
+                    <DockPanel HorizontalAlignment="Left">
+                        <Grid DockPanel.Dock="Left">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="1*" />
+                            </Grid.RowDefinitions>
+                            <Label VerticalAlignment="Center" Grid.Row="0" MinWidth="80">Site Location:</Label>
+                            <Label VerticalAlignment="Center" Grid.Row="1">Unit type:</Label>
+                        </Grid>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="1*" />
+                            </Grid.RowDefinitions>
+                            <ComboBox VerticalAlignment="Center" Grid.Row="0">
+                                <ComboBoxItem IsSelected="True">Chesapeake</ComboBoxItem>
+                                <ComboBoxItem>Virginia Beach</ComboBoxItem>
+                                <ComboBoxItem>Norfolk</ComboBoxItem>
+                            </ComboBox>
+                            <ComboBox VerticalAlignment="Center" Grid.Row="1">
+                                <ComboBoxItem IsSelected="True">MMRS</ComboBoxItem>
+                                <ComboBoxItem>SSU</ComboBoxItem>
+                                <ComboBoxItem>DMSU</ComboBoxItem>
+                            </ComboBox>
+                        </Grid>
+                    </DockPanel>
+                    <StackPanel Orientation="Horizontal" ToolTip="When a unit is added to a site, specifies the initial in-service date for all items contained within.">
+                        <TextBlock Margin="6,7,05,10" TextWrapping="Wrap">Item <Span FontStyle="Italic" Foreground="DarkBlue">In-Service</Span> date:</TextBlock>
+                        <DatePicker Text="9/9/2017" DisplayDate="9/8/2017" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </WrapPanel>
+            <Button HorizontalAlignment="Left" Margin="7,0" MinWidth="80">Remove Unit</Button>
+            <Button HorizontalAlignment="Left" Margin="7,7" MinWidth="80">Relocate Unit</Button>
+        </StackPanel>
+        <DockPanel Margin="2">
+            <Label Margin="2,0" DockPanel.Dock="Top">Manage which units are available at a given site location:</Label>
+            <Border DockPanel.Dock="Top" Margin="2,0" BorderThickness="0" BorderBrush="Gray">
+                <WrapPanel >
+                    <Label Content="View by:" />
+                    <RadioButton Margin="3,0,10,0" VerticalAlignment="Center" IsChecked="True">Site Location</RadioButton>
+                    <RadioButton VerticalAlignment="Center" >Equipment Unit</RadioButton>
+                </WrapPanel>
+            </Border>
+            <WPFToolkit:EnhancedTreeView AutoExpandSelected="True">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Folders}">
+                        <TextBlock Text="{Binding Name}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+                Site with units under
+            </WPFToolkit:EnhancedTreeView>
+        </DockPanel>
+    </DockPanel>
+</Window>

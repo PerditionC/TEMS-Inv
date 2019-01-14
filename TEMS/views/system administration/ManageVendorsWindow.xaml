@@ -1,0 +1,212 @@
+﻿<Window x:Class="TEMS_Inventory.views.ManageVendorsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:inventoryModel="clr-namespace:TEMS.InventoryModel.entity.db;assembly=InventoryModel"
+        xmlns:WPFToolkit="clr-namespace:DW.WPFToolkit.Controls;assembly=WPFToolkit"
+        mc:Ignorable="d"
+        Height="600" Width="700" WindowStartupLocation="CenterOwner"
+        FocusManager.FocusedElement="{Binding ElementName=SearchVendors}"
+        Icon="{StaticResource LogoImage}"
+        Title="Manage Vendors" >
+    <Window.Resources>
+        <!-- DataTemplates for ListView.ItemTemplate of items to display -->
+        <DataTemplate DataType="{x:Type inventoryModel:ItemBase}">
+            <WrapPanel>
+                <TextBlock Text="{Binding name}" FontFamily="Courier New" Margin="20,0,0,0" />
+            </WrapPanel>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type inventoryModel:ItemType}">
+            <WrapPanel>
+                <Image x:Name="image" Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="{StaticResource ItemImage}" />
+                            <Setter Property="ToolTip" Value="item" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=isModule}" Value="True">
+                                    <Setter Property="Image.Source" Value="{StaticResource ModuleImage}"/>
+                                    <Setter Property="ToolTip" Value="module" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=isBin, Mode=OneWay}" Value="true">
+                                    <Setter Property="Image.Source" Value="{StaticResource BinImage}"/>
+                                    <Setter Property="ToolTip" Value="bin" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <TextBlock Text="{Binding itemTypeId, StringFormat={}{0:00000}}" FontFamily="Courier New" />
+                <TextBlock Text=" - " />
+                <TextBlock Text="{Binding name}" FontFamily="Georgia" >
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Foreground" Value="Blue" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=isModule}" Value="True">
+                                    <Setter Property="Foreground" Value="DarkBlue" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=isBin}" Value="True">
+                                    <Setter Property="Foreground" Value="Black" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+            </WrapPanel>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type inventoryModel:Item}">
+            <WrapPanel>
+                <Image x:Name="image" Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="{StaticResource ItemImage}" />
+                            <Setter Property="ToolTip" Value="item" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=itemType.isModule}" Value="True">
+                                    <Setter Property="Image.Source" Value="{StaticResource ModuleImage}"/>
+                                    <Setter Property="ToolTip" Value="module" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Path=itemType.isBin, Mode=OneWay}" Value="true">
+                                    <Setter Property="Image.Source" Value="{StaticResource BinImage}"/>
+                                    <Setter Property="ToolTip" Value="bin" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <TextBlock Text="{Binding itemNumber}" FontFamily="Courier New" />
+                <TextBlock Text=" - " />
+                <TextBlock Text="{Binding itemType.name}" FontFamily="Georgia" />
+                <TextBlock Text=" (" />
+                <TextBlock Text="{Binding count}" Foreground="Blue" />
+                <TextBlock Text=")" />
+            </WrapPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+    <DockPanel x:Name="rootItem" Background="Linen">
+        <Grid DockPanel.Dock="Top" Margin="2,2,2,0" >
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="47" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" >Search:</Label>
+            <WPFToolkit:SearchTextBox x:Name="SearchVendors" Grid.Column="1" ShowSearchButton="True" Text="{Binding SearchVendorText,UpdateSourceTrigger=PropertyChanged}" SearchCommand="{Binding SearchVendorsCommand}" >
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding SearchVendorsCommand}" Key="Return" />
+                </TextBox.InputBindings>
+            </WPFToolkit:SearchTextBox>
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+            <!-- <uc:ItemListToAddEditDelete x:Name="ItemList" Grid.Row="0" /> -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="3" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <DockPanel  Grid.Column="0" Grid.Row="0"  Margin="3,2,2,3" >
+                    <Grid MinWidth="50" VerticalAlignment="Stretch" Margin="5,0" DockPanel.Dock="Right">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+
+                        <Button Grid.Row="1" x:Name="AddButton"    VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding AddCommand}" Content="_Add" />
+                        <Button Grid.Row="2" x:Name="CloneButton"  VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding CloneCommand}" Content="_Clone" Visibility="Visible" />
+                        <Button Grid.Row="3" x:Name="EditButton"   VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding EditCommand}" Content="_Edit" Visibility="Collapsed" />
+                        <Button Grid.Row="4" x:Name="DeleteButton" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding DeleteCommand}" Content="_Delete" />
+                    </Grid>
+                    <ContentPresenter Name="DisplayItemList" Content="{Binding}" DockPanel.Dock="Left">
+                        <ContentPresenter.ContentTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <ListView Name="ItemList" ItemsSource="{Binding items, Mode=OneWay}" SelectedItem="{Binding selectedItem, Mode=TwoWay}" SelectionMode="Single" >
+                                        <!-- <ListView.ItemTemplate><DataTemplate/> automatically inferred from type if ItemBase</ListView.ItemTemplate> -->
+                                    </ListView>
+                                    <Border Name="EmptyList" Visibility="Collapsed" BorderThickness="1" BorderBrush="Black">
+                                        <TextBlock Text="No items." FontFamily="Courier New" Margin="20,0,0,0" />
+                                    </Border>
+                                </Grid>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Path=items.Count}" Value="0">
+                                        <Setter TargetName="ItemList" Property="Visibility" Value="Collapsed"/>
+                                        <Setter TargetName="EmptyList" Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </ContentPresenter.ContentTemplate>
+                    </ContentPresenter>
+                </DockPanel>
+
+                <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" />
+
+                <DockPanel Grid.Column="2" Grid.Row="0" Margin="5,2,2,3" >
+                    <DockPanel DockPanel.Dock="Bottom" Margin="3">
+                        <Button x:Name="SaveButton" HorizontalAlignment="Center" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding SaveCommand}" Content="_Save" />
+                    </DockPanel>
+                    <Border BorderThickness="1" BorderBrush="Gray" DataContext="{Binding currentItem}" MinWidth="50" Background="AliceBlue">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+
+                            <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
+                                <WPFToolkit:TitledItem Title="DB key:">
+                                    <TextBox Text="{Binding PrimaryKey}" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Name:">
+                                    <TextBox x:Name="tbName" Text="{Binding Path=name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding DataContext.isDetailViewInActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DockPanel}}" ToolTip="Name of this item" />
+                                </WPFToolkit:TitledItem>
+                            </WPFToolkit:TitledItemsControl>
+                        </ScrollViewer>
+                    </Border>
+                </DockPanel>
+            </Grid>
+
+
+            <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Background="Gray" />
+
+            <DockPanel Grid.Row="2">
+                <Label Margin="2,0" DockPanel.Dock="Top">Items supplied by vendor:</Label>
+                <WPFToolkit:EnhancedListView x:Name="VendorSuppliedItems" Margin="2,0,2,2" VerticalAlignment="Stretch"
+                                        MinHeight="1" Grid.Row="2"
+                                        AllowColumnSortings="True"
+                                        AscendingSortHeaderTemplate="{StaticResource HeaderArrowUp}"
+                                        DescendingSortHeaderTemplate="{StaticResource HeaderArrowDown}"
+                                        NeutralHeaderTemplate="{StaticResource HeaderTransparent}"
+                                        AutoSize="Proportional"
+                                        ItemsSource="{Binding VendorItems}"
+            >
+                    <ListView.View>
+                        <GridView>
+                            <WPFToolkit:EnhancedGridViewColumn SortPropertyName="itemTypeId" Header="ItemTypeId" DisplayMemberBinding="{Binding itemTypeId }" Width="70" ProportionalWidth="20" />
+                            <WPFToolkit:EnhancedGridViewColumn SortPropertyName="name" IsDefaultSortColumn="True" Header="name" DisplayMemberBinding="{Binding name}" ProportionalWidth="42" />
+                            <WPFToolkit:EnhancedGridViewColumn SortPropertyName="make" Header="make" DisplayMemberBinding="{Binding make}" ProportionalWidth="17" />
+                            <WPFToolkit:EnhancedGridViewColumn SortPropertyName="model" Header="model" DisplayMemberBinding="{Binding model}" ProportionalWidth="20" />
+                        </GridView>
+                    </ListView.View>
+                </WPFToolkit:EnhancedListView>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</Window>

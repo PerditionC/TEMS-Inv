@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="TEMS_Inventory.UserControls.ItemSearchFilter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+             xmlns:dbQuery="clr-namespace:TEMS.InventoryModel.entity.db.query;assembly=InventoryModel"
+             xmlns:WPFToolkit="clr-namespace:DW.WPFToolkit.Controls;assembly=WPFToolkit"
+             xmlns:WPFConverter="clr-namespace:DW.WPFToolkit.Converters;assembly=WPFToolkit"
+             mc:Ignorable="d" 
+             d:DesignHeight="110" d:DesignWidth="848">
+    <UserControl.Resources>
+        <WPFConverter:DebugDummyConverter x:Key="DebugDummyConverter" />
+        <WPFConverter:EnumToBooleanConverter x:Key="enumToBooleanConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <sys:String x:Key="SiteLabel">Site :</sys:String>
+    </UserControl.Resources>
+
+    <!-- start of search/filter block -->
+    <Expander Header="Filter Items" ExpandDirection="Down" IsExpanded="{Binding SearchFilter.SearchFilterVisible}" DataContext="{Binding SearchFilterCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" >
+        <Border Margin="0" CornerRadius="5" BorderThickness="1"  BorderBrush="#FFD5DFE5" Background="WhiteSmoke" Visibility="{Binding SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}" >
+            <Grid>
+                <Grid.ColumnDefinitions >
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions >
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Top">
+                    <Label DockPanel.Dock="Left" VerticalAlignment="Center" Foreground="DarkBlue" Content="_Search:" />
+                    <GroupBox DockPanel.Dock="Right" Header="Search items matching:" HorizontalAlignment="Right" VerticalAlignment="Center" > <!-- IsEnabled="{Binding SearchTextAvailable,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" -->
+                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Top">
+                            <RadioButton Margin="0,0,5,0"
+                                     IsChecked="{Binding Path=SearchFilter.ItemTypeMatching, Converter={StaticResource enumToBooleanConverter}, 
+                                     ConverterParameter={x:Static dbQuery:SearchFilterItemMatching.AnySame}}" Content="Same Type" />
+                            <RadioButton
+                                     IsChecked="{Binding Path=SearchFilter.ItemTypeMatching, Converter={StaticResource enumToBooleanConverter}, 
+                                     ConverterParameter={x:Static dbQuery:SearchFilterItemMatching.OnlyExact}}" Content="Exact Item" />
+                        </WrapPanel>
+                    </GroupBox>
+                    <WPFToolkit:SearchTextBox x:Name="SearchItems" Text="{Binding SearchFilter.SearchText, UpdateSourceTrigger=PropertyChanged}" SearchCommand="{Binding SearchTextCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" ShowSearchButton="True" VerticalAlignment="Center" Height="25" >
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding SearchTextCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" Key="Return" />
+                        </TextBox.InputBindings>
+                    </WPFToolkit:SearchTextBox>
+
+                </DockPanel>
+
+                <WrapPanel Orientation="Horizontal" VerticalAlignment="Top" Grid.Row="1" Grid.Column="0" DataContext="{Binding SearchFilter}">
+                    <WrapPanel VerticalAlignment="Center" Margin="0,0,5,0" Visibility="{Binding SiteLocationVisible,Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding SiteLocationEnabled}" >
+                        <Label Width="40" Foreground="DarkBlue" FontSize="14" FontFamily="Microsoft Sans Serif" Content="{DynamicResource SiteLabel}" />
+                        <ComboBox x:Name="SiteFilter" IsEditable="True" IsReadOnly="True" ItemsSource="{Binding Path=User.availableSites}" DisplayMemberPath="name" SelectedItem="{Binding Path=User.currentSite, Mode=TwoWay}" MinWidth="90" />
+                    </WrapPanel>
+                    <WrapPanel VerticalAlignment="Center" Margin="0,0,15,0" Visibility="{Binding SelectEquipmentUnitsVisible,Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding SelectEquipmentUnitsEnabled}">
+                        <Label MinWidth="50" Foreground="DarkBlue" FontSize="14" FontFamily="Microsoft Sans Serif" Content="Equipment type:" />
+                        <WPFToolkit:MultiSelectComboBox x:Name="EquipmentTypeFilter" TitleFunc="{Binding TitleFunc}" ItemsSource="{Binding EquipmentUnits, Mode=TwoWay}" SelectedItems="{Binding SelectedEquipmentUnits, Mode=TwoWay}" ToolTip="Select all to view items within" MinWidth="80" Height="27" />
+                    </WrapPanel>
+                    <WrapPanel VerticalAlignment="Center" Margin="0,3,10,0" Visibility="{Binding SelectItemStatusValuesVisible,Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding SelectItemStatusValuesEnabled}">
+                        <Label Width="53" Foreground="DarkBlue" FontSize="14" FontFamily="Microsoft Sans Serif" Content="Status:" />
+                        <WPFToolkit:MultiSelectComboBox x:Name="StatusFilter" TitleFunc="{Binding TitleFunc}" ItemsSource="{Binding ItemStatusValues}" SelectedItems="{Binding SelectedItemStatusValues, Mode=TwoWay}" MaxTextLength="16"  ToolTip="Select status" MinWidth="80" Height="27" />
+                    </WrapPanel>
+                    <WrapPanel VerticalAlignment="Center" Margin="0,3,10,0" Visibility="{Binding SelectItemCategoryValuesVisible,Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding SelectItemCategoryValuesEnabled}">
+                        <Label Width="70" Foreground="DarkBlue" FontSize="14" FontFamily="Microsoft Sans Serif" Content="Category:" />
+                        <WPFToolkit:MultiSelectComboBox x:Name="CategoryFilter" TitleFunc="{Binding TitleFunc}" ItemsSource="{Binding ItemCategoryValues}" SelectedItems="{Binding SelectedItemCategoryValues, Mode=TwoWay}" MaxTextLength="16"  ToolTip="Select status" MinWidth="80" Height="27" />
+                    </WrapPanel>
+                    <GroupBox Header="Search for:" Margin="0,0,0,2" Height="Auto">
+                        <StackPanel Orientation="Horizontal">
+                            <CheckBox IsChecked="{Binding IncludeItems}" IsThreeState="False" Margin="0,0,5,0">Items</CheckBox>
+                            <CheckBox IsChecked="{Binding IncludeModules}" IsThreeState="False" Margin="0,0,5,0">Modules</CheckBox>
+                            <CheckBox IsChecked="{Binding IncludeBins}" IsThreeState="False" Margin="0,0,0,0">Bins</CheckBox>
+                        </StackPanel>
+                    </GroupBox>
+                </WrapPanel>
+            </Grid>
+        </Border>
+    </Expander>
+    <!-- end of search/filter block -->
+
+</UserControl>

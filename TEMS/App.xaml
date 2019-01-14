@@ -1,0 +1,72 @@
+﻿<Application x:Class="TEMS_Inventory.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:uc="clr-namespace:DW.WPFToolkit.Converters;assembly=WPFToolkit"
+             StartupUri="LogInWindow.xaml">
+    <Application.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <uc:DebugDummyConverter x:Key="DebugDummyConverter" />
+        <uc:EnumToBooleanConverter x:Key="enumToBooleanConverter" />
+        <uc:NullableToEmptyStringConverter x:Key="NullableToEmptyStringConverter" />
+        <uc:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+        <uc:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        <uc:ByteArrayToImageConverter x:Key="ByteArrayToImageConverter" />
+
+        <sys:String x:Key="UserIdLabel">User :</sys:String>
+        <sys:String x:Key="SiteLabel">Site :</sys:String>
+
+        <!-- <BitmapImage x:Key="LogoImage" DecodePixelWidth="160" DecodePixelHeight="160" UriSource="pack://application:,,,/InventoryViewModel;Component/images/MMRSLogo.ico" /> -->
+        <BitmapImage x:Key="LogoImage" DecodePixelWidth="160" DecodePixelHeight="160" UriSource="pack://application:,,,/Tems;Component/MMRSLogo.ico" />
+
+        <!-- image resources displayed within lists/trees to represent item/module/bin objects -->
+        <!--
+        <BitmapImage x:Key="SiteImage" DecodePixelWidth="24" DecodePixelHeight="24" UriSource="pack://application:,,,/InventoryViewModel;Component/images/people.bmp" />
+        <BitmapImage x:Key="EquipImage" DecodePixelWidth="24" DecodePixelHeight="24" UriSource="pack://application:,,,/InventoryViewModel;Component/images/item types/truck.jpg" />
+        <BitmapImage x:Key="BinImage" DecodePixelWidth="24" DecodePixelHeight="24" UriSource="pack://application:,,,/InventoryViewModel;Component/images/item types/bin.jpg" />
+        <BitmapImage x:Key="ModuleImage" DecodePixelWidth="24" DecodePixelHeight="24" UriSource="pack://application:,,,/InventoryViewModel;Component/images/item types/module.jpg" />
+        <BitmapImage x:Key="ItemImage" DecodePixelWidth="24" DecodePixelHeight="24" UriSource="pack://application:,,,/InventoryViewModel;Component/images/item types/item.jpg" />
+        -->
+        <BitmapImage x:Key="SiteImage" DecodePixelWidth="24" DecodePixelHeight="24" UriSource="pack://application:,,,/Tems;Component/images/people.bmp" />
+        <BitmapImage x:Key="EquipImage" DecodePixelWidth="24" DecodePixelHeight="24" UriSource="pack://application:,,,/Tems;Component/images/item types/truck.jpg" />
+        <BitmapImage x:Key="BinImage" DecodePixelWidth="24" DecodePixelHeight="24" UriSource="pack://application:,,,/Tems;Component/images/item types/bin.jpg" />
+        <BitmapImage x:Key="ModuleImage" DecodePixelWidth="24" DecodePixelHeight="24" UriSource="pack://application:,,,/Tems;Component/images/item types/module.jpg" />
+        <BitmapImage x:Key="ItemImage" DecodePixelWidth="24" DecodePixelHeight="24" UriSource="pack://application:,,,/Tems;Component/images/item types/item.jpg" />
+
+        <!-- ? multiselect combo or split button -->
+        <DataTemplate x:Key="HeaderArrowUp">
+            <Grid>
+                <TextBlock Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <Path StrokeThickness="0" SnapsToDevicePixels="True" Data="M 0,4 L 4,0 L 8,4 L 0,4"
+              Margin="0,-2,0,0" VerticalAlignment="Top" HorizontalAlignment="Center">
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#FF3C5E72" Offset="0"/>
+                            <GradientStop Color="#FFC3E4F5" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="HeaderArrowDown">
+            <Grid>
+                <TextBlock Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                <Path StrokeThickness="0" SnapsToDevicePixels="True" Data="M 0,0 L 4,4 L 8,0 L 0,0"
+              Margin="0,-2,0,0" VerticalAlignment="Top" HorizontalAlignment="Center">
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#FF3C5E72" Offset="0"/>
+                            <GradientStop Color="#FFC4E3F4" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Path.Fill>
+                </Path>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="HeaderTransparent">
+            <Grid>
+                <TextBlock Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </Grid>
+        </DataTemplate>
+
+    </Application.Resources>
+</Application>

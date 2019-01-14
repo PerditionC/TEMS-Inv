@@ -1,0 +1,16 @@
+﻿<UserControl x:Class="DW.WPFToolkit.Controls.BarCodeLabel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:DW.WPFToolkit.Controls"
+             mc:Ignorable="d"
+             d:DesignWidth="200" d:DesignHeight="50"
+             Width="200" Height="50">
+    <UserControl.Resources>
+        <controls:BarcodeToBitmapSourceConverter x:Key="BarcodeConverter" />
+    </UserControl.Resources>
+    <WrapPanel DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+        <Image x:Name="BarcodeImage" Width="200" Height="50" Margin="0" Source="{Binding BarCode,Converter={StaticResource BarcodeConverter},UpdateSourceTrigger=PropertyChanged}" />
+    </WrapPanel>
+</UserControl>

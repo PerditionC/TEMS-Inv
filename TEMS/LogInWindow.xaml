@@ -1,0 +1,26 @@
+﻿<Window x:Class="TEMS_Inventory.LogInWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TEMS_Inventory"
+        mc:Ignorable="d"
+        Title="Authorized MMRS Member Login" Background="WhiteSmoke"
+        Icon="MMRSLogo.ico"
+        Height="235" Width="350" SizeToContent="Manual" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" >
+    <!-- ="{StaticResource LogoImage}" -->
+    <DockPanel>
+        <Image x:Name="image" Height="160" Width="160" Margin="10,0,0,0" VerticalAlignment="Center" DockPanel.Dock="Left" Source="MMRSLogo.ico" />
+        <StackPanel Margin="15,10,15,15">
+            <Label x:Name="userIdLbl" Target="{Binding ElementName=userId}" >_User name:</Label>
+            <TextBox x:Name="userId" Margin="0,0,0,5" TextChanged="enableLoginBtn" AutomationProperties.LabeledBy="{Binding ElementName=userIdLbl, Mode=OneWay}" />
+            <Label x:Name="userPasswordLbl" Target="{Binding ElementName=userPassword}" >_Password:</Label>
+            <PasswordBox x:Name="userPassword" Margin="0,0,0,5" PasswordChanged="enableLoginBtn" AutomationProperties.LabeledBy="{Binding ElementName=userPasswordLbl, Mode=OneWay}" />
+            <CheckBox x:Name="forcePasswordChange" Margin="0,0,0,5" Content="Change password" IsThreeState="False" />
+            <WrapPanel Margin="0,15,0,10" HorizontalAlignment="Center">
+                <Button x:Name="loginBtn" MinWidth="50" Margin="0,0,20,0" Click="LoginBtn_Click" IsEnabled="False" IsDefault="True">_Login</Button>
+                <Button x:Name="exitBtn" MinWidth="35" Click="ExitBtn_Click" IsCancel="True" >E_xit</Button>
+            </WrapPanel>
+        </StackPanel>
+    </DockPanel>
+</Window>

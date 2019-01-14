@@ -1,0 +1,212 @@
+﻿<Window x:Class="TEMS_Inventory.views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TEMS_Inventory.views"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Icon="MMRSLogo.ico"
+        Title="MMRS Asset Management" Width="768" Height="588" SizeToContent="Manual" WindowStartupLocation="CenterScreen">
+    <!-- Icon="{StaticResource LogoImage}" -->
+    <Window.Resources>
+        <Style x:Key="imageStyle">
+            <Setter Property="Control.Width" Value="100" />
+            <Setter Property="Control.Height" Value="80" />
+            <Setter Property="Control.HorizontalAlignment" Value="Center" />
+            <Setter Property="Control.VerticalAlignment" Value="Center" />
+            <Setter Property="Image.Stretch" Value="Fill" />
+            <Setter Property="Control.Background" Value="Transparent" />
+        </Style>
+
+        <Style x:Key="labelStyle">
+            <Setter Property="Control.Background" Value="Transparent" />
+            <Setter Property="Control.FontWeight" Value="Bold" />
+            <Setter Property="Control.FontSize" Value="16" />
+            <Setter Property="Control.FontFamily" Value="Microsoft Sans Serif" />
+            <Setter Property="Control.VerticalAlignment" Value="Bottom" />
+            <Setter Property="Control.HorizontalContentAlignment" Value="Stretch" />
+            <!--
+            <Style.Triggers>
+                <Trigger Property="Label.IsMouseOver" Value="True">
+                    <Setter Property="Control.Background" Value="LightSlateGray" />
+                </Trigger>
+            </Style.Triggers>
+            -->
+        </Style>
+
+        <Style x:Key="treeViewItemStyle" TargetType="{x:Type TreeViewItem}" />
+        <Style x:Key="treeViewItemStyleExpanded" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource treeViewItemStyle}">
+            <Setter Property="IsExpanded" Value="True" />
+        </Style>
+
+        <DataTemplate x:Key="NavTreeviewTemplate" DataType="{x:Type local:SimpleTreeItem}" >
+            <StackPanel Orientation="Horizontal" Background="Transparent">
+                <Image Source="{Binding Path=image }" Margin="5,0,5,0" Width="50" Height="50" />
+                <Label Content="{Binding Path=label }" Margin="0,0,4,0" Style="{StaticResource labelStyle}" FontSize="22" />
+            </StackPanel>
+        </DataTemplate>
+
+
+        <sys:String x:Key="NavigationMenuTitle">Navigation Menu</sys:String>
+
+        <sys:String x:Key="AssetManagement">_Asset Management</sys:String>
+        <sys:String x:Key="AssetManagementToolTip">Add and update available equipment (assets).</sys:String>
+        <sys:String x:Key="SystemAdministration">_System Administration</sys:String>
+        <sys:String x:Key="SystemAdministrationToolTip">[Requires Administrator Access] Perform administration tasks, e.g. user maintenance, system table changes, ...</sys:String>
+        <sys:String x:Key="Reports">_Reports</sys:String>
+        <sys:String x:Key="ReportsToolTip">Select, run, preview, and print reports about equipment and status.</sys:String>
+        <sys:String x:Key="ViewPrintLabels">View/_Print Labels</sys:String>
+        <sys:String x:Key="ViewPrintLabelsToolTip">Preview and print barcodes for affixing to equipment.</sys:String>
+        <sys:String x:Key="LogOut">_Log Out</sys:String>
+        <sys:String x:Key="LogOutToolTip">Log current user out, return to login window.</sys:String>
+
+        <x:Array x:Key="AssetManagementItems" Type="local:SimpleTreeItem">
+            <local:SimpleTreeItem image="images/config_tools.bmp" tag="GenInvMngt" label="General Inventory Management" />
+            <local:SimpleTreeItem image="images/arrow_right.bmp" tag="DeployRecover" label="Deploy / Recover Process" />
+            <local:SimpleTreeItem image="images/arrow_right.bmp" tag="DamagedMissing" label="Damaged / Missing Process" />
+            <local:SimpleTreeItem image="images/arrow_right.bmp" tag="Service" label="Service (Maintainence) History" />
+            <local:SimpleTreeItem image="images/calendar.bmp" tag="Expiration" label="Universal Expiration" />
+        </x:Array>
+
+        <x:Array x:Key="SystemAdministrationItems" Type="local:SimpleTreeItem">
+            <local:SimpleTreeItem image="images/people.bmp" tag="ManageUsers" label="Manage Users" />
+            <local:SimpleTreeItem image="images/database.bmp" tag="Replication" label="Replicate Database" />
+            <local:SimpleTreeItem image="images/vendor.bmp" tag="ManageVendors" label="Manage Vendors" />
+            <local:SimpleTreeItem image="images/edit_pencil.bmp" tag="SiteToEquipMapping" label="Mangage Site of Equipment" />
+            <local:SimpleTreeItem image="images/config_tools.bmp" tag="ManageItems" label="Manage Items" />
+            <local:SimpleTreeItem image="images/config_tools.bmp" tag="ManageItemTypes" label="Manage Item Types" />
+            <local:SimpleTreeItem image="images/edit_pencil.bmp" tag="EditReferenceData" label="Edit Reference Data" />
+        </x:Array>
+
+        <x:Array x:Key="ReportsItems" Type="local:SimpleTreeItem">
+            <local:SimpleTreeItem image="images/Reports.png"       tag="ReportSummary"    label="Inventory Report" />
+            <local:SimpleTreeItem image="images/Reports.png"       tag="ReportItemStatus" label="Item Status Report" />
+            <local:SimpleTreeItem image="images/report_chart1.bmp" tag="ReportVendorCost" label="Vendor/Cost Report" />
+            <local:SimpleTreeItem image="images/report_chart2.bmp" tag="ReportWeight"     label="Weight Report" />
+            <local:SimpleTreeItem image="images/Reports.png"       tag="ReportExpiration" label="Expiration Report" />
+            <local:SimpleTreeItem image="images/report_chart1.bmp" tag="ReportService"    label="Service Report" />
+            <local:SimpleTreeItem image="images/report_chart2.bmp" tag="ReportDeployment" label="Deployment Report" />
+            <local:SimpleTreeItem image="images/calendar.bmp"      tag="ReportDamaged"    label="Damaged / Missing Report" />
+        </x:Array>
+
+        <x:Array x:Key="ViewPrintLabelsItems" Type="local:SimpleTreeItem">
+            <local:SimpleTreeItem image="images/Barcodes.png" tag="Labels" label="View/Print Labels" />
+        </x:Array>
+
+        <x:Array x:Key="LogOutItems" Type="local:SimpleTreeItem">
+            <local:SimpleTreeItem image="images/MMRSLogo.ico" tag="LogOut" label="Log out &amp; return to log in prompt" />
+        </x:Array>
+
+    </Window.Resources>
+
+    <DockPanel Background="WhiteSmoke" >
+        <StackPanel Name="LoggedInUserInfo" Orientation="Vertical" DockPanel.Dock="Bottom" >
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,4" >
+                <WrapPanel>
+                    <Label Width="50" Foreground="DarkBlue" FontWeight="SemiBold" FontSize="14" FontFamily="Microsoft Sans Serif" Content="{DynamicResource UserIdLabel}" />
+                    <Label x:Name="UserIdLbl" FontWeight="Normal" FontSize="14" FontFamily="Microsoft Sans Serif" Content="{Binding Path=userId}" />
+                </WrapPanel>
+                <WrapPanel>
+                    <Label Width="50" Foreground="DarkBlue" FontWeight="SemiBold" FontSize="14" FontFamily="Microsoft Sans Serif" Content="{DynamicResource SiteLabel}" />
+                    <!-- <Label x:Name="SiteLbl" FontWeight="Normal" FontSize="14" FontFamily="Microsoft Sans Serif" Content="{Binding Path=siteName}" /> -->
+                    <ComboBox x:Name="SiteLbl" IsEditable="True" IsReadOnly="True" ItemsSource="{Binding Path=availableSites}" DisplayMemberPath="name" SelectedItem="{Binding Path=currentSite, Mode=TwoWay}" />
+                </WrapPanel>
+            </StackPanel>
+            <StackPanel >
+                <Label x:Name="StatusLabel" Margin="20,0" HorizontalContentAlignment="Stretch" />
+            </StackPanel>
+        </StackPanel>
+        
+        <Label DockPanel.Dock="Top" Margin="10,2,2,2" FontWeight="Bold" FontSize="14" FontFamily="Microsoft Sans Serif" Content="{StaticResource NavigationMenuTitle}" Background="WhiteSmoke" >
+            <Label.Foreground>
+                <SolidColorBrush Color="#FF0066CC"/>
+            </Label.Foreground>
+        </Label>
+        
+        <TabControl TabStripPlacement="Left" Margin="1,2" BorderThickness="1" BorderBrush="Gray" Background="WhiteSmoke" SnapsToDevicePixels="True">
+                <TabControl.BitmapEffect>
+                    <DropShadowBitmapEffect Color="Black" Direction="270"/>
+                </TabControl.BitmapEffect>
+                <TabItem Name="AssetManagementBtn" Tag="AssetManagementItems" AutomationProperties.LabeledBy="{Binding ElementName=AssetManagementLbl, Mode=OneWay}" >
+                    <TabItem.Header>
+                        <Grid Cursor="Hand" ToolTip="{StaticResource AssetManagementToolTip}" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="180" />
+                            </Grid.ColumnDefinitions>
+                            <Image Source="images/Inventory.png" Style="{StaticResource imageStyle}" />
+                            <Label Grid.Column="1" x:Name="AssetManagementLbl" Style="{StaticResource labelStyle}" Content="{StaticResource AssetManagement}" />
+                        </Grid>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <ListView BorderThickness="0" Background="GhostWhite" MinWidth="340" ItemsSource="{Binding Source={StaticResource AssetManagementItems}}" ItemTemplate="{StaticResource NavTreeviewTemplate}" SelectionMode="Single" MouseLeftButtonUp="ListView_SelectItem" KeyUp="ListView_SelectItem" />
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Name="SystemAdministrationBtn" Tag="SystemAdministrationItems" IsEnabled="{Binding Path=isAdmin}" AutomationProperties.LabeledBy="{Binding ElementName=SystemAdministrationLbl, Mode=OneWay}" >
+                    <TabItem.Header>
+                        <Grid Cursor="Hand" ToolTip="{StaticResource SystemAdministrationToolTip}" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="180" />
+                            </Grid.ColumnDefinitions>
+                            <Image Source="images/Users.png" Style="{StaticResource imageStyle}" />
+                            <Label Grid.Column="1" x:Name="SystemAdministrationLbl" Style="{StaticResource labelStyle}" Content="{StaticResource SystemAdministration}" />
+                        </Grid>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Background="GhostWhite" MinWidth="340">
+                            <ListView BorderThickness="0" Background="Transparent" ItemsSource="{Binding Source={StaticResource SystemAdministrationItems}}" ItemTemplate="{StaticResource NavTreeviewTemplate}" MouseLeftButtonUp="ListView_SelectItem" KeyUp="ListView_SelectItem" />
+                        </ScrollViewer>
+                    </TabItem.Content>
+                </TabItem>
+                <TabItem Name="ReportsBtn" Tag="ReportsItems" AutomationProperties.LabeledBy="{Binding ElementName=ReportsLbl, Mode=OneWay}" >
+                    <TabItem.Header>
+                        <Grid Cursor="Hand" ToolTip="{StaticResource ReportsToolTip}" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="180" />
+                            </Grid.ColumnDefinitions>
+                            <Image Source="images/Reports.png" Style="{StaticResource imageStyle}" />
+                            <Label Grid.Column="1" x:Name="ReportsLbl" Style="{StaticResource labelStyle}" Content="{StaticResource Reports}" />
+                        </Grid>
+                    </TabItem.Header>
+                <TabItem.Content>
+                    <ListView BorderThickness="0" Background="GhostWhite" MinWidth="340" ItemsSource="{Binding Source={StaticResource ReportsItems}}" ItemTemplate="{StaticResource NavTreeviewTemplate}" MouseLeftButtonUp="ListView_SelectItem" KeyUp="ListView_SelectItem" />
+                </TabItem.Content>
+            </TabItem>
+                <TabItem Name="ViewPrintBarcodesBtn" Tag="ViewPrintLabelsItems" AutomationProperties.LabeledBy="{Binding ElementName=ViewPrintBarcodesLbl, Mode=OneWay}" >
+                    <TabItem.Header>
+                        <Grid Cursor="Hand" ToolTip="{StaticResource ViewPrintLabelsToolTip}" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="180" />
+                            </Grid.ColumnDefinitions>
+                            <Image Source="images/Barcodes.png" Style="{StaticResource imageStyle}" />
+                            <Label Grid.Column="1" x:Name="ViewPrintBarcodesLbl" Style="{StaticResource labelStyle}" Content="{StaticResource ViewPrintLabels}" />
+                        </Grid>
+                    </TabItem.Header>
+                <TabItem.Content>
+                    <ListView BorderThickness="0" Background="GhostWhite" MinWidth="340" ItemsSource="{Binding Source={StaticResource ViewPrintLabelsItems}}" ItemTemplate="{StaticResource NavTreeviewTemplate}" MouseLeftButtonUp="ListView_SelectItem" KeyUp="ListView_SelectItem" />
+                </TabItem.Content>
+            </TabItem>
+                <TabItem Name="LogOutTab" AutomationProperties.LabeledBy="{Binding ElementName=LogOutLbl, Mode=OneWay}">
+                    <TabItem.Header>
+                        <Grid Cursor="Hand" ToolTip="Return to log in window" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition Width="180" />
+                            </Grid.ColumnDefinitions>
+                            <Image Source="images/MMRSLogo.ico" Style="{StaticResource imageStyle}" />
+                            <Label Grid.Column="1" x:Name="LogOutLbl" Style="{StaticResource labelStyle}" Content="{DynamicResource LogOut}"/>
+                        </Grid>
+                    </TabItem.Header>
+                    <TabItem.Content>
+                    <!-- <Button Margin="20,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="LogOutBtn_Click">Logout</Button> -->
+                    <ListView BorderThickness="0" Background="GhostWhite" MinWidth="340" ItemsSource="{Binding Source={StaticResource LogOutItems}}" ItemTemplate="{StaticResource NavTreeviewTemplate}" MouseLeftButtonUp="ListView_SelectItem" KeyUp="ListView_SelectItem" />
+                </TabItem.Content>
+                </TabItem>
+            </TabControl>
+    </DockPanel>
+</Window>

@@ -1,0 +1,98 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="SuppressVersion">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CurrentVersion" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SqliteNet">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="FileName" type="xs:string" default="" />
+                <xs:element name="ErrorCode" type="xs:string" default="" />
+                <xs:element name="Message" type="xs:string" default="" />
+                <xs:element name="CodePrev" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeCurrent" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeNext" type="xs:unsignedInt" default="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SqliteNet" />
+        <xs:field xpath="FileName" />
+        <xs:field xpath="ErrorCode" />
+        <xs:field xpath="Message" />
+        <xs:field xpath="CodePrev" />
+        <xs:field xpath="CodeCurrent" />
+        <xs:field xpath="CodeNext" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <SuppressVersion>
+    <CurrentVersion>2</CurrentVersion>
+  </SuppressVersion>
+  <SqliteNet>
+    <FileName>SQLite.cs</FileName>
+    <ErrorCode>V3052</ErrorCode>
+    <Message>The original exception object 'ex' was swallowed. Stack of original exception could be lost.</Message>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>1151446945</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </SqliteNet>
+  <SqliteNet>
+    <FileName>SQLite.cs</FileName>
+    <ErrorCode>V3008</ErrorCode>
+    <Message>The 'r' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: _, _.</Message>
+    <CodePrev>10694753</CodePrev>
+    <CodeCurrent>122460401</CodeCurrent>
+    <CodeNext>1598321</CodeNext>
+  </SqliteNet>
+  <SqliteNet>
+    <FileName>SQLite.cs</FileName>
+    <ErrorCode>V3008</ErrorCode>
+    <Message>The 'r' variable is assigned values twice successively. Perhaps this is a mistake. Check lines: _, _.</Message>
+    <CodePrev>125</CodePrev>
+    <CodeCurrent>3918761849</CodeCurrent>
+    <CodeNext>0</CodeNext>
+  </SqliteNet>
+  <SqliteNet>
+    <FileName>SQLite.cs</FileName>
+    <ErrorCode>V3013</ErrorCode>
+    <Message>It is odd that the body of 'OrderBy' function is fully equivalent to the body of 'ThenBy' function (_, line _).</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>1318199579</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </SqliteNet>
+  <SqliteNet>
+    <FileName>SQLite.cs</FileName>
+    <ErrorCode>V3013</ErrorCode>
+    <Message>It is odd that the body of 'OrderByDescending' function is fully equivalent to the body of 'ThenByDescending' function (_, line _).</Message>
+    <CodePrev>0</CodePrev>
+    <CodeCurrent>4274831608</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </SqliteNet>
+  <SqliteNet>
+    <FileName>ReadOperations.cs</FileName>
+    <ErrorCode>V3111</ErrorCode>
+    <Message>Checking value of 'value' for null will always return false when generic type is instantiated with a value type.</Message>
+    <CodePrev>34901755</CodePrev>
+    <CodeCurrent>1482857</CodeCurrent>
+    <CodeNext>312007189</CodeNext>
+  </SqliteNet>
+  <SqliteNet>
+    <FileName>ReadOperations.cs</FileName>
+    <ErrorCode>V3111</ErrorCode>
+    <Message>Checking value of 'value' for null will always return false when generic type is instantiated with a value type.</Message>
+    <CodePrev>2732445999</CodePrev>
+    <CodeCurrent>870287417</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </SqliteNet>
+</NewDataSet>

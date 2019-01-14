@@ -1,0 +1,66 @@
+<!--
+The MIT License (MIT)
+
+Copyright (c) 2009-2016 David Wendland
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE
+-->
+
+<Window x:Class="DW.WPFToolkit.Controls.WPFMessageBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:DW.WPFToolkit.Controls">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="UpperArea" />
+            <RowDefinition x:Name="LowerArea" Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ContentControl Content="{Binding Options.BackgroundControl}" Focusable="False" />
+
+        <DockPanel>
+            <Controls:WPFMessageBoxButtonsPanel Buttons="{Binding Buttons, Mode=TwoWay}"
+                                                DefaultButton="{Binding DefaultButton}"
+                                                Strings="{Binding Options.Strings}"
+                                                ShowHelpButton="{Binding Options.ShowHelpButton}"
+                                                ShowYesToAllButton="{Binding Options.ShowYesToAllButton}"
+                                                ShowNoToAllButton="{Binding Options.ShowNoToAllButton}"
+                                                ShowDoNotShowAgainCheckBox="{Binding Options.ShowDoNotShowAgainCheckBox}"
+                                                IsDoNotShowAgainChecked="{Binding Options.IsDoNotShowAgainChecked, Mode=TwoWay}"
+                                                ShowDetails="{Binding Options.ShowDetails}"
+                                                CustomItem="{Binding Options.CustomItem}"
+                                                DockPanel.Dock="Bottom"
+                                                x:Name="PART_ButtonPanel" />
+
+            <Controls:WPFMessageBoxImageControl Image="{Binding Image}"
+                                                x:Name="PART_ImageControl" />
+
+            <Controls:WPFMessageBoxScrollViewerControl x:Name="PART_ScrollViewerControl">
+                <Controls:WPFMessageBoxTextControl Content="{Binding Message}" x:Name="PART_TextControl" />
+            </Controls:WPFMessageBoxScrollViewerControl>
+        </DockPanel>
+
+        <Controls:WPFMessageBoxDetailsPresenter Grid.Row="1"
+                                                x:Name="PART_DetailsPresenter"
+                                                IsDetailsExpanded="{Binding IsDetailsExpanded}"
+                                                Content="{Binding Options.DetailsContent}" />
+    </Grid>
+
+</Window>

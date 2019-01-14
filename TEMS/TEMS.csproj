@@ -1,0 +1,382 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1CA1FF53-E8BC-4689-BE76-AF103A151B6C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>TEMS_Inventory</RootNamespace>
+    <AssemblyName>TEMS</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>C:\TEMS\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>https://tems.fdos.org/downloads/TEMS/</InstallUrl>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>TEMS_Inventory.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>MMRSLogo.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>4BB76F1326530F2CB940DEE06EE26F591F81C408</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>TEMS_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
+    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.5.7\lib\net40-client\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="PresentationFramework.Classic" />
+    <Reference Include="PresentationFramework.Luna" />
+    <Reference Include="PresentationFramework.Royale" />
+    <Reference Include="SharpRaven, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpRaven.2.4.0\lib\net40\SharpRaven.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.IO, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Threading.Tasks, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+    <Compile Include="BasicSearchWindowBase.cs" />
+    <Compile Include="BasicWindowBase.cs" />
+    <Compile Include="FilePicker\FileOpenPicker.cs" />
+    <Compile Include="FilePicker\FilePickerBase.xaml.cs">
+      <DependentUpon>FilePickerBase.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ItemSearchFilter\ItemSearchFilter.xaml.cs">
+      <DependentUpon>ItemSearchFilter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ListAndPropertyGrid\ListAndPropertyGrid.xaml.cs">
+      <DependentUpon>ListAndPropertyGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyDetails.cs" />
+    <Compile Include="PropertyObserver.cs" />
+    <Compile Include="views\asset management\damaged or missing\DamagedMissingHistoryWindow.xaml.cs">
+      <DependentUpon>DamagedMissingHistoryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\asset management\deploy\DeployRecoverHistoryWindow.xaml.cs">
+      <DependentUpon>DeployRecoverHistoryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\asset management\deploy\DeployRecoverWindow.xaml.cs">
+      <DependentUpon>DeployRecoverWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\asset management\ExpirationWindow.xaml.cs">
+      <DependentUpon>ExpirationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\asset management\GeneralInventoryManagementWindow.xaml.cs">
+      <DependentUpon>GeneralInventoryManagementWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\asset management\ItemManagementWindow.xaml.cs">
+      <DependentUpon>ItemManagementWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\asset management\ItemTypeManagementWindow.xaml.cs">
+      <DependentUpon>ItemTypeManagementWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\asset management\service\ServiceHistoryWindow.xaml.cs">
+      <DependentUpon>ServiceHistoryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\print labels\ViewPrintLabelsWindow.xaml.cs">
+      <DependentUpon>ViewPrintLabelsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\reports\ReportWindow.xaml.cs">
+      <DependentUpon>ReportWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\system administration\ManageUsersWindow.xaml.cs">
+      <DependentUpon>ManageUsersWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\system administration\ManageVendorsWindow.xaml.cs">
+      <DependentUpon>ManageVendorsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\system administration\reference data\ReferenceDataWindow.xaml.cs">
+      <DependentUpon>ReferenceDataWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\system administration\ReplicationWindow.xaml.cs">
+      <DependentUpon>ReplicationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\system administration\SiteToEquipmentUnitMappingWindow.xaml.cs">
+      <DependentUpon>SiteToEquipmentUnitMappingWindow.xaml</DependentUpon>
+    </Compile>
+    <Page Include="ChangePasswordWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FilePicker\FilePickerBase.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ItemSearchFilter\ItemSearchFilter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ListAndPropertyGrid\ListAndPropertyGrid.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LogInWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AppErrorTracking.cs" />
+    <Compile Include="AppErrorTracking.private.cs" />
+    <Compile Include="ChangePasswordWindow.xaml.cs">
+      <DependentUpon>ChangePasswordWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LibZResolver.cs" />
+    <Compile Include="LogInWindow.xaml.cs">
+      <DependentUpon>LogInWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\asset management\damaged or missing\DamagedMissingHistoryWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\asset management\deploy\DeployRecoverHistoryWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\asset management\deploy\DeployRecoverWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\asset management\ExpirationWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\asset management\GeneralInventoryManagementWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\asset management\ItemManagementWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\asset management\ItemTypeManagementWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\asset management\service\ServiceHistoryWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\print labels\ViewPrintLabelsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\reports\ReportWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\system administration\ManageUsersWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\system administration\ManageVendorsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\system administration\reference data\ReferenceDataWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\system administration\ReplicationWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\system administration\SiteToEquipmentUnitMappingWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="TEMS_TemporaryKey.pfx" />
+    <Resource Include="images\item types\bin.jpg" />
+    <Resource Include="images\item types\item.jpg" />
+    <Resource Include="images\item types\module.jpg" />
+    <Resource Include="images\item types\site.bmp" />
+    <Resource Include="images\item types\truck.jpg" />
+    <Resource Include="images\arrow_left.bmp" />
+    <Resource Include="images\arrow_right.bmp" />
+    <Resource Include="images\Barcodes.png" />
+    <Resource Include="images\calendar.bmp" />
+    <Resource Include="images\config_tools.bmp" />
+    <Resource Include="images\database.bmp" />
+    <Resource Include="images\database_download.bmp" />
+    <Resource Include="images\database_upload.bmp" />
+    <Resource Include="images\edit_pencil.bmp" />
+    <Resource Include="images\Inventory - old.png" />
+    <Resource Include="images\Inventory.png" />
+    <Resource Include="images\labels.bmp" />
+    <Resource Include="images\MMRSLogo.ico" />
+    <Resource Include="images\MMRSLogo.png" />
+    <Resource Include="images\people.bmp" />
+    <Resource Include="images\Portrait.png" />
+    <Resource Include="images\Reports.png" />
+    <Resource Include="images\report_chart1.bmp" />
+    <Resource Include="images\report_chart2.bmp" />
+    <Resource Include="images\report_pie.bmp" />
+    <Resource Include="images\TEMS.ico" />
+    <Resource Include="images\Users.png" />
+    <Resource Include="images\vendor.bmp" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+    <None Include="postbuild.bat" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="..\SqliteNet\x86\sqlite3.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InventoryModel\InventoryModel.csproj">
+      <Project>{7b92d3b3-4990-47d9-92a5-eb149df5c380}</Project>
+      <Name>InventoryModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\InventoryViewModel\InventoryViewModel.csproj">
+      <Project>{1d50aee2-4e32-429e-a7ee-7611ba2d6f1c}</Project>
+      <Name>InventoryViewModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqliteNet\SqliteNet.csproj">
+      <Project>{4a4d8ac9-5aa0-4642-b2b4-07c8dc77223c}</Project>
+      <Name>SqliteNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WPFToolkit\WPFToolkit.csproj">
+      <Project>{c126572c-fcdb-419f-afc7-47a19beb1e31}</Project>
+      <Name>WPFToolkit</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="MMRSLogo.ico" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PostBuildEvent>$(ProjectDir)postbuild.bat</PostBuildEvent>
+  </PropertyGroup>
+</Project>

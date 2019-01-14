@@ -1,0 +1,30 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TEMS_Inventory.views;assembly=InventoryViewModel" x:Class="TEMS_Inventory.views.ReplicationWindow"
+        xmlns:WPFToolkit="clr-namespace:DW.WPFToolkit.Controls;assembly=WPFToolkit"
+        xmlns:FilePicker="clr-namespace:InventoryViewWPF"
+        mc:Ignorable="d"
+        Height="500" Width="600" WindowStartupLocation="CenterOwner"
+        Icon="{StaticResource LogoImage}"
+        Title="Database Replication / Sync" >
+    <Window.Resources>
+        <local:ReplicationViewModel x:Key="ViewModel" />
+    </Window.Resources>
+
+    <StackPanel Orientation="Vertical" DataContext="{StaticResource ViewModel}">
+        <WrapPanel Margin="20">
+            <FilePicker:FileOpenPicker HorizontalAlignment="Stretch" MinWidth="400" DefaultExtension="*.db" FilePath="{Binding replicaDB,Mode=TwoWay}" />
+        </WrapPanel>
+        <WrapPanel HorizontalAlignment="Center" Orientation="Vertical">
+            <Label x:Name="replicaName" Content="{Binding message}" HorizontalAlignment="Stretch" Margin="10,0,0,0" />
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+                <Button Content="Synchronize Databases                       &lt;-&gt;" Command="{Binding SyncDbCommand}" />
+                <Button Content="Synchronize From Replica Database   &lt;-  " Command="{Binding SyncFromDbCommand}" />
+                <Button Content="Synchronize To Replica Database          -&gt;" Command="{Binding SyncToDbCommand}" />
+            </StackPanel>
+        </WrapPanel>
+    </StackPanel>
+</Window>

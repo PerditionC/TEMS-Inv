@@ -1,0 +1,66 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="SuppressVersion">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CurrentVersion" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="InventoryModel">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="FileName" type="xs:string" default="" />
+                <xs:element name="ErrorCode" type="xs:string" default="" />
+                <xs:element name="Message" type="xs:string" default="" />
+                <xs:element name="CodePrev" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeCurrent" type="xs:unsignedInt" default="0" />
+                <xs:element name="CodeNext" type="xs:unsignedInt" default="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//InventoryModel" />
+        <xs:field xpath="FileName" />
+        <xs:field xpath="ErrorCode" />
+        <xs:field xpath="Message" />
+        <xs:field xpath="CodePrev" />
+        <xs:field xpath="CodeCurrent" />
+        <xs:field xpath="CodeNext" />
+      </xs:unique>
+    </xs:element>
+  </xs:schema>
+  <SuppressVersion>
+    <CurrentVersion>2</CurrentVersion>
+  </SuppressVersion>
+  <InventoryModel>
+    <FileName>PasswordHashing.cs</FileName>
+    <ErrorCode>V3057</ErrorCode>
+    <Message>The 'ReadInt_' function receives the '-_' value while non-negative value is expected. Inspect the second argument.</Message>
+    <CodePrev>123</CodePrev>
+    <CodeCurrent>3270265348</CodeCurrent>
+    <CodeNext>2210344927</CodeNext>
+  </InventoryModel>
+  <InventoryModel>
+    <FileName>UserActivity.cs</FileName>
+    <ErrorCode>V3059</ErrorCode>
+    <Message>Members of the 'UserAction' enum are powers of _. Consider adding '[Flags]' attribute to the enum.</Message>
+    <CodePrev>4095065494</CodePrev>
+    <CodeCurrent>3298976406</CodeCurrent>
+    <CodeNext>3532861</CodeNext>
+  </InventoryModel>
+  <InventoryModel>
+    <FileName>Database.cs</FileName>
+    <ErrorCode>V3111</ErrorCode>
+    <Message>Checking value of 'items' for null will always return false when generic type is instantiated with a value type.</Message>
+    <CodePrev>637961238</CodePrev>
+    <CodeCurrent>344222517</CodeCurrent>
+    <CodeNext>1210328590</CodeNext>
+  </InventoryModel>
+</NewDataSet>

@@ -1,0 +1,294 @@
+﻿<views:BasicSearchWindowBase x:Class="TEMS_Inventory.views.ItemTypeManagementWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:inventoryModel="clr-namespace:TEMS.InventoryModel.entity.db;assembly=InventoryModel"
+    xmlns:dbQuery="clr-namespace:TEMS.InventoryModel.entity.db.query;assembly=InventoryModel"
+    xmlns:WPFToolkit="clr-namespace:DW.WPFToolkit.Controls;assembly=WPFToolkit"
+    xmlns:WPFConverters="clr-namespace:DW.WPFToolkit.Converters;assembly=WPFToolkit"
+    xmlns:views="clr-namespace:TEMS_Inventory.views"
+    xmlns:uc="clr-namespace:TEMS_Inventory.UserControls"
+    mc:Ignorable="d"
+        Height="600" Width="960" WindowStartupLocation="CenterOwner"
+        Icon="/images/MMRSLogo.ico"
+        Title="Item Type Management" >
+    <Window.InputBindings>
+        <!--<KeyBinding Command="{Binding SaveCommand,Source={Binding ViewModel}}" Key="S" Modifiers="Ctrl"/>-->
+    </Window.InputBindings>
+
+    <DockPanel Background="OldLace" x:Name="rootItem">
+        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" SearchFilterCommand="{Binding SearchFilterCommand, Mode=TwoWay}" />
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="3" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <DockPanel  Grid.Column="0" Grid.Row="0"  Margin="3,2,2,3" >
+                <Grid MinWidth="50" VerticalAlignment="Stretch" Margin="5,0" DockPanel.Dock="Right">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+
+                    <Button Grid.Row="1" x:Name="AddButton"    VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding AddCommand}" Content="_Add" ToolTip="Add new item type" />
+                    <Button Grid.Row="2" x:Name="CloneButton"  VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding CloneCommand}" Content="_Clone" Visibility="Visible" ToolTip="Add a new item type based on currently selected item" ToolTipService.ShowOnDisabled="True" />
+                    <Button Grid.Row="3" x:Name="EditButton"   VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding EditCommand}" Content="_Edit"  Visibility="Collapsed" ToolTip="Edit currently selected item" ToolTipService.ShowOnDisabled="True" />
+                    <Button Grid.Row="4" x:Name="DeleteButton" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding DeleteCommand}" Content="_Delete" ToolTip="Remove currently selected item type from available types (including all items of the selected item type!)" ToolTipService.ShowOnDisabled="True" />
+                </Grid>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
+                    <!-- <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding ExpandCollapseCommand}"/> -->
+                    <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}" Height="22" Opacity="0.9" />
+                </StackPanel>
+                <ContentPresenter Name="DisplayItemList" Content="{Binding}" DockPanel.Dock="Left" >
+                    <ContentPresenter.ContentTemplate>
+                        <DataTemplate>
+                            <Grid Background="White" >
+                                <ListView Name="ItemList" ItemsSource="{Binding Items}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" >
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <WrapPanel>
+                                                <Image x:Name="image" Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
+                                                    <Image.Style>
+                                                        <Style TargetType="{x:Type Image}">
+                                                            <Setter Property="Source" Value="{StaticResource ItemImage}" />
+                                                            <Setter Property="ToolTip" Value="item" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=isModule, Mode=OneWay}" Value="True">
+                                                                    <Setter Property="Image.Source" Value="{StaticResource ModuleImage}"/>
+                                                                    <Setter Property="ToolTip" Value="module" />
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Path=isBin, Mode=OneWay}" Value="true">
+                                                                    <Setter Property="Image.Source" Value="{StaticResource BinImage}" />
+                                                                    <Setter Property="ToolTip" Value="bin" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                </Image>
+                                                <TextBlock VerticalAlignment="Center">
+                                                    <Run Text="{Binding itemNumber, StringFormat={}{0,5:D}}" FontFamily="Courier New" />
+                                                    <Run Text=" : " />
+                                                    <Run Text="{Binding description}" />
+                                                    <Run Text=" (" />
+                                                    <Run Text="{Binding quantity}" Foreground="Blue" />
+                                                    <Run Text=")" />
+                                                </TextBlock>
+                                            </WrapPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <Border Name="EmptyList" Visibility="Collapsed" BorderThickness="1" BorderBrush="Black">
+                                    <TextBlock Text="No items." Margin="20,0,0,0" />
+                                </Border>
+                            </Grid>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Path=Items.Count}" Value="0">
+                                    <Setter TargetName="ItemList" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="EmptyList" Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ContentPresenter.ContentTemplate>
+                </ContentPresenter>
+            </DockPanel>
+
+            <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" />
+
+            <DockPanel Grid.Column="2" Grid.Row="0" Margin="5,2,2,3" >
+                <DockPanel DockPanel.Dock="Bottom" Margin="3">
+                    <Button x:Name="SaveButton" HorizontalAlignment="Center" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding SaveCommand}" Content="_Save" />
+                </DockPanel>
+                <GroupBox Header="{Binding CurrentItem.itemTypeId}" BorderThickness="1" BorderBrush="Gray" MinWidth="50" Background="AliceBlue" >
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <DockPanel DockPanel.Dock="Bottom" Margin="3">
+
+                            <!-- Add in pictures and documents section  -->
+                            <GroupBox Header="{Binding ImageHeader}" DockPanel.Dock="Bottom" Margin="3">
+                                <DockPanel DockPanel.Dock="Bottom" Margin="3">
+                                    <StackPanel Orientation="Vertical" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="10,0">
+                                        <Button x:Name="AddImageButton" HorizontalAlignment="Center" VerticalAlignment="Center" Width="55" Command="{Binding ImageAddCommand}" Content="Add" Margin="0,0,0,10" ToolTip="Add new image associated with this item"/>
+                                        <Button x:Name="DelImageButton" HorizontalAlignment="Center" VerticalAlignment="Center" Width="55" Command="{Binding ImageDeleteCommand}" Content="Remove" ToolTip="Remove an existing image associated with this item" ToolTipService.ShowOnDisabled="True" />
+                                    </StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="20" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0" VerticalAlignment="Center" Width="20" Height="20" Command="{Binding ImageLeftCommand}" ToolTip="Show previous image" Visibility="{Binding HasMultipleImages,Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Visible}" >
+                                            <Image Source="/images/arrow_left.bmp" />
+                                        </Button>
+                                        <ContentPresenter Content="{Binding}" Grid.Column="1" MinWidth="80" MinHeight="80" MaxHeight="300" >
+                                            <ContentPresenter.ContentTemplate>
+                                                <DataTemplate>
+                                                    <Grid Background="White" >
+                                                        <Image Name="ImageList" Visibility="Visible" Source="{Binding currentImage.data, Converter={StaticResource ByteArrayToImageConverter}}" ToolTip="{Binding currentImage.description}" />
+                                                        <Image Name="EmptyImageList" Visibility="Collapsed"  Source="/images/Portrait.png" ToolTip="no images available" />
+                                                    </Grid>
+                                                    <DataTemplate.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=selectedItem.images.Count}" Value="0">
+                                                            <Setter TargetName="ImageList" Property="Visibility" Value="Collapsed"/>
+                                                            <Setter TargetName="EmptyImageList" Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </DataTemplate.Triggers>
+                                                </DataTemplate>
+                                            </ContentPresenter.ContentTemplate>
+                                        </ContentPresenter>
+                                        <Button Grid.Column="2"  VerticalAlignment="Center" Width="20" Height="20"  Command="{Binding ImageRightCommand}"  Visibility="{Binding HasMultipleImages,Converter={StaticResource BooleanToVisibilityConverter},FallbackValue=Visible}" ToolTip="Show next image" >
+                                            <Image Source="/images/arrow_right.bmp" />
+                                        </Button>
+                                    </Grid>
+                                </DockPanel>
+                            </GroupBox>
+                            <GroupBox Header="Documents:" DockPanel.Dock="Bottom" Margin="3">
+                                <DockPanel>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="10,2">
+                                        <Button x:Name="ViewDocumentButton" HorizontalAlignment="Center" VerticalAlignment="Center" Width="55" Command="{Binding DocumentViewCommand}" Content="View" ToolTip="Open the document in default program to view selected document" ToolTipService.ShowOnDisabled="True" />
+                                        <Button x:Name="AddDocumentButton" Margin="5,0,5,0" HorizontalAlignment="Center" VerticalAlignment="Center" Width="55" Command="{Binding DocumentAddCommand}" Content="Add" ToolTip="Add a new document associated with this item (supports any fileformat)" />
+                                        <Button x:Name="DelDocumentButton" HorizontalAlignment="Center" VerticalAlignment="Center" Width="55" Command="{Binding DocumentDeleteCommand}" Content="Remove" ToolTip="Removes the selected document associated with this item" ToolTipService.ShowOnDisabled="True" />
+                                    </StackPanel>
+                                    <ContentPresenter Content="{Binding}" MinHeight="10">
+                                        <ContentPresenter.ContentTemplate>
+                                            <DataTemplate>
+                                                <Grid Background="White" >
+                                                    <ListBox x:Name="DocumentList"
+                                                             SelectedItem="{Binding currentDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                             ItemsSource="{Binding CurrentItem.documents}"
+                                                             DisplayMemberPath="name"
+                                                             ToolTip="{Binding currentDocument.description}" 
+                                                    >
+                                                    </ListBox>
+                                                    <Border Name="EmptyDocumentList" Visibility="Collapsed" BorderThickness="1" BorderBrush="Black">
+                                                        <TextBlock Text="No documents." Margin="20,0,0,0" />
+                                                    </Border>
+                                                </Grid>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=CurrentItem.documents.Count}" Value="0">
+                                                        <Setter TargetName="DocumentList" Property="Visibility" Value="Collapsed"/>
+                                                        <Setter TargetName="EmptyDocumentList" Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </ContentPresenter.ContentTemplate>
+                                    </ContentPresenter>
+                                </DockPanel>
+                            </GroupBox>
+
+                            <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
+                                <WPFToolkit:TitledItem Title="DB key:" Visibility="Collapsed">
+                                    <TextBox Text="{Binding  CurrentItem.PrimaryKey}" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Name:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <TextBox x:Name="tbName" Text="{Binding CurrentItem.name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding isDetailViewInActive}" ToolTip="Name of this item" />
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}" Margin="0,5">
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding CurrentItem.isBin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False" Content="Bin" Margin="0,0,20,0" />
+                                        <CheckBox IsChecked="{Binding CurrentItem.isModule, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False" Content="Module" Margin="0,0,20,0" />
+                                    </StackPanel>
+                                </WPFToolkit:TitledItem>
+<!-- -->
+                                <WPFToolkit:TitledItem Title="Make:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <TextBox Text="{Binding CurrentItem.make, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding isDetailViewInActive}" ToolTip="Make of this item, leave blank if not applicable" />
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Model:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <TextBox Text="{Binding CurrentItem.model, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding isDetailViewInActive}" ToolTip="Model of this item, leave blank if not applicable" />
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Cost 1/10¢:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <WPFToolkit:NumberBox Number="{Binding CurrentItem.cost}" ToolTip="Cost of this item from vendor, in tenth of a cent increments ($0.001)"
+                                                          UpDownButtonsPosition="Right" UpDownBehavior="ArrowsAndButtons"
+                                                          AcceptUpDownOnNull="True" DefaultNumber="0"
+                                                          Minimum="0" Step="1" NumberType="Long" />
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Weight:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <DockPanel>
+                                        <WPFToolkit:EnhancedComboBox DockPanel.Dock="Right" 
+                                                  IsEditable="False" 
+                                                  IsReadOnly="{Binding isDetailViewInActive}" 
+                                                  SelectedItem="{Binding CurrentItem.unitOfMeasure, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                  ItemsSource="{Binding  cache[UnitOfMeasure]}"
+                                                  DisplayMemberPath="name"
+                                                  ToolTip="unit of measure for weight" 
+                                                  >
+                                        </WPFToolkit:EnhancedComboBox>
+                                        <WPFToolkit:NumberBox Number="{Binding CurrentItem.weight}" ToolTip="Weight of item per unit of measure"
+                                                              UpDownButtonsPosition="Right" UpDownBehavior="ArrowsAndButtons"
+                                                              AcceptUpDownOnNull="False" DefaultNumber="0"
+                                                              Minimum="0" Step="1" NumberType="Double"/>
+                                    </DockPanel>
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Category:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <WPFToolkit:EnhancedComboBox IsEditable="False" 
+                                                  IsReadOnly="{Binding isDetailViewInActive}" 
+                                                  SelectedItem="{Binding CurrentItem.category, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                  ItemsSource="{Binding  cache[ItemCategory]}"
+                                                  DisplayMemberPath="name"
+                                                  ToolTip="item category, purpose of item" 
+                                                  >
+                                    </WPFToolkit:EnhancedComboBox>
+                                </WPFToolkit:TitledItem>
+<!-- -->
+                                <WPFToolkit:TitledItem Title="Batteries:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                <DockPanel>
+                                        <WPFToolkit:EnhancedComboBox DockPanel.Dock="Right" 
+                                                  IsEditable="False" 
+                                                  IsReadOnly="{Binding isDetailViewInActive}" 
+                                                  SelectedItem="{Binding CurrentItem.batteryType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                  ItemsSource="{Binding  cache[BatteryType]}"
+                                                  DisplayMemberPath="name"
+                                                  ToolTip="unit of measure for weight" 
+                                                  >
+                                        </WPFToolkit:EnhancedComboBox>
+                                        <!-- disabled if batteryType is None -->
+                                        <WPFToolkit:NumberBox Number="{Binding CurrentItem.batteryCount}" 
+                                                              ToolTip="Count of batteries required, not used if battery type is None" ToolTipService.ShowOnDisabled="True"
+                                                              IsEnabled="{Binding RequiresBatteryCount}"
+                                                              UpDownButtonsPosition="Right" UpDownBehavior="ArrowsAndButtons"
+                                                              AcceptUpDownOnNull="False" DefaultNumber="1"
+                                                              Minimum="1" Step="1" NumberType="Int"
+                                                              />
+                                    </DockPanel>
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Addons:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}" ToolTip="additional items (not tracked separately) associated with this one">
+                                    <TextBox Text="{Binding CurrentItem.associatedItems}" AcceptsReturn="True" AcceptsTab="True" MinLines="1" MaxLines="3" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Vendor:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <DockPanel>
+                                        <Button DockPanel.Dock="Right" Content="Edit Vendors" ToolTip="Shortcut to open Manage Vendors window" Command="{Binding OpenManageVendorsWindowCommand}" />
+                                        <ComboBox IsEditable="False" 
+                                                  IsReadOnly="{Binding isDetailViewInActive}" 
+                                                  SelectedItem="{Binding CurrentItem.vendor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                  ItemsSource="{Binding  cache[VendorDetail]}"
+                                                  DisplayMemberPath="name"
+                                                  ToolTip="Vendor of this item, i.e. who purchased from" 
+                                                  >
+                                        </ComboBox>
+                                    </DockPanel>
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Notes:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <TextBox Text="{Binding CurrentItem.notes}" AcceptsReturn="True" AcceptsTab="True" MinLines="3" MaxLines="5" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                                    <!-- xml:lang="en-US" SpellCheck.IsEnabled="True" Note:MS implementation throws Exceptions but works with Win7/Net4 and possibly others -->
+                                </WPFToolkit:TitledItem>
+                            </WPFToolkit:TitledItemsControl>
+                        </DockPanel>
+                    </ScrollViewer>
+                </GroupBox>
+            </DockPanel>
+        </Grid>
+
+    </DockPanel>
+</views:BasicSearchWindowBase>

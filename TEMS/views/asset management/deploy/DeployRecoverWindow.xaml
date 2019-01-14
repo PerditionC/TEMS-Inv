@@ -1,0 +1,150 @@
+﻿<views:BasicSearchWindowBase x:Class="TEMS_Inventory.views.DeployRecoverWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:inventoryModel="clr-namespace:TEMS.InventoryModel.entity.db;assembly=InventoryModel"
+    xmlns:dbQuery="clr-namespace:TEMS.InventoryModel.entity.db.query;assembly=InventoryModel"
+    xmlns:WPFToolkit="clr-namespace:DW.WPFToolkit.Controls;assembly=WPFToolkit"
+    xmlns:views="clr-namespace:TEMS_Inventory.views"
+    xmlns:uc="clr-namespace:TEMS_Inventory.UserControls"
+    mc:Ignorable="d"
+        Height="600" Width="960" WindowStartupLocation="CenterOwner"
+        Icon="/images/MMRSLogo.ico"
+        Title="Deploy / Recover Items" >
+
+    <DockPanel Background="OldLace" DataContext="{StaticResource ViewModel}">
+        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" SearchFilterCommand="{Binding SearchFilter, Mode=TwoWay}" />
+
+        <DockPanel>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
+                <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding ExpandCollapseCommand}"/>
+                <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}" />
+                <UniformGrid DockPanel.Dock="Bottom" HorizontalAlignment="Center" Rows="1" Margin="0,5">
+                    <RadioButton IsChecked="{Binding StatusAvailable}">Available Items</RadioButton>
+                    <RadioButton IsChecked="{Binding StatusDeployed}" Margin="7,0,0,0">Deployed Items</RadioButton>
+                </UniformGrid>
+            </StackPanel>
+            <Grid DockPanel.Dock="Right" Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="2*" />
+                </Grid.RowDefinitions>
+
+                <Button Grid.Row="1" VerticalAlignment="Center" Width="75" CommandParameter="{Binding SelectedItems}" Command="{Binding deployRecoverCommands.DeployRecoverItemInstanceCommand}" Content="{Binding deployRecoverCommands.DeployRecoverItemInstanceCommandText}" />
+            </Grid>
+            <ContentPresenter Name="DisplayItemList" Content="{Binding}" Margin="2,3" VerticalAlignment="Stretch" >
+                <ContentPresenter.ContentTemplate>
+                    <DataTemplate>
+                        <Grid Background="White">
+                            <WPFToolkit:EnhancedTreeView Name="ItemList" ItemsSource="{Binding items}" 
+                                                         SelectionMode="Extended"
+                                                         VirtualizingStackPanel.IsVirtualizing="True"
+                                                         VerticalContentAlignment="Stretch"
+                                                         SelectedItemChangedCommand="{Binding SelectedItemChangedCommand}"
+                                                         >
+                                <WPFToolkit:EnhancedTreeView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type WPFToolkit:EnhancedTreeViewItem}">
+                                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                    </Style>
+                                </WPFToolkit:EnhancedTreeView.ItemContainerStyle>
+                                <WPFToolkit:EnhancedTreeView.Resources>
+
+                                    <HierarchicalDataTemplate DataType="{x:Type dbQuery:SearchResult}" ItemsSource="{Binding Children}" >
+                                        <WrapPanel>
+                                            <TextBlock Text="{Binding description}"  FontFamily="Courier New" FontWeight="DemiBold"/>
+                                        </WrapPanel>
+                                    </HierarchicalDataTemplate>
+
+                                    <HierarchicalDataTemplate DataType="{x:Type dbQuery:EquipmentUnitResult}" ItemsSource="{Binding Children}">
+                                        <WrapPanel>
+                                            <Image Height="24" Width="24" Margin="2" VerticalAlignment="Center"
+                                                    ToolTip="{Binding description}"
+                                                    Source="{StaticResource EquipImage}" />
+                                            <TextBlock Text="{Binding name}"  FontFamily="Courier New" FontWeight="DemiBold"/>
+                                        </WrapPanel>
+                                    </HierarchicalDataTemplate>
+
+                                    <HierarchicalDataTemplate DataType="{x:Type dbQuery:GroupHeader}" ItemsSource="{Binding Children}">
+                                        <WrapPanel>
+                                            <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
+                                                <Image.Style>
+                                                    <Style TargetType="{x:Type Image}">
+                                                        <Setter Property="Source" Value="{StaticResource ItemImage}" />
+                                                        <Setter Property="ToolTip" Value="item" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=isModule}" Value="True">
+                                                                <Setter Property="Image.Source" Value="{StaticResource ModuleImage}"/>
+                                                                <Setter Property="ToolTip" Value="module" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Path=isBin, Mode=OneWay}" Value="true">
+                                                                <Setter Property="Image.Source" Value="{StaticResource BinImage}"/>
+                                                                <Setter Property="ToolTip" Value="bin" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <TextBlock VerticalAlignment="Center" >
+                                                    <Run Text="{Binding description}" FontFamily="Courier New" />
+                                                    <Run Text=" [" />
+                                                    <Run Text="{Binding childCount, Mode=OneWay}" Foreground="Blue" />
+                                                    <Run Text="]" />
+                                            </TextBlock>
+                                        </WrapPanel>
+                                    </HierarchicalDataTemplate>
+
+                                    <HierarchicalDataTemplate DataType="{x:Type dbQuery:GenericItemResult}" ItemsSource="{Binding Children}">
+                                        <WrapPanel>
+                                            <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
+                                                <Image.Style>
+                                                    <Style TargetType="{x:Type Image}">
+                                                        <Setter Property="Source" Value="{StaticResource ItemImage}" />
+                                                        <Setter Property="ToolTip" Value="item" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=isModule, Mode=OneWay}" Value="True">
+                                                                <Setter Property="Image.Source" Value="{StaticResource ModuleImage}"/>
+                                                                <Setter Property="ToolTip" Value="module" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Path=isBin, Mode=OneWay}" Value="true">
+                                                                <Setter Property="Image.Source" Value="{StaticResource BinImage}" />
+                                                                <Setter Property="ToolTip" Value="bin" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <TextBlock VerticalAlignment="Center">
+                                                    <Run Text="{Binding type, StringFormat={}{0,5:D}}" FontFamily="Courier New" />
+                                                    <Run Text=" - " />
+                                                    <Run Text="{Binding itemId, StringFormat={}{0,5:D}}" FontFamily="Courier New" />
+                                                    <Run Text=" : " />
+                                                    <Run Text="{Binding description}" />
+                                                    <Run Text=" (" />
+                                                    <Run Text="{Binding quantity}" Foreground="Blue" />
+                                                    <Run Text=")" />
+                                            </TextBlock>
+                                        </WrapPanel>
+                                    </HierarchicalDataTemplate>
+
+                                </WPFToolkit:EnhancedTreeView.Resources>
+                            </WPFToolkit:EnhancedTreeView>
+                            <Border Name="EmptyList" Visibility="Collapsed" BorderThickness="1" BorderBrush="Black">
+                                <TextBlock Text="No items." Margin="20,0,0,0" />
+                            </Border>
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=items.Count}" Value="0">
+                                <Setter TargetName="ItemList" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="EmptyList" Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ContentPresenter.ContentTemplate>
+            </ContentPresenter>
+        </DockPanel>
+    </DockPanel>
+</views:BasicSearchWindowBase>
