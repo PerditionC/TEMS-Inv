@@ -277,10 +277,7 @@ namespace TEMS.InventoryModel.entity.db
         /// <returns></returns>
         public static string GetPrimaryKey(SearchResult searchResult)
         {
-            var item = searchResult as GenericItemResult;
-            if (item != null)
-                return item.id.ToString();
-            return null;
+            return searchResult is GenericItemResult item ? item.id.ToString() : null;
         }
     }
 }

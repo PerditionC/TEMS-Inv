@@ -90,8 +90,7 @@ namespace TEMS_Inventory.views
         /// <returns>the GenericItemResult that represents the ItemBase object</returns>
         protected override GenericItemResult ConvertItemsValueFromCurrent(ItemBase value)
         {
-            var itemType = value as ItemType;
-            if (itemType != null)
+            if (value is ItemType itemType)
             {
                 var listItem = new GenericItemResult()
                 {

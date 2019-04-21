@@ -49,8 +49,7 @@ namespace TEMS_Inventory.views
         private void SetPassword(object param)
         {
             // validate password provided
-            var password = param as SecureString;
-            if (password == null)
+            if (!(param is SecureString password))
             {
                 logger.Warn("Attempt to set password to null or using object other than SecureString.");
                 return;

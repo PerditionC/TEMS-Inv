@@ -127,12 +127,8 @@ namespace DW.WPFToolkit.Services
         /// <remarks>If the key is known already the old will be overwritten. The window reference will not removed automatically, consider call the <see cref="UnregisterOwner(object)" /> for removing an old window.</remarks>
         public void RegisterOwner(Window owner, object key)
         {
-            if (owner == null)
-                throw new ArgumentNullException("owner");
-            if (key == null)
-                throw new ArgumentNullException("key");
-
-            _owner[key] = owner;
+            if (key == null) throw new ArgumentNullException("key");
+            _owner[key] = owner ?? throw new ArgumentNullException("owner");
         }
 
         /// <summary>

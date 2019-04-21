@@ -165,20 +165,18 @@ namespace TEMS_Inventory.views
         {
             if (Sites == null) return;
 
-            var currentUser = currentItem as UserDetail;
-            if (currentUser == null)
+            if (currentItem is UserDetail currentUser)
             {
                 foreach (var site in Sites)
                 {
-                    site.IsSelected = false;
+                    site.IsSelected = currentUser.availableSites.Exists(x => string.Equals(x.id, site.pk));
                 }
-
             }
             else
             {
                 foreach (var site in Sites)
                 {
-                    site.IsSelected = currentUser.availableSites.Exists(x => string.Equals(x.id, site.pk));
+                    site.IsSelected = false;
                 }
             }
 
@@ -197,8 +195,7 @@ namespace TEMS_Inventory.views
         {
             if (Sites == null) return;
 
-            var currentUser = currentItem as UserDetail;
-            if (currentUser != null)
+            if (currentItem is UserDetail currentUser)
             {
                 currentUser.availableSites.Clear();
                 foreach (var site in Sites)
@@ -217,25 +214,11 @@ namespace TEMS_Inventory.views
             }
         }
 
-        public string userStatus
-        {
-            get
-            {
-                var currentUser = currentItem as UserDetail;
-                if (currentUser == null) return "?";
-                return (currentUser.isActive) ? "active" : "disabled";
-            }
-        }
+        public string userStatus => currentItem is UserDetail currentUser ? (currentUser.isActive ? "active" : "disabled") : "?";
 
-        public string passwordStatus
-        {
-            get
-            {
-                var currentUser = currentItem as UserDetail;
-                if (currentUser == null) return "";
-                return (currentUser.isPasswordExpired) ? "Password is expired!  User must reset on next successful login." : "";
-            }
-        }
+        public string passwordStatus => (currentItem is UserDetail currentUser) && currentUser.isPasswordExpired
+                    ? "Password is expired!  User must reset on next successful login."
+                    : "";
 
 
         #region Search for User
@@ -281,9 +264,8 @@ namespace TEMS_Inventory.views
         {
             get
             {
-                var currentUser = currentItem as UserDetail;
-                if ((currentUser != null) && (!currentUser.isActive)) return "_Restore User";
-                return "_Suspend User";
+                // we only show Restore option if valid user and they are suspended, otherwise just show Suspend option (even if not a valid user)
+                return (currentItem is UserDetail currentUser) && (!currentUser.isActive) ? "_Restore User" : "_Suspend User";
             }
         }
 
@@ -306,8 +288,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         private void DoSuspendUser()
         {
-            var currentUser = currentItem as UserDetail;
-            if (currentUser != null)
+            if (currentItem is UserDetail currentUser)
             {
                 currentUser.isActive = !currentUser.isActive;
                 RaisePropertyChanged(nameof(userStatus));
@@ -327,8 +308,7 @@ namespace TEMS_Inventory.views
 
         private bool CanExpirePassword()
         {
-            var currentUser = currentItem as UserDetail;
-            return (currentUser != null) && !currentUser.isPasswordExpired;
+            return (currentItem is UserDetail currentUser) && !currentUser.isPasswordExpired;
         }
 
         /// <summary>
@@ -336,8 +316,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         private void DoExpirePassword()
         {
-            var currentUser = currentItem as UserDetail;
-            if (currentUser != null)
+            if (currentItem is UserDetail currentUser)
             {
                 currentUser.isPasswordExpired = true;
                 RaisePropertyChanged(nameof(passwordStatus));
@@ -358,8 +337,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         private void DoSetPassword()
         {
-            var currentUser = currentItem as UserDetail;
-            if (currentUser != null)
+            if (currentItem is UserDetail currentUser)
             {
                 var viewModel = new ChangePasswordViewModel(currentUser);
                 ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });

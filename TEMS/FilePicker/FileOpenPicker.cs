@@ -16,9 +16,11 @@ namespace InventoryViewWPF
     {
         protected override void SelectFile()
         {
-            var dlg = new OpenFileDialog();
-            dlg.DefaultExt = DefaultExtension;
-            dlg.Filter = Filter;
+            var dlg = new OpenFileDialog
+            {
+                DefaultExt = DefaultExtension,
+                Filter = Filter
+            };
             if (dlg.ShowDialog() == true)
                 FilePath = dlg.FileName;
         }

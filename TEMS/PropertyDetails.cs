@@ -55,9 +55,11 @@ namespace TEMS_Inventory.UserControls
             try
             {
                 // add our new item
-                var ti = new TitledItem();
-                ti.Title = title;
-                ti.Content = content;
+                var ti = new TitledItem
+                {
+                    Title = title,
+                    Content = content
+                };
                 DetailView.Items.Add(ti);
             }
             catch (Exception e)
@@ -81,13 +83,18 @@ namespace TEMS_Inventory.UserControls
                 if (toolTip != null) tb.ToolTip = toolTip;
 
                 // bind value to given property
-                var binding = new Binding(boundPropName);
-                binding.Mode = BindingMode.TwoWay;
-                binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                var binding = new Binding(boundPropName)
+                {
+                    Mode = BindingMode.TwoWay,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                };
                 tb.SetBinding(TextBox.TextProperty, binding);
+
                 // don't allow editing unless there is a backing object, ie in edit mode
-                binding = new Binding("DataContext.isDetailViewInActive");
-                binding.ElementName = "rootItem";
+                binding = new Binding("DataContext.isDetailViewInActive")
+                {
+                    ElementName = "rootItem"
+                };
                 tb.SetBinding(TextBox.IsReadOnlyProperty, binding);
 
                 return tb;

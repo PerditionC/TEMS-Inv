@@ -63,9 +63,7 @@ namespace TEMS_Inventory.views
 
         public void ShowDialogWindow(object args)
         {
-            var msg = args as ShowWindowMessage;
-
-            if (msg != null)
+            if (args is ShowWindowMessage msg)
             {
                 if (msg.viewModel is ChangePasswordViewModel)
                 {
@@ -102,9 +100,7 @@ namespace TEMS_Inventory.views
 
         public void YesNowDialog(object args)
         {
-            var msg = args as YesNoDialogMessage;
-
-            if (msg != null)
+            if (args is YesNoDialogMessage msg)
             {
                 var result = MessageBox.Show(owner: App.Current.MainWindow, messageBoxText: msg.message, caption: msg.caption, button: MessageBoxButton.YesNo, icon: MessageBoxImage.Question, defaultResult: MessageBoxResult.No, options: MessageBoxOptions.None);
                 if (result == MessageBoxResult.Yes)
@@ -120,8 +116,10 @@ namespace TEMS_Inventory.views
         public void ShowChangePasswordDialog(ChangePasswordViewModel ViewModel)
         {
             logger.Trace(nameof(ShowChangePasswordDialog));
-            var setPasswordWindow = new ChangePasswordWindow(ViewModel);
-            setPasswordWindow.Owner = App.Current.MainWindow; /* this */
+            var setPasswordWindow = new ChangePasswordWindow(ViewModel)
+            {
+                Owner = App.Current.MainWindow /* this */
+            };
             setPasswordWindow.ShowDialog();
         }
 

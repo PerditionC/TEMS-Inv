@@ -106,6 +106,7 @@ namespace TEMS_Inventory.views
                                 catch (Exception e)
                                 {
                                     // for now eat the exception, we expect this when newly added or cloned item not yet saved
+                                    logger.Debug(e, $"Expected exception if item is newly added or cloned and has not yet been saved - {e.Message}");
                                 }
                             }
                         }

@@ -785,8 +785,7 @@ namespace LibZ.Bootstrap
 		{
 			lock (LoadedAssemblies)
 			{
-                Assembly cached;
-                if (LoadedAssemblies.TryGetValue(guid, out cached))
+                if (LoadedAssemblies.TryGetValue(guid, out Assembly cached))
                     return cached;
             }
 
@@ -794,8 +793,7 @@ namespace LibZ.Bootstrap
 
 			lock (LoadedAssemblies)
 			{
-                Assembly cached;
-                if (LoadedAssemblies.TryGetValue(guid, out cached))
+                if (LoadedAssemblies.TryGetValue(guid, out Assembly cached))
 					return cached;
 				if (loaded != null)
 					LoadedAssemblies[guid] = loaded;
@@ -1155,8 +1153,7 @@ namespace LibZ.Bootstrap
 			/// </returns>
 			public LibZEntry TryGetEntry(Guid guid)
 			{
-				LibZEntry result;
-				_entries.TryGetValue(guid, out result);
+				_entries.TryGetValue(guid, out LibZEntry result);
 				return result;
 			}
 
@@ -1498,8 +1495,7 @@ namespace LibZ.Bootstrap
 			/// </returns>
 			public T Get<T>(int slot, T defaultValue = default (T))
 			{
-				object result;
-				if (!_data.TryGetValue(slot, out result))
+				if (!_data.TryGetValue(slot, out object result))
 					return defaultValue;
 				return (T)result;
 			}

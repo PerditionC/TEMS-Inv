@@ -45,7 +45,8 @@ namespace TEMS.InventoryModel.entity.db.query
         private string _entityType = null;
 
         /// <summary>
-        /// Maintains a weak reference to entity referenced by this query result, returns null if non specified or already garbage collected
+        /// Maintains a reference to entity referenced by this query result, returns null if non specified or already garbage collected
+        /// initially a WeakReference but this led to issues with entity being garbage collected too soon, reconsider if add method to reload so can be transparently reloaded
         /// </summary>
         public ItemBase entity
         {
@@ -56,7 +57,7 @@ namespace TEMS.InventoryModel.entity.db.query
             get; set;
         }
 
-        private WeakReference _entity = new WeakReference(null);
+        //private WeakReference _entity = new WeakReference(null);
 
         /// <summary>
         /// basic textual description of component, e.g. name, description, title, ...

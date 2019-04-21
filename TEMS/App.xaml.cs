@@ -89,15 +89,17 @@ namespace TEMS_Inventory
         {
             if (!System.IO.File.Exists(defaultDatabasePath))
             {
-                var dlg = new OpenFileDialog();
-                dlg.Title = "Database not found - Please specify the SQLite DB file to use:";
-                dlg.InitialDirectory = defaultDatabasePath;
-                dlg.DefaultExt = ".db";
-                dlg.Filter = "Database (.db)|*.db";
-                dlg.CheckFileExists = true;
-                dlg.ShowReadOnly = false;  // must be able to edit DB
-                dlg.DereferenceLinks = true;
-                dlg.Multiselect = false;
+                var dlg = new OpenFileDialog
+                {
+                    Title = "Database not found - Please specify the SQLite DB file to use:",
+                    InitialDirectory = defaultDatabasePath,
+                    DefaultExt = ".db",
+                    Filter = "Database (.db)|*.db",
+                    CheckFileExists = true,
+                    ShowReadOnly = false,  // must be able to edit DB
+                    DereferenceLinks = true,
+                    Multiselect = false
+                };
                 if (dlg.ShowDialog() == true)
                     return dlg.FileName;
             }

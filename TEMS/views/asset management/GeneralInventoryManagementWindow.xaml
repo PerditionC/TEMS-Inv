@@ -195,7 +195,7 @@
                                                             </Image.Style>
                                                         </Image>
                                                         <TextBlock VerticalAlignment="Center">
-                                                    <Run Text="{Binding itemNumber, StringFormat={}{0,10:D}}" FontFamily="Courier New" />
+                                                    <Run Text="{Binding itemNumber, StringFormat='{}{0,10:D}'}" FontFamily="Courier New" />
                                                     <Run Text=" : " />
                                                     <Run Text="{Binding description}" />
                                                     <Run Text=" (" />
