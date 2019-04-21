@@ -69,7 +69,7 @@
                                 <DataTemplate>
                                     <Grid Background="White">
                                         <WPFToolkit:EnhancedTreeView Name="ItemList" ItemsSource="{Binding Items}" 
-                                                             SelectionMode="Single" SelectedElement="{Binding selectedListItem, Mode=TwoWay}"
+                                                             SelectionMode="Single" SelectedElement="{Binding SelectedItem, Mode=TwoWay}"
                                                              VirtualizingStackPanel.IsVirtualizing="True"
                                                              >
                                             <WPFToolkit:EnhancedTreeView.ItemContainerStyle>
