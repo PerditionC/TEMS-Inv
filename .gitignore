@@ -312,3 +312,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# libz merge modules from compiled dlls
+*.libz
