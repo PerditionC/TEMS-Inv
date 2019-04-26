@@ -49,7 +49,7 @@ namespace BarcodeLib.Symbologies
                 string Manufacturer = Raw_Data.Substring(1, 5);
                 string ProductCode = Raw_Data.Substring(6, 5);
                 
-                if (Manufacturer.EndsWith("000") || Manufacturer.EndsWith("100") || Manufacturer.EndsWith("200") && Int32.Parse(ProductCode) <= 999)
+                if ((Manufacturer.EndsWith("000") || Manufacturer.EndsWith("100") || Manufacturer.EndsWith("200")) && Int32.Parse(ProductCode) <= 999)
                 {
                     //rule 1
                     UPCECode += Manufacturer.Substring(0, 2); //first two of manufacturer
