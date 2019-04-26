@@ -74,44 +74,34 @@ namespace BarcodeLib
                     g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
                     StringFormat f = new StringFormat();
+                    // determines if label is left aligned, center, or right aligned horizontally, default to left
                     f.Alignment = StringAlignment.Near;
-                    f.LineAlignment = StringAlignment.Near;
-                    int LabelX = 0;
+                    // determines if label is aligned to top or bottom of image, default to top
+                    f.LineAlignment = StringAlignment.Near;  // offset from top edge
                     int LabelY = 0;
 
+                    // update y offset if at bottom
                     switch (Barcode.LabelPosition)
                     {
                         case LabelPositions.BOTTOMCENTER:
-                            LabelX = img.Width / 2;
-                            LabelY = img.Height - (font.Height);
-                            f.Alignment = StringAlignment.Center;
-                            break;
                         case LabelPositions.BOTTOMLEFT:
-                            LabelX = 0;
+                        case LabelPositions.BOTTOMRIGHT:
                             LabelY = img.Height - (font.Height);
-                            f.Alignment = StringAlignment.Near;
+                            break;
+                    }
+
+                    // update horizontal alignment if not left
+                    switch (Barcode.LabelPosition)
+                    {
+                        case LabelPositions.BOTTOMCENTER:
+                        case LabelPositions.TOPCENTER:
+                            f.Alignment = StringAlignment.Center;
                             break;
                         case LabelPositions.BOTTOMRIGHT:
-                            LabelX = img.Width;
-                            LabelY = img.Height - (font.Height);
-                            f.Alignment = StringAlignment.Far;
-                            break;
-                        case LabelPositions.TOPCENTER:
-                            LabelX = img.Width / 2;
-                            LabelY = 0;
-                            f.Alignment = StringAlignment.Center;
-                            break;
-                        case LabelPositions.TOPLEFT:
-                            LabelX = img.Width;
-                            LabelY = 0;
-                            f.Alignment = StringAlignment.Near;
-                            break;
                         case LabelPositions.TOPRIGHT:
-                            LabelX = img.Width;
-                            LabelY = 0;
                             f.Alignment = StringAlignment.Far;
                             break;
-                    }//switch
+                    }
 
                     //color a background color box at the bottom of the barcode to hold the string of data
                     g.FillRectangle(new SolidBrush(Barcode.BackColor), new RectangleF((float)0, (float)LabelY, (float)img.Width, (float)font.Height));

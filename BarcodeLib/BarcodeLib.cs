@@ -402,7 +402,6 @@ namespace BarcodeLib
             if (this.EncodedType == TYPE.UNSPECIFIED) 
                 throw new Exception("EENCODE-2: Symbology type not allowed to be unspecified.");
 
-            this.Encoded_Value = "";
             this._Country_Assigning_Manufacturer_Code = "N/A";
             
             switch (this.Encoded_Type)
@@ -703,7 +702,7 @@ namespace BarcodeLib
                 case TYPE.EAN13:
                     {
                         // Automatically calculate Width if applicable.
-                        Width = BarWidth * Encoded_Value.Length ?? Width;
+                        Width = (BarWidth * Encoded_Value.Length) ?? Width;
 
                         // Automatically calculate Height if applicable.
                         Height = (int?)(Width / AspectRatio) ?? Height;
@@ -801,7 +800,7 @@ namespace BarcodeLib
                 default:
                     {
                         // Automatically calculate Width if applicable.
-                        Width = BarWidth * Encoded_Value.Length ?? Width;
+                        Width = (BarWidth * Encoded_Value.Length) ?? Width;
 
                         // Automatically calculate Height if applicable.
                         Height = (int?)(Width / AspectRatio) ?? Height;

@@ -47,4 +47,20 @@
     <CodeCurrent>10495</CodeCurrent>
     <CodeNext>1696</CodeNext>
   </BarcodeLib>
+  <BarcodeLib>
+    <FileName>Labels.cs</FileName>
+    <ErrorCode>V3002</ErrorCode>
+    <Message>The switch statement does not cover all values of the 'LabelPositions' enum: TOPLEFT, BOTTOMLEFT.</Message>
+    <CodePrev>3480379410</CodePrev>
+    <CodeCurrent>2512568100</CodeCurrent>
+    <CodeNext>123</CodeNext>
+  </BarcodeLib>
+  <BarcodeLib>
+    <FileName>BarcodeLib.cs</FileName>
+    <ErrorCode>V3059</ErrorCode>
+    <Message>Members of the 'LabelPositions' enum are used in bitwise operations. Consider adding '[Flags]' attribute to the enum.</Message>
+    <CodePrev>1525309024</CodePrev>
+    <CodeCurrent>1592683629</CodeCurrent>
+    <CodeNext>2683640661</CodeNext>
+  </BarcodeLib>
 </NewDataSet>

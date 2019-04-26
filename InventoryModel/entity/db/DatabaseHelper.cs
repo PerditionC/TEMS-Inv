@@ -196,14 +196,17 @@ namespace TEMS.InventoryModel.entity.db
                 foreach (var fkProp in mappingType.GetForeignKeyProperties())
                 {
                     var fkAttribute = fkProp.GetAttribute<ForeignKeyAttribute>();
-                    if (fkAttribute.ForeignTableType == entityType)
+                    if (fkAttribute != null)
                     {
-                        entityPkProp = fkProp;
-                    }
-                    else //if (fkAttribute.ForeignTableType == relationshipProperty.PropertyType) -- collection of T, need T
-                    {
-                        foreignEntityType = fkAttribute.ForeignTableType;
-                        foreignPkProp = fkProp;
+                        if (fkAttribute.ForeignTableType == entityType)
+                        {
+                            entityPkProp = fkProp;
+                        }
+                        else //if (fkAttribute.ForeignTableType == relationshipProperty.PropertyType) -- collection of T, need T
+                        {
+                            foreignEntityType = fkAttribute.ForeignTableType;
+                            foreignPkProp = fkProp;
+                        }
                     }
                 }
 

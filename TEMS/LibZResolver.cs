@@ -1572,8 +1572,11 @@ namespace LibZ.Bootstrap
 					GetRegistryDWORD(Registry.CurrentUser, REGISTRY_KEY_PATH, REGISTRY_KEY_NAME) ??
 						GetRegistryDWORD(Registry.LocalMachine, REGISTRY_KEY_PATH, REGISTRY_KEY_NAME) ??
 							0;
-				UseTrace = value != 0;
+#if DEBUG
                 UseTrace = true;
+#else
+                UseTrace = value != 0;
+#endif
 			}
 
 			/// <summary>Gets bool value from registry.</summary>
@@ -1656,6 +1659,6 @@ namespace LibZ.Bootstrap
 			}
 		}
 
-		#endregion
+#endregion
 	}
 }

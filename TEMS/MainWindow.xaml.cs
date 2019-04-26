@@ -183,7 +183,7 @@ namespace TEMS_Inventory.views
             Window newWin = null;
             SimpleTreeItem selectedItem = param as SimpleTreeItem;
             logger.Info($"MainMenuAction - invoking: { selectedItem?.tag ?? "null" }");
-            if (selectedItem.label != null)
+            if (selectedItem?.label != null)
             {
                 StatusLabel.Content = selectedItem.label;
             }

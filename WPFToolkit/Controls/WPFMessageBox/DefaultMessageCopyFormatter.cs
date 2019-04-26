@@ -81,6 +81,9 @@ namespace DW.WPFToolkit.Controls
                 case WPFMessageBoxButtons.AbortRetryIgnore:
                     builder.AppendLine(string.Format("{0}   {1}   {2}   ", GetString(strings.Abort), GetString(strings.Retry), GetString(strings.Ignore)));
                     break;
+                case WPFMessageBoxButtons.CancelTryAgainContinue:
+                    builder.AppendLine(string.Format("{0}   {1}   {2}   ", GetString(strings.Cancel), GetString(strings.Retry), GetString(strings.Ignore)));
+                    break;
             }
         }
 

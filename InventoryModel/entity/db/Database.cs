@@ -630,7 +630,7 @@ namespace TEMS.InventoryModel.entity.db
                 {
                     // get the attribute so we can extract which member property to store value in
                     var fkAttribute = fk.GetAttribute<ForeignKeyAttribute>();
-                    if (fkAttribute.EntityPropertyName != null)
+                    if (fkAttribute?.EntityPropertyName != null)
                     {
                         // get the property of the member property we are storing related value in
                         var fk_entityProp = itemType.GetPropertyInfo(fkAttribute.EntityPropertyName);
@@ -672,13 +672,13 @@ namespace TEMS.InventoryModel.entity.db
                     foreach (var fkProp in mappingType.GetForeignKeyProperties())
                     {
                         var fkAttribute = fkProp.GetAttribute<ForeignKeyAttribute>();
-                        if (fkAttribute.ForeignTableType == itemType)
+                        if (fkAttribute?.ForeignTableType == itemType)
                         {
                             entityPkProp = fkProp;
                         }
                         else //if (fkAttribute.ForeignTableType == relationshipProperty.PropertyType) -- collection of T, need T
                         {
-                            foreignEntityType = fkAttribute.ForeignTableType;
+                            foreignEntityType = fkAttribute?.ForeignTableType;
                             foreignPkProp = fkProp;
                         }
                     }

@@ -36,7 +36,7 @@ namespace Tems_Inventory.Tests
         private void DoAction(object param)
         {
             actionReceived = param as string;
-            System.Diagnostics.Debug.Print("DoAction received param '" + actionReceived ?? "null" + "'");
+            System.Diagnostics.Debug.Print($"DoAction received param '{actionReceived}'");
         }
 
         [Test]

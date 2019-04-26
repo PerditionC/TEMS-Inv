@@ -26,7 +26,7 @@ namespace DW.WPFToolkit.Converters
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             logger.Debug("EnumToBooleanConverter Convert=>value=" + value?.ToString());
-            return value.Equals(parameter);
+            return value?.Equals(parameter);
         }
 
         // Convert boolean to enum, returning [param] if true

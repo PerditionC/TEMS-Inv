@@ -238,7 +238,7 @@ namespace TEMS_Inventory.views
             }
             catch (/*SavedFailed*/Exception e)
             {
-                logger.Error(e, $"Failed to save {CurrentItem.ToString()} - {e.Message}.");
+                logger.Error(e, $"Failed to save {CurrentItem?.ToString()} - {e.Message}.");
                 // let application continue
                 StatusMessage = $"Save failed - {e.Message}";
             }

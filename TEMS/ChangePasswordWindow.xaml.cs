@@ -38,7 +38,7 @@ namespace TEMS_Inventory
             var pw = passwordBox.Text.ToSecureString();
             if (ViewModel.SetPasswordCommand.CanExecute(pw))
                 ViewModel.SetPasswordCommand.Execute(pw);
-            pw.Clear();
+            pw?.Clear();
 
             this.Close();
         }

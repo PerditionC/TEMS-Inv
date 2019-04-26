@@ -731,8 +731,8 @@ namespace DW.WPFToolkit.Controls
                 return;
 
             var currentText = _textBox.Text;
-            currentText = currentText.Remove(_textBox.SelectionStart, _textBox.SelectionLength);
-            currentText = currentText.Insert(_textBox.SelectionStart, e.Text);
+            currentText = currentText?.Remove(_textBox.SelectionStart, _textBox.SelectionLength);
+            currentText = currentText?.Insert(_textBox.SelectionStart, e.Text);
 
             if (_number.TakeNumber(currentText))
             {

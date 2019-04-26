@@ -66,13 +66,7 @@ namespace DW.WPFToolkit.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var flag = false;
-            if (value is bool)
-                flag = (bool)value;
-            else if (value is bool?)
-            {
-                var nullable = (bool?)value;
-                flag = nullable.HasValue ? nullable.Value : false;
-            }
+            if ((value is bool) || (value is bool?)) flag = (bool)value;
             return (flag ? Visibility.Collapsed : Visibility.Visible);
         }
 
