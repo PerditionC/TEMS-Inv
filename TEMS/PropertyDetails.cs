@@ -114,9 +114,11 @@ namespace TEMS_Inventory.UserControls
                 if (toolTip != null) cb.ToolTip = toolTip;
 
                 // bind value to given property
-                var binding = new Binding(boundPropName);
-                binding.Mode = BindingMode.TwoWay;
-                binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                var binding = new Binding(boundPropName)
+                {
+                    Mode = BindingMode.TwoWay,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                };
                 cb.SetBinding(CheckBox.IsCheckedProperty, binding);
 
                 cb.IsThreeState = false;
@@ -145,9 +147,11 @@ namespace TEMS_Inventory.UserControls
                 if (toolTip != null) nb.ToolTip = toolTip;
 
                 // bind value to given property
-                var binding = new Binding(boundPropName);
-                binding.Mode = BindingMode.TwoWay;
-                binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                var binding = new Binding(boundPropName)
+                {
+                    Mode = BindingMode.TwoWay,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                };
                 nb.SetBinding(NumberBox.NumberProperty, binding);
 
                 nb.NumberType = numberType;
@@ -169,9 +173,11 @@ namespace TEMS_Inventory.UserControls
                 nb.UpDownButtonsPosition = Dock.Right;
                 nb.UpDownBehavior = UpDownBehavior.ArrowsAndButtons;
 
-                nb.LostFocusBehavior = new LostFocusBehavior(ValueBehavior.PlaceDefaultNumber);
-                nb.LostFocusBehavior.TrimLeadingZero = true;
-                //nb.LostFocusBehavior.FormatText={}{0:D2}}
+                nb.LostFocusBehavior = new LostFocusBehavior(ValueBehavior.PlaceDefaultNumber)
+                {
+                    TrimLeadingZero = true
+                    //FormatText={}{0:D2}}
+                };
 
                 return nb;
             }
@@ -200,9 +206,11 @@ namespace TEMS_Inventory.UserControls
                 // WARNING: this assumes either Equals() has been overridden so the same
                 // data loaded into two different instances (ie loading ComboBox values directly will be
                 // a different object instance than same data loaded elsewhere (e.g. nested object)
-                var binding = new Binding(boundPropName);
-                binding.Mode = BindingMode.TwoWay;
-                binding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                var binding = new Binding(boundPropName)
+                {
+                    Mode = BindingMode.TwoWay,
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                };
                 cb.SetBinding(EnhancedComboBox.SelectedItemProperty, binding);
                 cb.DisplayMemberPath = "name";
 

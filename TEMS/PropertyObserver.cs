@@ -188,8 +188,7 @@ namespace TEMS_Inventory.UserControls
                 }
                 else
                 {
-                    Action<TPropertySource> handler;
-                    if (_propertyNameToHandlerMap.TryGetValue(propertyName, out handler))
+                    if (_propertyNameToHandlerMap.TryGetValue(propertyName, out Action<TPropertySource> handler))
                     {
                         handler(propertySource);
                         return true;

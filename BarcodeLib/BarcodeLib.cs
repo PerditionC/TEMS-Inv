@@ -1,3 +1,6 @@
+// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -600,7 +603,7 @@ namespace BarcodeLib
                 case TYPE.UPCA:
                     {
                         // Automatically calculate Width if applicable.
-                        Width = BarWidth * Encoded_Value.Length ?? Width;
+                        Width = (BarWidth * Encoded_Value.Length) ?? Width;
 
                         // Automatically calculate Height if applicable.
                         Height = (int?)(Width / AspectRatio) ?? Height;

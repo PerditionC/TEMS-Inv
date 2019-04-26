@@ -14,7 +14,7 @@ del /Q *.libz
 ::%LIBZ% add --libz TEMS.libz --include Inventory*.dll 
 ::%LIBZ% add --libz TEMS.libz --include BarcodeLib.dll
 ::%LIBZ% add --libz TEMS.libz --include Wpf*.dll 
-::%LIBZ% add --libz TEM.libz --include Microsoft*.*
+::%LIBZ% add --libz TEMS.libz --include Microsoft*.*
 ::%LIBZ% add --libz TEMS.libz --include NLog.*
 ::%LIBZ% add --libz TEMS.libz --include Newtonsoft.Json.*
 %LIBZ% add --libz TEMS.libz --include *.dll

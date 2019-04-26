@@ -18,8 +18,8 @@ namespace TEMS_Inventory.views
 
         public ManageUsersWindow()
         {
-            // delegate used to create new instances from Add command
-            Func<ItemBase> GetNewItem = delegate () { return (ItemBase)Activator.CreateInstance(typeof(UserDetail)); };
+            // delegate (local function) used to create new instances from Add command
+            ItemBase GetNewItem() { return (ItemBase)Activator.CreateInstance(typeof(UserDetail)); }
             ViewModel = new ManageUsersViewModel(GetNewItem);
             this.DataContext = ViewModel;
 

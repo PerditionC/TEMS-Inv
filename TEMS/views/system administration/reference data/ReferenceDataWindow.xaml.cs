@@ -50,7 +50,9 @@ namespace TEMS_Inventory.views
                         var objType = ReferenceDataCache.GetReferenceType(selection.TypeName);
 
                         // initialize our UserControl with reference to how to create new objects and list of existing ones
+#pragma warning disable IDE0039 // Use local function
                         Func<ItemBase> newItemFn = delegate () { return (ItemBase)Activator.CreateInstance(objType); };
+#pragma warning restore IDE0039 // Use local function
                         ItemList.Initialize(newItemFn, db.ReferenceData[selection.TypeName]);
                     }
                     catch (Exception e)
