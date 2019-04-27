@@ -695,7 +695,7 @@ namespace TEMS.InventoryModel.entity.db
                         foreach (var mapping in mappings)
                         {
                             var foreignPk = foreignPkProp.GetValue(mapping, null);
-                            var value = Load(foreignPk, foreignEntityType.Name);
+                            var value = Load(foreignPk, foreignEntityType?.Name);
                             relatedCollection.Add(value);
                         }
                     }
