@@ -1,7 +1,7 @@
 Tidewater EMS Inventory Mangement
 =================================
 
-This is the Tidewater EMS (TEMS) Inventory Management program for emergency trailers.  I may be used to track equipment location within a trailer along with availability, expiration, and replacement information.
+This is the Tidewater EMS (TEMS) Inventory Management program for emergency trailers.  It may be used to track equipment location within a trailer along with availability, expiration, and replacement information.
 
 For user documentation see the [usage guide](Usage.md).
 
