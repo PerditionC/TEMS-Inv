@@ -97,7 +97,7 @@ run the installer and it will correctly install the application for
 the current user.  An initial copy of the database must then be
 manually copied to C:\DB\TEMS_Inv.db (or other location).  If the
 database is installed (or moved) to a non-standard location then on
-startup the application with prompt for database location [this is
+startup the application will prompt for database location [this is
 then stored for future startups to avoid asking each time].  When the
 application is started it will first check for any updates and provide
 and opportunity to update the application prior to running.  No changes
