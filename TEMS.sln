@@ -17,7 +17,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite3", "sqlite3\sqlite3.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F9CC721F-471C-429F-9AC2-F3983DBC3573}"
 	ProjectSection(SolutionItems) = preProject
-		CREDITS.md = CREDITS.md
 		LICENSE.APACHE-2 = LICENSE.APACHE-2
 		LICENSE.BSD = LICENSE.BSD
 		LICENSE.MIT = LICENSE.MIT
@@ -29,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{3BE9A047-8
 	ProjectSection(SolutionItems) = preProject
 		docs\CNAME = docs\CNAME
 		docs\CONTRIBUTING.md = docs\CONTRIBUTING.md
+		docs\CREDITS.md = docs\CREDITS.md
 		docs\DB.md = docs\DB.md
 		docs\Model.md = docs\Model.md
 		docs\README.md = docs\README.md
