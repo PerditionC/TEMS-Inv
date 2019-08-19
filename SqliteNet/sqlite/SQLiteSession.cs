@@ -646,6 +646,7 @@ namespace SQLiteNetSessionModule
             return ConflictResolution.SQLITE_CHANGESET_OMIT;
         }
 
+#pragma warning disable RCS1163 // Unused parameter.
         /// <summary>
         /// Alternate common conflict handler, always overwrites changes with new value on conflict.
         /// Returns no change if conflict is not due to conflict or data issue.
@@ -655,6 +656,7 @@ namespace SQLiteNetSessionModule
         /// <param name="pIter">conflict change set, may iterate through values</param>
         /// <returns>SQLITE_CHANGESET_REPLACE indicating overwrite with conflicting value</returns>
         public static ConflictResolution CallbackReplaceOnConflicts(IntPtr pCtx, ConflictReason eConflict, IntPtr pIter)
+#pragma warning restore RCS1163 // Unused parameter.
         {
 #if false // example code only            
             object ctx = null;

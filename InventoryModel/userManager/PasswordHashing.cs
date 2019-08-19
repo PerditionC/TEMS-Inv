@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 
 namespace TEMS.InventoryModel.userManager
 {
-    public class PasswordHashing
+    public static class PasswordHashing
     {
         private const int SALT_SIZE = 16;
         private const int HASH_SIZE = 20;

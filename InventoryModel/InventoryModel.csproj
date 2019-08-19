@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>7.1</LangVersion>
+    <CodeAnalysisRuleSet>InventoryModel.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>7.1</LangVersion>
+    <CodeAnalysisRuleSet>InventoryModel.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -129,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="InventoryModel.ruleset" />
     <None Include="util\weakEvent\README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +141,7 @@
     <Content Include="db schema\Add_4_ItemTypes.sql" />
     <Content Include="db schema\Add_5_Items.sql" />
     <Content Include="db schema\Add_6_ItemInstance.sql" />
+    <Content Include="db schema\GenSQL.bas" />
     <Content Include="db schema\TEMS_Inv.db.sql" />
   </ItemGroup>
   <ItemGroup>

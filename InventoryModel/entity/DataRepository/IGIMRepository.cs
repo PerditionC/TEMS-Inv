@@ -38,14 +38,14 @@ namespace TEMS.InventoryModel.entity.db
         ObservableCollection<SearchResult> GetItemTree(QueryResultEntitySelector resultEntitySelector, SearchFilterItems searchFilter, out GenericItemResult selectedItem);
 
         /// <summary>
-        ///
+        /// ???
         /// </summary>
         /// <param name="itemInstance"></param>
         /// <returns></returns>
         IList<ItemInstance> GetItemInstancesWithinBinOrModuleAsync(ItemInstance itemInstance);
 
         /// <summary>
-        ///
+        /// ???
         /// </summary>
         /// <returns></returns>
         IList<Item> AllBinsAndModules();

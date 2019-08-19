@@ -1,9 +1,9 @@
 ﻿BEGIN TRANSACTION;
 
 INSERT INTO `EquipmentUnitType` (name,description,unitCode) VALUES 
- ('MMRS','MMRS','M'),
- ('DMSU','DMSU','D'),
- ('SSU','SSU','S');
+ ('MMRS','MMRS - Metropolitan Medical Response System, Strike Team Module','M'),
+ ('DMSU','DMSU - Disaster Medical Support Unit','D'),
+ ('SSU','SSU - Shelter Support Unit','S');
 
 INSERT INTO `SiteLocation` (id,name,locSuffix) VALUES 
  ('1a14004a-1a56-4880-a74a-bf907f12632e','Chesapeake','CFD'),

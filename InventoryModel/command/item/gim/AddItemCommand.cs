@@ -28,7 +28,7 @@ namespace TEMS.InventoryModel.command.action
         //public Action<object> ItemLoaded = null;
 
         /// <summary>
-        /// 
+        /// validates parameters
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>

@@ -23,7 +23,7 @@ namespace TEMS.InventoryModel.command.action
         }
 
         /// <summary>
-        /// 
+        /// validates parameters are valid
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>

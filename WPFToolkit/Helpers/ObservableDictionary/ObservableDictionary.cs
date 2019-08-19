@@ -527,6 +527,15 @@ namespace DW.WPFToolkit.Helpers
 
         #region ICollection
 
+        /// <summary>Copies the elements of the <see cref="ICollection" /> to an <see cref="Array" />, starting at a particular <see cref="Array" /> index.</summary>
+        /// <param name="array">The one-dimensional <see cref="Array" /> that is the destination of the elements copied from <see cref="ICollection" />. The <see cref="Array" /> must have zero-based indexing. </param>
+        /// <param name="index">The zero-based index in <paramref name="array" /> at which copying begins. </param>
+        /// <exception cref="ArgumentNullException">
+        ///         <paramref name="array" /> is <see langword="null" />. </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        ///         <paramref name="index" /> is less than zero. </exception>
+        /// <exception cref="ArgumentException">
+        ///         <paramref name="array" /> is multidimensional.-or- The number of elements in the source <see cref="ICollection" /> is greater than the available space from <paramref name="index" /> to the end of the destination <paramref name="array" />.-or-The type of the source <see cref="ICollection" /> cannot be cast automatically to the type of the destination <paramref name="array" />.</exception>
         void ICollection.CopyTo(Array array, int index)
         {
             ((ICollection)_keyedEntryCollection).CopyTo(array, index);

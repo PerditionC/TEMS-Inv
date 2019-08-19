@@ -187,7 +187,6 @@ namespace TEMS_Inventory.views
                         var clonedItem = DataRepository.GetDataRepository.GetInitializedItem(item.parent, item.itemType);
                         clonedItem.count = item.count;
                         clonedItem.expirationDate = item.expirationDate;
-                        clonedItem.expirationRestockCategory = item.expirationRestockCategory;
                         clonedItem.notes = item.notes;
                         clonedItem.vehicleCompartment = item.vehicleCompartment;
                         clonedItem.vehicleLocation = item.vehicleLocation;

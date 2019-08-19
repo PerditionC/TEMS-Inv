@@ -17,7 +17,7 @@ namespace TEMS.InventoryModel.entity.db
         #region deployment
 
         /// <summary>
-        ///
+        /// ???
         /// </summary>
         /// <param name="itemInstanceId"></param>
         /// <returns></returns>

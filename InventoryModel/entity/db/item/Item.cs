@@ -10,16 +10,6 @@ using TEMS.InventoryModel.util.attribute;
 namespace TEMS.InventoryModel.entity.db
 {
     /// <summary>
-    /// See expirationRestockCategory, possible values for item expiration and restock category
-    /// </summary>
-    public enum ExpirationCategory
-    {
-        None = 0,
-        AnnualRestock = 1,
-        DateSpecificRestock = 2
-    }
-
-    /// <summary>
     /// Details about a specific item within an equipment unit,
     /// same for all items of this type within the same physical bin/module/spot within this equipment unit
     /// </summary>
@@ -122,20 +112,12 @@ namespace TEMS.InventoryModel.entity.db
 
         private int _count = 1;
 
-        // None if does not expire, otherwise is expiration an annual date or date specific restock
+        // for items that expire, when expires; null if does not expire
+        // update with new expiration date (reset) when item replenished/restocked
         // Note: items currently expire & are replaced at same time for any item of a given type regardless of site location
         // however, may not be replaced on all differing equipments at same time; i.e. all widgets in MMRS replaced at
         // same time, but widgets in DMSU may be done at a different time.  Move to ItemInstance if expiration becomes site controlled.
-        public ExpirationCategory expirationRestockCategory
-        {
-            get { return _expirationRestockCategory; }
-            set { SetProperty(ref _expirationRestockCategory, value, nameof(expirationRestockCategory)); }
-        }
-
-        private ExpirationCategory _expirationRestockCategory = ExpirationCategory.None;
-
-        // for items that expire, when expires; null if does not expire
-        // update with new expiration date (reset) when item replenished/restocked
+        // see ItemType.expirationRestockCategory to determine if expirationDate required and if annual date or date specific
         public DateTime? expirationDate { get { return _expirationDate; } set { SetProperty(ref _expirationDate, value, nameof(expirationDate)); } }
 
         private DateTime? _expirationDate = null;

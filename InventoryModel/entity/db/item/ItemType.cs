@@ -9,6 +9,16 @@ using TEMS.InventoryModel.util.attribute;
 namespace TEMS.InventoryModel.entity.db
 {
     /// <summary>
+    /// See expirationRestockCategory, possible values for item expiration and restock category
+    /// </summary>
+    public enum ExpirationCategory
+    {
+        None = 0,
+        AnnualRestock = 1,
+        DateSpecificRestock = 2
+    }
+
+    /// <summary>
     /// General details about given item
     /// </summary>
     public class ItemType : ReferenceData
@@ -39,6 +49,14 @@ namespace TEMS.InventoryModel.entity.db
         [MaxLength(64)]
         public string model { get { return _model; } set { SetProperty(ref _model, value, nameof(model)); } }
         private string _model = null;
+
+        // None if does not expire, otherwise is expiration an annual date or date specific restock
+        public ExpirationCategory expirationRestockCategory
+        {
+            get { return _expirationRestockCategory; }
+            set { SetProperty(ref _expirationRestockCategory, value, nameof(expirationRestockCategory)); }
+        }
+        private ExpirationCategory _expirationRestockCategory = ExpirationCategory.None;
 
         // how much a single unit of item costs in 10th cents
         // *** Assume any price is rounded to the nearest 10th of a cent and displayed in dollars as needed

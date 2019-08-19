@@ -28,8 +28,10 @@ namespace TEMS_Inventory
             logger.Debug("Waiting for login.");
         }
 
+        /// <summary>
         /// Indicates if user has input information to validate for login yet or not.
         /// true if enough data entered that validation may be attempted; false if more input needed
+        /// </summary>
         public Boolean hasInputCredentials { get { return !string.IsNullOrWhiteSpace(userId.Text) && !string.IsNullOrWhiteSpace(userPassword.Password); } }
 
         /// <summary>

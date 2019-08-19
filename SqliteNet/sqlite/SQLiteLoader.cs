@@ -9,9 +9,9 @@ using NLog;
 
 namespace SQLite
 {
-    public class SQLiteLoader
+    public static class SQLiteLoader
     {
-        public static Logger logger = LogManager.GetLogger("TEMS_Inventory.SQLiteLoader");
+        public static readonly Logger logger = LogManager.GetLogger("TEMS_Inventory.SQLiteLoader");
 
         #region Native Dll support
 

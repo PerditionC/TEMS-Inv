@@ -8,7 +8,7 @@ using System.Drawing.Text;
 
 namespace BarcodeLib
 {
-    class Labels
+    static class Labels
     {
         /// <summary>
         /// Draws Label for ITF-14 barcodes

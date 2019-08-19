@@ -97,11 +97,9 @@ namespace SQLite
     {
         public IEnumerable<TableMapping.Column> Columns { get; protected set; }
 
-        protected NotNullConstraintViolationException(SQLite3.Result r, string message)
-            : this(r, message, null, null)
-        {
+        protected NotNullConstraintViolationException(SQLite3.Result r, string message) : this(r, message, null, null) { }
 
-        }
+        protected NotNullConstraintViolationException(SQLite3.Result r, string message, SQLite3.ExtendedResult extendedErrCode) : base(r, message, extendedErrCode) { }
 
         protected NotNullConstraintViolationException(SQLite3.Result r, string message, TableMapping mapping, object obj)
             : base(r, message)
@@ -167,7 +165,7 @@ namespace SQLite
 		private long _elapsedMilliseconds = 0;
 
 		private int _transactionDepth = 0;
-		private Random _rand = new Random ();
+		private readonly Random _rand = new Random ();
 
 		public Sqlite3DatabaseHandle Handle { get; private set; }
 		internal static readonly Sqlite3DatabaseHandle NullHandle = default(Sqlite3DatabaseHandle);
@@ -212,7 +210,7 @@ namespace SQLite
 		public SQLiteConnection (string databasePath, SQLiteOpenFlags openFlags, bool storeDateTimeAsTicks = false)
 		{
 			if (string.IsNullOrEmpty (databasePath))
-				throw new ArgumentException ("Must be specified", "databasePath");
+				throw new ArgumentException ("Must be specified", nameof(databasePath));
 
 			DatabasePath = databasePath;
 
@@ -262,7 +260,7 @@ namespace SQLite
 			}
         }
 
-		static byte[] GetNullTerminatedUtf8 (string s)
+		private static byte[] GetNullTerminatedUtf8 (string s)
 		{
 			var utf8Length = System.Text.Encoding.UTF8.GetByteCount (s);
 			var bytes = new byte [utf8Length + 1];
@@ -271,18 +269,19 @@ namespace SQLite
 			return bytes;
 		}
 
-#pragma warning disable 0649
+#pragma warning disable 0649, RCS1169 // ?, Mark field as read-only.
         /// <summary>
         /// Used to list some code that we want the MonoTouch linker
         /// to see, but that we never want to actually execute.
         /// </summary>
         static bool _preserveDuringLinkMagic;
+#pragma warning restore 0649, RCS1169 // ?, Mark field as read-only.
 
-		/// <summary>
-		/// Sets a busy handler to sleep the specified amount of time when a table is locked.
-		/// The handler will sleep multiple times until a total time of <see cref="BusyTimeout"/> has accumulated.
-		/// </summary>
-		public TimeSpan BusyTimeout {
+        /// <summary>
+        /// Sets a busy handler to sleep the specified amount of time when a table is locked.
+        /// The handler will sleep multiple times until a total time of <see cref="BusyTimeout"/> has accumulated.
+        /// </summary>
+        public TimeSpan BusyTimeout {
 			get { return _busyTimeout; }
 			set {
 				_busyTimeout = value;
@@ -516,8 +515,7 @@ namespace SQLite
             {
                 mx= (property.Body as MemberExpression);
             }
-            var propertyInfo = mx.Member as PropertyInfo;
-            if (propertyInfo == null)
+            if (!(mx.Member is PropertyInfo propertyInfo))
             {
                 throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
             }
@@ -558,7 +556,7 @@ namespace SQLite
 			return Query<ColumnInfo> (query);
 		}
 
-		void MigrateTable (TableMapping map)
+		private void MigrateTable (TableMapping map)
 		{
 			var existingCols = GetTableInfo (map.TableName);
 			
@@ -567,7 +565,7 @@ namespace SQLite
 			foreach (var p in map.Columns) {
 				var found = false;
 				foreach (var c in existingCols) {
-					found = (string.Compare (p.Name, c.Name, StringComparison.OrdinalIgnoreCase) == 0);
+					found = (string.Equals (p.Name, c.Name, StringComparison.OrdinalIgnoreCase));
 					if (found)
 						break;
 				}
@@ -1358,7 +1356,7 @@ namespace SQLite
 #endif
 
 
-			var replacing = string.Compare (extra, "OR REPLACE", StringComparison.OrdinalIgnoreCase) == 0;
+			var replacing = string.Equals (extra, "OR REPLACE", StringComparison.OrdinalIgnoreCase);
 			
 			var cols = replacing ? map.InsertOrReplaceColumns : map.InsertColumns;
 			var vals = new object[cols.Length];
@@ -2499,39 +2497,40 @@ namespace SQLite
 			if (value == null) {
 				SQLite3.BindNull (stmt, index);
 			} else {
-				if (value is Int32) {
-					SQLite3.BindInt (stmt, index, (int)value);
-				} else if (value is String) {
-					SQLite3.BindText (stmt, index, (string)value, -1, NegativePointer);
+				if (value is Int32 value_Int32) {
+					SQLite3.BindInt (stmt, index, value_Int32);
+				} else if (value is String value_String) {
+					SQLite3.BindText (stmt, index, value_String, -1, NegativePointer);
 				} else if (value is Byte || value is UInt16 || value is SByte || value is Int16) {
 					SQLite3.BindInt (stmt, index, Convert.ToInt32 (value));
-				} else if (value is Boolean) {
-					SQLite3.BindInt (stmt, index, (bool)value ? 1 : 0);
+				} else if (value is Boolean value_Boolean) {
+					SQLite3.BindInt (stmt, index, value_Boolean ? 1 : 0);
 				} else if (value is UInt32 || value is Int64) {
 					SQLite3.BindInt64 (stmt, index, Convert.ToInt64 (value));
 				} else if (value is Single || value is Double || value is Decimal) {
 					SQLite3.BindDouble (stmt, index, Convert.ToDouble (value));
-				} else if (value is TimeSpan) {
-					SQLite3.BindInt64(stmt, index, ((TimeSpan)value).Ticks);
-				} else if (value is DateTime) {
+				} else if (value is TimeSpan value_TimeSpan) {
+					SQLite3.BindInt64(stmt, index, value_TimeSpan.Ticks);
+				} else if (value is DateTime value_DateTime) {
 					if (storeDateTimeAsTicks) {
-						SQLite3.BindInt64 (stmt, index, ((DateTime)value).Ticks);
+						SQLite3.BindInt64 (stmt, index, value_DateTime.Ticks);
 					}
 					else {
-						SQLite3.BindText (stmt, index, ((DateTime)value).ToString ("yyyy-MM-dd HH:mm:ss"), -1, NegativePointer);
+						SQLite3.BindText (stmt, index, value_DateTime.ToString ("yyyy-MM-dd HH:mm:ss"), -1, NegativePointer);
 					}
-				} else if (value is DateTimeOffset) {
-					SQLite3.BindInt64 (stmt, index, ((DateTimeOffset)value).UtcTicks);
+				} else if (value is DateTimeOffset value_DateTimeOffset) {
+					SQLite3.BindInt64 (stmt, index, value_DateTimeOffset.UtcTicks);
 #if !NETFX_CORE
 				} else if (value.GetType().IsEnum) {
 #else
 				} else if (value.GetType().GetTypeInfo().IsEnum) {
 #endif
 					SQLite3.BindInt (stmt, index, Convert.ToInt32 (value));
-                } else if (value is byte[]){
-                    SQLite3.BindBlob(stmt, index, (byte[]) value, ((byte[]) value).Length, NegativePointer);
-                } else if (value is Guid) {
-                    SQLite3.BindText(stmt, index, ((Guid)value).ToString(), 72, NegativePointer);
+                } else if (value is byte[] value_byteArray)
+                {
+                    SQLite3.BindBlob(stmt, index, value_byteArray, value_byteArray.Length, NegativePointer);
+                } else if (value is Guid value_Guid) {
+                    SQLite3.BindText(stmt, index, value_Guid.ToString(), 72, NegativePointer);
                 } else {
                     throw new NotSupportedException("Cannot store type: " + value.GetType());
                 }

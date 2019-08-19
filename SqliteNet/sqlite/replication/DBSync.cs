@@ -37,8 +37,8 @@ namespace SQLiteNetSessionModule.Sync
     /// </summary>
     public class DBSync
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private static Stateprinter statePrinter = new Stateprinter();
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        private static readonly Stateprinter statePrinter = new Stateprinter();
 
         // database we update during replication
         private SQLiteConnection db { get; }

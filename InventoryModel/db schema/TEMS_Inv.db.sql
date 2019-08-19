@@ -138,12 +138,13 @@
 
 -- PRAGMA foreign_keys = "1";
 
-BEGIN TRANSACTION;
+--BEGIN TRANSACTION;  -- causes issue as when running in DB Browser for SQLite already implied TRANSACTION started
 
 -- allows retrieving current time as ticks
 CREATE VIEW IF NOT EXISTS current_timestamp_ticks AS SELECT ((CAST(strftime('%s', 'now', 'utc') AS bigint) * 1000000) + (strftime('%f', 'now')-round(strftime('%f', 'now')))*1000 + 635019330320182000) AS `timestamp`;
 
 -- defines meta data about this table
+-- Note: we currently only store DB version which could use SQLite PRAGMA option, but this is simpler and allows future additional information, e.g. last sync information
 CREATE TABLE IF NOT EXISTS `META`
 (
   `key` TEXT NOT NULL,
@@ -161,12 +162,12 @@ CREATE TABLE IF NOT EXISTS `EquipmentUnitType`
   `timestamp` bigint NOT NULL DEFAULT (CAST(strftime('%s', 'now', 'utc') AS bigint)),
   `lastSync` bigint DEFAULT NULL,
   PRIMARY KEY(`name`),
-  UNIQUE(`name`,`unitCode`)
   -- checks to ensure only values of expected type are stored since SQLite largely ignores type
   --CHECK (TYPEOF(unitCode)=='TEXT'),
-  --CHECK (TYPEOF(name)=='TEXT')
+  --CHECK (TYPEOF(name)=='TEXT'),
   --CHECK (TYPEOF(timestamp)=='INTEGER'),
-  --CHECK (TYPEOF(lastSync)=='INTEGER')
+  --CHECK (TYPEOF(lastSync)='INTEGER'),
+  UNIQUE(`name`,`unitCode`)
 );
 CREATE TABLE IF NOT EXISTS `EquipmentUnitType_`
 (
@@ -660,6 +661,7 @@ CREATE TABLE IF NOT EXISTS `ItemType`
   `name` varchar ( 128 ) NOT NULL,
   `make` varchar ( 64 ),
   `model` varchar ( 64 ),
+  `expirationRestockCategory` integer NOT NULL DEFAULT ( 0 ) CHECK ((`expirationRestockCategory` >= 0 ) AND (`expirationRestockCategory` <= 2)),
   `cost` integer NOT NULL DEFAULT 0 CHECK (`cost`>=0),
   `weight` float,
   `unitOfMeasureId` varchar ( 36 ) NOT NULL,
@@ -692,6 +694,7 @@ CREATE TABLE IF NOT EXISTS `ItemType_`
   `name` varchar ( 128 ) NOT NULL,
   `make` varchar ( 64 ),
   `model` varchar ( 64 ),
+  `expirationRestockCategory` integer NOT NULL DEFAULT ( 0 ) CHECK ((`expirationRestockCategory` >= 0 ) AND (`expirationRestockCategory` <= 2)),
   `cost` integer NOT NULL DEFAULT 0 CHECK (`cost`>=0),
   `weight` float,
   `unitOfMeasureId` varchar ( 36 ) NOT NULL,
@@ -793,14 +796,13 @@ END;
 CREATE TABLE IF NOT EXISTS `Item`
 (
   `id` varchar ( 36 ) NOT NULL,
-  `itemId` integer NOT NULL UNIQUE, -- externally visible id#, possible replication issues
+  `itemId` integer NOT NULL, -- Warning: externally visible but only needs to be UNIQUE relative to specific trailer unit AND itemTypeId
   `itemTypeId` varchar ( 36 ) NOT NULL,
   `unitTypeName` varchar ( 6 ) NOT NULL,
   `vehicleLocationId` varchar ( 36 ) NOT NULL,
   `vehicleCompartment` varchar ( 32 ),
   `count` integer NOT NULL DEFAULT ( 0 ) CHECK ( `count` >= 0 ),
   `bagNumber` varchar ( 16 ),
-  `expirationRestockCategory` integer NOT NULL DEFAULT ( 0 ) CHECK ( `expirationRestockCategory` >= 0 AND `expirationRestockCategory` <= 2 ),
   `expirationDate` bigint,
   `parentId` varchar ( 36 ), -- refers to another row in this table that is either a bin or module id
   `notes` varchar ( 255 ),
@@ -810,6 +812,7 @@ CREATE TABLE IF NOT EXISTS `Item`
   FOREIGN KEY (unitTypeName) REFERENCES EquipmentUnitType(name) DEFERRABLE INITIALLY DEFERRED,
   FOREIGN KEY (vehicleLocationId) REFERENCES VehicleLocation(id) DEFERRABLE INITIALLY DEFERRED,
   FOREIGN KEY (parentId) REFERENCES Item(id) DEFERRABLE INITIALLY DEFERRED,
+  UNIQUE (itemId, itemTypeId, unitTypeName),
   PRIMARY KEY(`id`)
 );
 CREATE INDEX IF NOT EXISTS `Item_itemId` ON `Item` ( `itemId` );
@@ -827,7 +830,6 @@ CREATE TABLE IF NOT EXISTS `Item_`
   `vehicleCompartment` varchar ( 32 ),
   `count` integer NOT NULL DEFAULT ( 0 ) CHECK ( `count` >= 0 ),
   `bagNumber` varchar ( 16 ),
-  `expirationRestockCategory` integer NOT NULL DEFAULT ( 0 ) CHECK ((`expirationRestockCategory` >= 0 ) AND (`expirationRestockCategory` <= 2)),
   `expirationDate` bigint,
   `parentId` varchar ( 36 ), -- refers to another row in this table that is either a bin or module id
   `notes` varchar ( 255 ),
@@ -902,7 +904,28 @@ BEGIN
   SELECT *, (CAST(strftime('%s', 'now', 'utc') AS bigint)) as `del_timestamp` FROM `ItemInstance` WHERE OLD.rowid=rowid;
 END;
 
+-- This view is required to keep itemNumber field updated automatically as changes occur to the DB
+CREATE VIEW IF NOT EXISTS ActiveItemNumbers AS 
+SELECT 
+(
+  EquipmentUnitType.unitCode || 
+  ItemType.itemTypeId || 
+  '-' || 
+  Item.itemId || 
+  SiteLocation.locSuffix
+) AS itemNumber, 
+ItemInstance.id AS id, -- important that id corresponds to ItemInstance for trigger
+removedServiceDate
+FROM
+SiteLocation INNER JOIN (
+  ItemInstance INNER JOIN (
+    ItemType INNER JOIN (
+      Item INNER JOIN EquipmentUnitType ON Item.unitTypeName=EquipmentUnitType.name
+	) ON Item.itemTypeId=ItemType.id
+  ) ON ItemInstance.itemId=Item.id
+) ON ItemInstance.siteLocationId=SiteLocation.id;
 
+-- This view is not required & may be changed as needed, it is only used to view the information directly from the DB
 CREATE VIEW IF NOT EXISTS ItemNumbers AS 
 SELECT 
 (
@@ -922,16 +945,23 @@ SiteLocation INNER JOIN (
 	) ON Item.itemTypeId=ItemType.id
   ) ON ItemInstance.itemId=Item.id
 ) ON ItemInstance.siteLocationId=SiteLocation.id;
+
+-- Set itemNumber field if not provided on INSERT
+-- Note: it is important that id is consistent (always refers to ItemInstance.id) to avoid errors on INSERT [so ActiveItemNumbers includes minimal fields without duplicate id fields]
+-- We avoid updating if itemNumber is provided during INSERT to avoid unnecessary changes.
+-- Warning: itemNumber is only Unique in regards to ItemsInstance with ItemStatus of Available; that is there should ever only be 1 ItemInstance of a given itemNumber Available.
+-- However! when ItemInstances are taken out of service they can have the tame itemNumber as other out of service ItemInstances and the Available one (e.g. a damaged item may have to be replaced
+-- leaving the original ItemInstance in RemovedFromService status and a new ItemInstance created with same itemNumber for the new ItemInstance - they will have different id values
 CREATE TRIGGER IF NOT EXISTS ItemInstance_itemNumber_afterInsert AFTER INSERT ON `ItemInstance`
 BEGIN
-  UPDATE `ItemInstance` SET `itemNumber` = (SELECT `itemNumber` FROM `ItemNumbers` WHERE ItemInstance.`id` = NEW.`id`), `timestamp` = NEW.`timestamp` WHERE NEW.rowid=rowid;
+  UPDATE `ItemInstance` SET `itemNumber` = (SELECT `itemNumber` FROM `ActiveItemNumbers` WHERE `id` = NEW.`id`), `timestamp` = NEW.`timestamp` WHERE NEW.rowid=rowid AND ItemNumber IS NULL;
 END;
 CREATE TRIGGER IF NOT EXISTS ItemInstance_itemNumber_afterUpdate AFTER UPDATE ON `ItemInstance`
---do trigger always as cannot seem to get to execute reliably with WHEN clause limiting to items that can change itemNumber value
+--exclude WHEN so trigger always fires as cannot seem to get to execute reliably with WHEN clause limiting to items that can change itemNumber value
 --WHEN ( (NEW.`itemId` <> OLD.`itemId`) OR (NEW.`siteLocationId` <> OLD.`siteLocationId`) OR (NEW.`removedServiceDate` <> OLD.`removedServiceDate`) )
 BEGIN
   UPDATE `ItemInstance` SET `itemNumber` = NULL, `timestamp` = NEW.`timestamp` WHERE (NEW.rowid=rowid) AND (NEW.`removedServiceDate` IS NOT NULL);
-  UPDATE `ItemInstance` SET `itemNumber` = (SELECT `ItemNumbers`.`itemNumber` FROM `ItemNumbers` WHERE `ItemNumbers`.`id` = NEW.`id`), `timestamp` = NEW.`timestamp` WHERE (NEW.rowid=rowid) AND (NEW.`removedServiceDate` IS NULL);
+  UPDATE `ItemInstance` SET `itemNumber` = (SELECT `itemNumber` FROM `ActiveItemNumbers` WHERE `ActiveItemNumbers`.`id` = NEW.`id`), `timestamp` = NEW.`timestamp` WHERE (NEW.rowid=rowid) AND (NEW.`removedServiceDate` IS NULL);
 END;
 
 
@@ -1133,4 +1163,4 @@ BEGIN
 END;
 
 
-COMMIT;
+--COMMIT;

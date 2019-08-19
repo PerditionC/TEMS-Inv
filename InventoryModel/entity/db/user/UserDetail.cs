@@ -20,8 +20,8 @@ namespace TEMS.InventoryModel.entity.db.user
 
         /// <summary>
         /// Construct and initialize with defaults
-        // no associated user, not active with expired null password
-        // and default to no associated sites
+        /// no associated user, not active with expired null password
+        /// and default to no associated sites
         /// </summary>
         public UserDetail() : this(userId: null, hashedPassphrase: null, isActive: false, isPasswordExpired: true, role: USER, currentSite: null, availableSites: new List<SiteLocation>()) { }
 

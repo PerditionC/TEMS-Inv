@@ -309,7 +309,7 @@ namespace SQLite
 	public class AsyncTableQuery<T>
 		where T : new ()
 	{
-		TableQuery<T> _innerQuery;
+		readonly TableQuery<T> _innerQuery;
 
 		public AsyncTableQuery (TableQuery<T> innerQuery)
 		{
@@ -420,20 +420,12 @@ namespace SQLite
 		readonly Dictionary<string, Entry> _entries = new Dictionary<string, Entry> ();
 		readonly object _entriesLock = new object ();
 
-		static readonly SQLiteConnectionPool _shared = new SQLiteConnectionPool ();
+        /// <summary>
+        /// Gets the singleton instance of the connection tool.
+        /// </summary>
+        public static SQLiteConnectionPool Shared { get; } = new SQLiteConnectionPool();
 
-		/// <summary>
-		/// Gets the singleton instance of the connection tool.
-		/// </summary>
-		public static SQLiteConnectionPool Shared
-		{
-			get
-			{
-				return _shared;
-			}
-		}
-
-		public SQLiteConnectionWithLock GetConnection (SQLiteConnectionString connectionString, SQLiteOpenFlags openFlags)
+        public SQLiteConnectionWithLock GetConnection (SQLiteConnectionString connectionString, SQLiteOpenFlags openFlags)
 		{
 			lock (_entriesLock) {
                 string key = connectionString.ConnectionString;

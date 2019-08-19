@@ -114,7 +114,7 @@ namespace TEMS_Inventory.views
         {
             logger.Debug("Loading item types - DoSearch:\n" + SearchVendorText);
 
-            items = new ObservableCollection<ItemBase>((DataRepository.GetDataRepository.ReferenceData[nameof(VendorDetail)]).Where(x => (x as VendorDetail).name.ToUpper().Contains((SearchVendorText ?? "").ToUpper())));
+            items = new ObservableCollection<ItemBase>((DataRepository.GetDataRepository.ReferenceData[nameof(VendorDetail)]).Where(x => (x as VendorDetail).name.IndexOf((SearchVendorText ?? ""), StringComparison.OrdinalIgnoreCase) >= 0));
             // auto select if only 1 item type returned
             //if (items.Count == 1) selectedListItem = items[0];
         }

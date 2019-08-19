@@ -240,7 +240,9 @@ namespace LibZ.Bootstrap
 			// there are potentially 2 classes, they have same name, they should
 			// share same data, but they are not the SAME class, so to interlock them
 			// I need something known to both of them
+#pragma warning disable RCS1059 // Avoid locking on publicly accessible instance.
 			lock (typeof(object))
+#pragma warning restore RCS1059 // Avoid locking on publicly accessible instance.
 			{
 				if (!SharedData.IsOwner)
 					return;
@@ -1464,7 +1466,9 @@ namespace LibZ.Bootstrap
 			/// <param name="dictionaryName">Name of the dictionary.</param>
 			public GlobalDictionary(string dictionaryName)
 			{
+#pragma warning disable RCS1059 // Avoid locking on publicly accessible instance.
 				lock (typeof(object))
+#pragma warning restore RCS1059 // Avoid locking on publicly accessible instance.
 				{
 					_data = AppDomain.CurrentDomain.GetData(dictionaryName) as Dictionary<int, object>;
 					if (_data != null)
@@ -1516,7 +1520,7 @@ namespace LibZ.Bootstrap
 		#region class Hash
 
 		/// <summary>MD5 calculator.</summary>
-		internal class Hash
+		internal static class Hash
 		{
 			#region public interface
 

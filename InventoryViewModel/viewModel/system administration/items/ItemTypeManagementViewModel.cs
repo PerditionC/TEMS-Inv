@@ -181,6 +181,7 @@ namespace TEMS_Inventory.views
                         clonedItem.batteryCount = itemType.batteryCount;
                         clonedItem.batteryType = itemType.batteryType;
                         clonedItem.category = itemType.category;
+                        clonedItem.expirationRestockCategory = itemType.expirationRestockCategory;
                         clonedItem.cost = itemType.cost;
                         clonedItem.isBin = itemType.isBin;
                         clonedItem.isModule = itemType.isModule;
