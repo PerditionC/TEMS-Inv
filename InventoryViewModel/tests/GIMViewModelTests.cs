@@ -26,6 +26,8 @@ namespace Tems_Inventory.InventoryViewModel.Tests
     {
         private DataRepository DataRepositoryRef = null;
 
+        private string SampleItemNumber = "D600-1CFD";
+
         /// <summary>
         /// loads SQLite and creates and populates our test DB
         /// </summary>
@@ -77,7 +79,7 @@ namespace Tems_Inventory.InventoryViewModel.Tests
             var vm = new GeneralInventoryManagementViewModel();
             Assert.NotNull(vm);
             Assert.NotNull(vm.SearchFilter);
-            vm.SearchFilter.SearchText = "M1-52144NFR";
+            vm.SearchFilter.SearchText = SampleItemNumber;
             vm.SearchFilter.SearchFilterEnabled = true;
             Assert.NotNull(vm.Items);
             Assert.AreEqual(vm.Items.Count, 1);
@@ -102,7 +104,7 @@ namespace Tems_Inventory.InventoryViewModel.Tests
             var vm = new GeneralInventoryManagementViewModel();
             Assert.NotNull(vm);
             Assert.NotNull(vm.SearchFilter);
-            vm.SearchFilter.SearchText = "M1-52144NFR";
+            vm.SearchFilter.SearchText = SampleItemNumber;
             vm.SearchFilter.SearchFilterEnabled = true;
             Assert.NotNull(vm.Items);
             Assert.AreEqual(vm.Items.Count, 1);
@@ -147,7 +149,7 @@ namespace Tems_Inventory.InventoryViewModel.Tests
             var vm = new GeneralInventoryManagementViewModel();
             Assert.NotNull(vm);
             Assert.NotNull(vm.SearchFilter);
-            vm.SearchFilter.SearchText = "M1-52144NFR";
+            vm.SearchFilter.SearchText = SampleItemNumber;
             vm.SearchFilter.SearchFilterEnabled = true;
             Assert.NotNull(vm.Items);
             Assert.AreEqual(vm.Items.Count, 1);

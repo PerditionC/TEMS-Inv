@@ -4,37 +4,76 @@ Overview of database structure:
 The database is normalized into the following tables:
 
 -- Site and equipment definitions
-* EquipmentUnitType
-* SiteLocation
-* SiteLocationEquipmentUnitTypeMapping
+* EquipmentUnitType - these are the different trailers, e.g. DMSU, SSU
+* SiteLocation - these are the localities hosting a trailer, e.g. Norfolk
+  * Note: each SiteLocation can only support one of a given trailer, if a
+  locality has more than one then the name of the city should be repeated 
+  but with a different suffix provided: e.g. VB1 & VB2 if Virginia Beach
+  had two different SSU trailers, one would have suffix VB1 and other VB2
+* SiteLocationEquipmentUnitTypeMapping - this table is a matrix of which
+  trailer(s) is/are at which locality
 
 -- User information
-* UserDetail
-* UserSiteMapping
-* UserActivity
+* UserDetail - simple table of usernames, passwords, and basic profile
+  details.  Password is hashed and salted but should still not be a
+  reused password as the whole DB file may not be properly protected
+  allowing offline attacks.
+* UserSiteMapping - determines which users can modify which locality info
+* UserActivity - audit log
 
 -- Item information
-* Image
-* Document
+
+--- Reference tables:
 * UnitOfMeasure
 * BatteryType
 * VehicleLocation
 * VendorDetail
 * ItemCategory
 * ItemStatus
-* ItemType
-* Item
-* ItemInstance
+
+--- Item information (the meat of the program/DB)
+* ItemType - one record for each unique item, e.g. traffic cone
+* Item - one record for each unique position of item in a given trailer, e.g.
+  one for traffic cones in front corner of trailer and one for extra cone
+  stored in back of trailer
+* ItemInstance - one record for each Item at each locality, i.e. one record
+  for each physical item on a trailer.  There is an ItemInstance record for the
+  traffic cone in back of trailer for Norfolk and a different record for the
+  cone in the same back of trailer in same trailer type but at Suffolk
+
+--- optional additional information stored for items
+* Image - maintains a table of attached picture files, e.g. to see what an ItemType is
+* Document - maintains a table of attached other documents, e.g. user manuals
 
  -- Service and usage events
-* ServiceCategory
-* ItemService
-* ItemServiceHistory
-* DamagedMissingEvent
-* DeployEvent
+* ServiceCategory - reference for different types of service activities
+* ItemService - tracks all service activities that need to occur
+* ItemServiceHistory - log of all service activities that have occurred
+* DamagedMissingEvent - tracks damage and loss of items
+* DeployEvent - tracks deployment and restocking of items
+
 
 See TEMS_Inv.db.sql for detailed schema DDL to create a blank DB.
 Additionally, the included Add_#_*.sql files can be used to provide the initial data.
+
+---
+
+The database, and corresponding application, is designed to run both in normal
+times and when an event has occurred requirement deployment of the trailers.
+In such case there may not be Internet access or at least to a centralized 
+server.  Therefore the database is designed and application can perform
+synchronization / replication from a disconnected state assuming a copy of
+the updated database files can be transported by some other means, e.g. a USB
+flash drive, online file sharing, SMB/NFS share drive access, etc.  In this
+offline mode, there can be any number of replicas and in any state of 
+sychronization.  Currently last change wins if there is a conflict with an
+update.  The only potential conflich that can not be automatically handled
+is if two or more sites add new items to the ItemType table an assigne the
+same ItemTypeId to differing items.  Although not currently provided, the
+database also supports online mode - a centralized server can be used to 
+keep all remote databases in sync, allowing realtime updates from other
+locations.  The lastSync field is reserved for this use case.  Note: a DB
+file can be used for both offline and online mode alternating as often as needed.
 
 ---
 

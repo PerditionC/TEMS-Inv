@@ -44,6 +44,8 @@ namespace TEMS.InventoryModel.command.action
                     // it should not exist without corresponding ItemInstances.
                     return !DataRepository.GetDataRepository.Exists(item);
                 }
+                // no id set or only set to empty placeholder
+                return true; 
             }
             logger.Warn($"{nameof(AddItemCommand.IsValidParameters)} invoked with invalid parameter, must pass in Item object!");
             return false;

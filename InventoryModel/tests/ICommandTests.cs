@@ -23,6 +23,9 @@ namespace Tems_Inventory.Tests
     {
         private DataRepository DataRepositoryRef = null;
 
+        private string SampleItemInstance = "b6277b55-7608-4b22-8407-688fca89dbf2";   // ** GUID subject to change, really should save iteminstance then check for that one
+        private string SampleItemNumber = "D600-1CFD";
+
         /// <summary>
         /// loads SQLite and creates and populates our test DB
         /// </summary>
@@ -238,7 +241,7 @@ namespace Tems_Inventory.Tests
             var userManager = new UserManager(db);
             UserManager.GetUserManager.LoginUser(user);
 
-            var item = db.Load<ItemInstance>("a8c80dc5-37f0-440d-bce0-c4b6d4c840ea");
+            var item = db.Load<ItemInstance>(SampleItemInstance);
             Assert.NotNull(item);
             Assert.That(DeployRecoverItemCommandBase.statusAvailable.id, Is.EqualTo(item.statusId));
             Assert.That(DeployItemCommand.statusAvailable, Is.EqualTo(item.status));
@@ -284,7 +287,7 @@ namespace Tems_Inventory.Tests
             var available = db.ReferenceData[nameof(ItemStatus)].ByName<ItemStatus>("Available");
             var missing = db.ReferenceData[nameof(ItemStatus)].ByName<ItemStatus>("Missing");
 
-            var item = db.Load<ItemInstance>("a8c80dc5-37f0-440d-bce0-c4b6d4c840ea");
+            var item = db.Load<ItemInstance>(SampleItemInstance);
             Assert.NotNull(item);
 
             Assert.That(item.status, Is.EqualTo(available));
@@ -304,26 +307,31 @@ namespace Tems_Inventory.Tests
             var db = DataRepository.GetDataRepository;
             Assert.NotNull(db);
 
-            var testInstance = db.Load<ItemInstance>("a8c80dc5-37f0-440d-bce0-c4b6d4c840ea");
+            var testInstance = db.Load<ItemInstance>(SampleItemInstance);
             Assert.NotNull(testInstance);
             Assert.IsFalse(cmd.CanExecute(testInstance)); // not an Item, can't add ItemInstance directly
             Assert.IsFalse(cmd.CanExecute(testInstance.item)); // because it already exists
             Assert.IsFalse(cmd.CanExecute(testInstance.item.itemType)); // an ItemType, reference data
 
-            var item = db.Load<Item>("ae9ac0f4-9608-4946-98ac-219e6e29a29a");
+            var item = db.Load<Item>("f69eb75a-3468-2f78-6b54-2530f95e75e0");
             Assert.NotNull(item);
-
             Assert.IsFalse(cmd.CanExecute(item));
+
+            // mutate as new item so we can add it
+            item.id = Guid.Empty;
+            item.itemId = 99999; // way too large to be valid, ideally we'd ask for proper value
+            Assert.IsTrue(cmd.CanExecute(item));
 
             // add the item instances (and item is not already saved)
             cmd.Execute(item);
             var itemInstances = db.db.LoadRows<ItemInstance>("WHERE itemId=?", item.id.ToString());
-            Assert.That(itemInstances.Count, Is.EqualTo(2 /* Norfolk & York */));
+            Assert.That(itemInstances.Count, Is.EqualTo(13));
             // cleanup, remove the item instances
             foreach (var itemInstance in itemInstances)
             {
                 db.Delete(itemInstance);
             }
+            db.Delete(item);
         }
 
         [Test]
@@ -340,7 +348,7 @@ namespace Tems_Inventory.Tests
             var damagedCmd = new DamagedMissingItemCommand(DamageMissingEventType.Damage);
             var missingCmd = new DamagedMissingItemCommand(DamageMissingEventType.Missing);
 
-            var item = db.Load<ItemInstance>("a8c80dc5-37f0-440d-bce0-c4b6d4c840ea");
+            var item = db.Load<ItemInstance>(SampleItemInstance);
             Assert.NotNull(item);
             Assert.That(item.status.name, Is.EqualTo("Available"));
 
@@ -417,7 +425,7 @@ namespace Tems_Inventory.Tests
             var cmd = new ServiceItemCommand();
             Assert.NotNull(cmd, nameof(ServiceItemCommand));
 
-            var item = db.Load<ItemInstance>("a8c80dc5-37f0-440d-bce0-c4b6d4c840ea");
+            var item = db.Load<ItemInstance>(SampleItemInstance);
             Assert.NotNull(item);
             Assert.That(item.status.name, Is.EqualTo("Available"));
 
@@ -467,10 +475,14 @@ namespace Tems_Inventory.Tests
             UserManager.GetUserManager.LoginUser(user);
 
             var cmd = new ReplaceItemCommand();
-            Assert.NotNull(cmd, nameof(ServiceItemCommand));
+            Assert.NotNull(cmd, nameof(ReplaceItemCommand));
 
-            var item = db.Load<ItemInstance>("a8c80dc5-37f0-440d-bce0-c4b6d4c840ea");
+            var item = db.Load<ItemInstance>(SampleItemInstance);
             Assert.NotNull(item);
+            // force known value
+            item.status = db.ReferenceData[nameof(ItemStatus)].ByName<ItemStatus>("Available");  
+            db.Save(item);
+            item = db.Load<ItemInstance>(SampleItemInstance);
             Assert.That(item.status.name, Is.EqualTo("Available"));
 
             Assert.IsTrue(cmd.CanExecute(item));
@@ -483,7 +495,7 @@ namespace Tems_Inventory.Tests
                 User = UserManager.GetUserManager.CurrentUser(),
                 SiteLocationEnabled = false,
                 SearchFilterEnabled = true,
-                SearchText = "M1-52144NFR",
+                SearchText = SampleItemNumber,
                 ItemTypeMatching = SearchFilterItemMatching.OnlyExact,
                 //AllowItemsRemovedFromService = false, // required or query below may return old item instead of new one
                 SelectEquipmentUnitsEnabled = false,
@@ -504,7 +516,10 @@ namespace Tems_Inventory.Tests
             item.status = db.ReferenceData[nameof(ItemStatus)].ByName<ItemStatus>("Available");
             item.removedServiceDate = null;
             db.Delete(newItem);
+            Assert.IsFalse(db.Exists(newItem));
             db.Save(item);
+            item = db.Load<ItemInstance>(SampleItemInstance);
+            Assert.That(item.status.name, Is.EqualTo("Available"));
         }
     }
 }
