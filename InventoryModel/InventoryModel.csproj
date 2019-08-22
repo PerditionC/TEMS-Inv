@@ -50,52 +50,39 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="command\item\damageOrMissing\DamagedMissingItemCommand.cs" />
-    <Compile Include="command\item\gim\DeleteItemCommand.cs" />
-    <Compile Include="command\item\gim\AddItemCommand.cs" />
-    <Compile Include="command\item\service\ServiceItemCompleteCommand.cs" />
-    <Compile Include="command\item\UpdateItemStatusCommand.cs" />
-    <Compile Include="command\item\deploy\DeployRecoverItemCommandBase.cs" />
-    <Compile Include="command\item\gim\LoadItemCommand.cs" />
-    <Compile Include="command\item\gim\SaveItemCommand.cs" />
-    <Compile Include="command\item\service\ServiceItemCommand.cs" />
-    <Compile Include="command\item\damageOrMissing\ReplaceItemCommand.cs" />
-    <Compile Include="command\item\damageOrMissing\ReturnToInventoryCommand.cs" />
-    <Compile Include="command\item\deploy\DeployItemCommand.cs" />
-    <Compile Include="command\item\deploy\RecoverItemCommand.cs" />
-    <Compile Include="command\item\gim\SearchItemsCommand.cs" />
-    <Compile Include="entity\DataRepository\IReportRepository.cs" />
-    <Compile Include="entity\DataRepository\IGIMRepository.cs" />
-    <Compile Include="entity\DataRepository\IVendorRepository.cs" />
-    <Compile Include="entity\DataRepository\IEventRepository.cs" />
-    <Compile Include="entity\DataRepository\IUserRepository.cs" />
-    <Compile Include="entity\DataRepository\SqliteImplementation\IEventRepositoryImpl.cs" />
-    <Compile Include="entity\DataRepository\SqliteImplementation\IGIMRepositoryImpl.cs" />
-    <Compile Include="entity\DataRepository\SqliteImplementation\IReportRepositoryImpl.cs" />
-    <Compile Include="entity\DataRepository\SqliteImplementation\IUserRepositoryImpl.cs" />
-    <Compile Include="entity\DataRepository\SqliteImplementation\IPersistableRepositoryImpl.cs" />
-    <Compile Include="entity\DataRepository\SqliteImplementation\IVendorRepositoryImpl.cs" />
-    <Compile Include="entity\db\Database.cs" />
-    <Compile Include="entity\DataRepository\SqliteImplementation\DataRepository.cs" />
-    <Compile Include="entity\db\DatabaseHelper.cs" />
-    <Compile Include="entity\db\events\DamageMissingEvent.cs" />
-    <Compile Include="entity\db\events\DeployEvent.cs" />
-    <Compile Include="entity\db\events\Service.cs" />
-    <Compile Include="entity\db\ItemBase.cs" />
-    <Compile Include="entity\db\item\Item.cs" />
-    <Compile Include="entity\db\item\ItemInstance.cs" />
-    <Compile Include="entity\db\item\ItemType.cs" />
-    <Compile Include="entity\db\query\SearchResults.cs" />
-    <Compile Include="entity\db\query\SearchFilterItems.cs" />
-    <Compile Include="entity\db\DatabaseFormatException.cs" />
-    <Compile Include="entity\db\trailer\SiteLocation.cs" />
-    <Compile Include="entity\db\user\UserActivity.cs" />
-    <Compile Include="entity\db\user\UserDetail.cs" />
-    <Compile Include="entity\db\vendor\VendorDetail.cs" />
-    <Compile Include="entity\DataRepository\IPersistableRepository.cs" />
-    <Compile Include="entity\db\reference\RawData.cs" />
-    <Compile Include="entity\db\reference\ReferenceData.cs" />
-    <Compile Include="entity\db\reference\ReferenceDataCache.cs" />
+    <Compile Include="db\DataRepository\IReportRepository.cs" />
+    <Compile Include="db\DataRepository\IGIMRepository.cs" />
+    <Compile Include="db\DataRepository\IVendorRepository.cs" />
+    <Compile Include="db\DataRepository\IEventRepository.cs" />
+    <Compile Include="db\DataRepository\IUserRepository.cs" />
+    <Compile Include="db\DataRepository\SqliteImplementation\IEventRepositoryImpl.cs" />
+    <Compile Include="db\DataRepository\SqliteImplementation\IGIMRepositoryImpl.cs" />
+    <Compile Include="db\DataRepository\SqliteImplementation\IReportRepositoryImpl.cs" />
+    <Compile Include="db\DataRepository\SqliteImplementation\IUserRepositoryImpl.cs" />
+    <Compile Include="db\DataRepository\SqliteImplementation\IPersistableRepositoryImpl.cs" />
+    <Compile Include="db\DataRepository\SqliteImplementation\IVendorRepositoryImpl.cs" />
+    <Compile Include="db\Database.cs" />
+    <Compile Include="db\DataRepository\SqliteImplementation\DataRepository.cs" />
+    <Compile Include="db\DatabaseHelper.cs" />
+    <Compile Include="db\entity\events\DamageMissingEvent.cs" />
+    <Compile Include="db\entity\events\DeployEvent.cs" />
+    <Compile Include="db\entity\events\Service.cs" />
+    <Compile Include="db\ItemBase.cs" />
+    <Compile Include="db\entity\item\Item.cs" />
+    <Compile Include="db\entity\item\ItemInstance.cs" />
+    <Compile Include="db\entity\item\ItemType.cs" />
+    <Compile Include="db\DataRepository\query\SearchResults.cs" />
+    <Compile Include="db\DataRepository\query\SearchFilterOptions.cs" />
+    <Compile Include="db\DatabaseFormatException.cs" />
+    <Compile Include="db\entity\trailer\EquipmentUnitType.cs" />
+    <Compile Include="db\entity\trailer\SiteLocation.cs" />
+    <Compile Include="db\entity\user\UserActivity.cs" />
+    <Compile Include="db\entity\user\UserDetail.cs" />
+    <Compile Include="db\entity\vendor\VendorDetail.cs" />
+    <Compile Include="db\DataRepository\IPersistableRepository.cs" />
+    <Compile Include="db\entity\reference\RawData.cs" />
+    <Compile Include="db\entity\reference\ReferenceData.cs" />
+    <Compile Include="db\entity\reference\ReferenceDataCache.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="util\NotifyTaskCompletion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -104,7 +91,6 @@
     <Compile Include="tests\ItemNumberParserTests.cs" />
     <Compile Include="tests\PasswordHashingTests.cs" />
     <Compile Include="tests\ReferenceDataCacheTests.cs" />
-    <Compile Include="tests\ICommandTests.cs" />
     <Compile Include="tests\UserManagerTests.cs" />
     <Compile Include="userManager\extension\UserDetailHelper.cs" />
     <Compile Include="userManager\IUserManager.cs" />
@@ -141,6 +127,7 @@
     <Content Include="db schema\Add_4_ItemTypes.sql" />
     <Content Include="db schema\Add_5_Items.sql" />
     <Content Include="db schema\Add_6_ItemInstance.sql" />
+    <Content Include="db schema\Add_7_FullTextSearch.sql" />
     <Content Include="db schema\GenSQL.bas" />
     <Content Include="db schema\TEMS_Inv.db.sql" />
   </ItemGroup>
@@ -170,5 +157,6 @@
       <Version>3.0.1</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

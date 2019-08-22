@@ -155,14 +155,23 @@
     <Compile Include="views\asset management\damaged or missing\DamagedMissingHistoryWindow.xaml.cs">
       <DependentUpon>DamagedMissingHistoryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="views\asset management\damaged or missing\DamagedMissingDetailsWindow.xaml.cs">
+      <DependentUpon>DamagedMissingDetailsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\asset management\deploy\DeployRecoverDetailsWindow.xaml.cs">
+      <DependentUpon>DeployRecoverDetailsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="views\asset management\deploy\DeployRecoverHistoryWindow.xaml.cs">
       <DependentUpon>DeployRecoverHistoryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="views\asset management\deploy\DeployRecoverWindow.xaml.cs">
-      <DependentUpon>DeployRecoverWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="views\asset management\ExpirationWindow.xaml.cs">
+    <Compile Include="views\asset management\expiration\ExpirationWindow.xaml.cs">
       <DependentUpon>ExpirationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\asset management\expiration\ExpirationHistoryWindow.xaml.cs">
+      <DependentUpon>ExpirationHistoryWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\asset management\ItemInstanceManagementWindow.xaml.cs">
+      <DependentUpon>ItemInstanceManagementWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\asset management\GeneralInventoryManagementWindow.xaml.cs">
       <DependentUpon>GeneralInventoryManagementWindow.xaml</DependentUpon>
@@ -239,14 +248,27 @@
     <Page Include="views\asset management\damaged or missing\DamagedMissingHistoryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="views\asset management\damaged or missing\DamagedMissingDetailsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="views\asset management\deploy\DeployRecoverDetailsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="views\asset management\deploy\DeployRecoverHistoryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="views\asset management\deploy\DeployRecoverWindow.xaml">
+    <Page Include="views\asset management\expiration\ExpirationWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="views\asset management\ExpirationWindow.xaml">
+    <Page Include="views\asset management\expiration\ExpirationHistoryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="views\asset management\ItemInstanceManagementWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="views\asset management\GeneralInventoryManagementWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -256,6 +278,10 @@
     </Page>
     <Page Include="views\asset management\ItemTypeManagementWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="views\asset management\service\ServiceDetailsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="views\asset management\service\ServiceHistoryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

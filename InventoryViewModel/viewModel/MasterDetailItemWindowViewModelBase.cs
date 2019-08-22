@@ -25,7 +25,7 @@ namespace TEMS_Inventory.views
         public MasterDetailItemWindowViewModelBase(QueryResultEntitySelector resultEntitySelector) : this(resultEntitySelector, null) { }
 
         // anything that needs initializing
-        public MasterDetailItemWindowViewModelBase(QueryResultEntitySelector resultEntitySelector, SearchFilterItems SearchFilter) : base(resultEntitySelector, SearchFilter)
+        public MasterDetailItemWindowViewModelBase(QueryResultEntitySelector resultEntitySelector, SearchFilterOptions SearchFilter) : base(resultEntitySelector, SearchFilter)
         {
             // from this point on, trigger changes based on any changes to our SearchFilter
             PropertyChanged += MasterDetailItemWindowViewModelBase_PropertyChanged;
@@ -90,7 +90,7 @@ namespace TEMS_Inventory.views
                                 try
                                 {
                                     var db = DataRepository.GetDataRepository;
-                                    switch (SearchFilterCommand.resultEntitySelector)
+                                    switch (SearchFilterCommand.ResultEntitySelector)
                                     {
                                         case QueryResultEntitySelector.ItemInstance:
                                             CurrentItem = db.Load<ItemInstance>(SelectedItem.id);

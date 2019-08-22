@@ -12,7 +12,7 @@ namespace TEMS_Inventory.views
     public class DeployRecoverHistoryViewModel : HistoryWindowViewModel
     {
         public DeployRecoverHistoryViewModel() : this(null) { }
-        public DeployRecoverHistoryViewModel(SearchFilterItems SearchFilter) : base(SearchFilter) { }
+        public DeployRecoverHistoryViewModel(SearchFilterOptions SearchFilter) : base(SearchFilter) { }
 
         /// <summary>
         /// Command to open edit item window with this item selected so can be modified/viewed

@@ -19,7 +19,7 @@
     </UserControl.Resources>
 
     <!-- start of search/filter block -->
-    <Expander Header="Filter Items" ExpandDirection="Down" IsExpanded="{Binding SearchFilter.SearchFilterVisible}" DataContext="{Binding SearchFilterCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" >
+    <Expander Header="Filter Items" ExpandDirection="Down" IsExpanded="{Binding SearchFilter.SearchFilterVisible}" >
         <Border Margin="0" CornerRadius="5" BorderThickness="1"  BorderBrush="#FFD5DFE5" Background="WhiteSmoke" Visibility="{Binding SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}" >
             <Grid>
                 <Grid.ColumnDefinitions >
@@ -32,7 +32,7 @@
 
                 <DockPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Top">
                     <Label DockPanel.Dock="Left" VerticalAlignment="Center" Foreground="DarkBlue" Content="_Search:" />
-                    <GroupBox DockPanel.Dock="Right" Header="Search items matching:" HorizontalAlignment="Right" VerticalAlignment="Center" > <!-- IsEnabled="{Binding SearchTextAvailable,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" -->
+                    <GroupBox DockPanel.Dock="Right" Header="Search items matching:" HorizontalAlignment="Right" VerticalAlignment="Center" IsEnabled="{Binding SearchTextAvailable}" > 
                         <WrapPanel Orientation="Horizontal" VerticalAlignment="Top">
                             <RadioButton Margin="0,0,5,0"
                                      IsChecked="{Binding Path=SearchFilter.ItemTypeMatching, Converter={StaticResource enumToBooleanConverter}, 
@@ -42,9 +42,9 @@
                                      ConverterParameter={x:Static dbQuery:SearchFilterItemMatching.OnlyExact}}" Content="Exact Item" />
                         </WrapPanel>
                     </GroupBox>
-                    <WPFToolkit:SearchTextBox x:Name="SearchItems" Text="{Binding SearchFilter.SearchText, UpdateSourceTrigger=PropertyChanged}" SearchCommand="{Binding SearchTextCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" ShowSearchButton="True" VerticalAlignment="Center" Height="25" >
+                    <WPFToolkit:SearchTextBox x:Name="SearchItems" Text="{Binding SearchFilter.SearchText, UpdateSourceTrigger=PropertyChanged}" SearchCommand="{Binding SearchTextCommand}" ShowSearchButton="True" VerticalAlignment="Center" Height="25" >
                         <TextBox.InputBindings>
-                            <KeyBinding Command="{Binding SearchTextCommand,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" Key="Return" />
+                            <KeyBinding Command="{Binding SearchTextCommand}" Key="Return" />
                         </TextBox.InputBindings>
                     </WPFToolkit:SearchTextBox>
 

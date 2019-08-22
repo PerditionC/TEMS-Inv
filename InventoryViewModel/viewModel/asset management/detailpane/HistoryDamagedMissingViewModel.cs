@@ -13,7 +13,7 @@ namespace TEMS_Inventory.views
     public class HistoryDamagedMissingViewModel : HistoryWindowViewModel
     {
         public HistoryDamagedMissingViewModel() : this(null) { }
-        public HistoryDamagedMissingViewModel(SearchFilterItems SearchFilter) : base(SearchFilter) { }
+        public HistoryDamagedMissingViewModel(SearchFilterOptions SearchFilter) : base(SearchFilter) { }
 
         /// <summary>
         /// Command to open edit item window with this item selected so can be modified/viewed
@@ -32,5 +32,39 @@ namespace TEMS_Inventory.views
         {
             Events = new ObservableCollection<ItemBase>(((IEnumerable)DataRepository.GetDataRepository.GetDamageMissingEvents(SelectedItem)).Cast<ItemBase>());
         }
+
+
+        /// <summary>
+        /// Command to create an event record of item as damaged
+        /// </summary>
+        public ICommand DamagedCommand
+        {
+            get { return InitializeCommand(ref _DamagedCommand, param => DoDamagedCommand(), param => isCurrentItem()); }
+        }
+        private ICommand _DamagedCommand;
+
+        private void DoDamagedCommand()
+        {
+            var newWin = new DamagedMissingDetailsWindow();
+            //searchFilter.SearchText = (currentItem as ItemInstance)?.itemNumber?.ToString() ?? "";
+            ShowChildWindow(newWin);
+        }
+
+
+        /// <summary>
+        /// Command to create an event record of item as missing
+        /// </summary>
+        public ICommand MissingCommand
+        {
+            get { return InitializeCommand(ref _MissingCommand, param => DoMissingCommand(), param => isCurrentItem()); }
+        }
+        private ICommand _MissingCommand;
+
+        private void DoMissingCommand()
+        {
+            var newWin = new DamagedMissingDetailsWindow();
+            ShowChildWindow(newWin);
+        }
+
     }
 }

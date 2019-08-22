@@ -965,6 +965,18 @@ BEGIN
 END;
 
 
+-- used for recursive lookups to display item trees
+CREATE VIEW IF NOT EXISTS ItemList AS 
+SELECT 
+	Item.id AS id,
+	itemId, unitTypeName, vehicleLocationId, vehicleCompartment, `count`, bagNumber, expirationDate, parentId, Item.notes as itemNotes, 
+	ItemType.id as itemTypeGuid,
+	ItemType.itemTypeId AS itemTypeId, name, make, model, expirationRestockCategory, cost, weight, unitOfMeasureId, itemCategoryId, batteryCount, batteryTypeId, associatedItems, isBin, isModule, vendorId, ItemType.notes as notes
+FROM ItemType INNER JOIN Item ON Item.itemTypeId=ItemType.id
+ORDER BY itemId;
+
+
+
 CREATE TABLE IF NOT EXISTS `ServiceCategory`
 (
   `id` varchar ( 36 ) NOT NULL,

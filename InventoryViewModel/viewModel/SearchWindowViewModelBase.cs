@@ -23,7 +23,7 @@ namespace TEMS_Inventory.views
         public SearchWindowViewModelBase(QueryResultEntitySelector resultEntitySelector) : this(resultEntitySelector, null) { }
 
         // anything that needs initializing
-        public SearchWindowViewModelBase(QueryResultEntitySelector resultEntitySelector, SearchFilterItems searchFilter) : base()
+        public SearchWindowViewModelBase(QueryResultEntitySelector resultEntitySelector, SearchFilterOptions searchFilter) : base()
         {
             SearchFilterCommand = new SearchItemsCommand(resultEntitySelector, searchFilter);
 
@@ -64,7 +64,7 @@ namespace TEMS_Inventory.views
         /// <summary>
         /// Exposes search criteria and results
         /// </summary>
-        public SearchFilterItems SearchFilter { get { return SearchFilterCommand.SearchFilter; } }
+        public SearchFilterOptions SearchFilter { get { return SearchFilterCommand.SearchFilter; } }
 
         /// <summary>
         /// Our implementation of searching for ItemInstance, Item, and ItemType objects

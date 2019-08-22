@@ -79,6 +79,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="command\item\damageOrMissing\DamagedMissingItemCommand.cs" />
+    <Compile Include="command\item\damageOrMissing\ReplaceItemCommand.cs" />
+    <Compile Include="command\item\damageOrMissing\ReturnToInventoryCommand.cs" />
+    <Compile Include="command\item\deploy\DeployItemCommand.cs" />
+    <Compile Include="command\item\deploy\DeployRecoverItemCommandBase.cs" />
+    <Compile Include="command\item\deploy\RecoverItemCommand.cs" />
+    <Compile Include="command\item\gim\AddItemCommand.cs" />
+    <Compile Include="command\item\gim\DeleteItemCommand.cs" />
+    <Compile Include="command\item\gim\LoadItemCommand.cs" />
+    <Compile Include="command\item\gim\SaveItemCommand.cs" />
+    <Compile Include="command\item\service\ServiceItemCommand.cs" />
+    <Compile Include="command\item\service\ServiceItemCompleteCommand.cs" />
+    <Compile Include="command\item\UpdateItemStatusCommand.cs" />
+    <Compile Include="command\search\OnSelectionChangedCommand\UpdateDetailsGeneralInventoryManagementCommand.cs" />
+    <Compile Include="command\search\OnSelectionChangedCommand\UpdateDetailsItemInstanceManagementCommand.cs" />
+    <Compile Include="command\search\OnSelectionChangedCommand\UpdateDetailsItemTypeManagementCommand.cs" />
+    <Compile Include="command\search\OnSelectionChangedCommand\UpdateDetailsItemManagementCommand.cs" />
+    <Compile Include="command\search\OnSelectionChangedCommand\UpdateDetailsHistoryExpirationReplace.cs" />
+    <Compile Include="command\search\OnSelectionChangedCommand\UpdateDetailsHistoryServiceCommand.cs" />
+    <Compile Include="command\search\OnSelectionChangedCommand\UpdateDetailsHistoryDeployRecoverCommand.cs" />
+    <Compile Include="command\search\OnSelectionChangedCommand\UpdateDetailsHistoryDamagedMissingCommand.cs" />
+    <Compile Include="command\search\OnSelectionChangedCommand\OnSelectionChangedCommand.cs" />
+    <Compile Include="command\search\SearchItemsCommand.cs" />
     <Compile Include="messages\CurrentUserChangedMessage.cs" />
     <Compile Include="messages\CurrentItemChangedMessage.cs" />
     <Compile Include="messages\MessageDialogMessage.cs" />
@@ -87,24 +110,29 @@
     <Compile Include="messages\YesNoDialogMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tests\GIMViewModelTests.cs" />
+    <Compile Include="tests\ICommandTests.cs" />
     <Compile Include="viewModel\asset management\detailpane\HistoryDamagedMissingViewModel.cs" />
     <Compile Include="viewModel\asset management\detailpane\HistoryDeployRecoverViewModel.cs" />
+    <Compile Include="viewModel\asset management\detailpane\HistoryExpirationReplaceViewModel.cs" />
     <Compile Include="viewModel\asset management\detailpane\HistoryServiceViewModel.cs" />
-    <Compile Include="viewModel\asset management\detailpane\HistoryWindowViewModel.cs" />
-    <Compile Include="viewModel\asset management\detailpane\ItemInstanceViewModel.cs" />
+    <Compile Include="viewModel\asset management\detailpane\ItemInstanceManagementViewModel.cs" />
+    <Compile Include="viewModel\asset management\detailpane\ItemTypeManagementViewModel.cs" />
+    <Compile Include="viewModel\asset management\detailpane\ItemManagementViewModel.cs" />
+    <Compile Include="viewModel\asset management\HistoryDetailsViewModelBase.cs" />
     <Compile Include="viewModel\asset management\event\DetailsDamagedMissingViewModel.cs" />
     <Compile Include="viewModel\asset management\event\DetailsDeployRecoverViewModel.cs" />
     <Compile Include="viewModel\asset management\event\DetailsExpirationReplaceViewModel.cs" />
     <Compile Include="viewModel\asset management\event\DetailsServiceViewModel.cs" />
     <Compile Include="viewModel\asset management\event\EventDetailsViewModel.cs" />
-    <Compile Include="viewModel\asset management\GeneralInventoryManagementViewModel.cs" />
+    <Compile Include="viewModel\asset management\detailpane\GeneralInventoryManagementViewModel.cs" />
+    <Compile Include="viewModel\asset management\DetailsViewModelBase.cs" />
+    <Compile Include="viewModel\asset management\SearchResultViewModel.cs" />
     <Compile Include="viewModel\ItemListToAddEditDeleteViewModel.cs" />
+    <Compile Include="viewModel\asset management\SearchFilterOptionsViewModel.cs" />
     <Compile Include="viewModel\labels\ViewPrintLabelsViewModel.cs" />
     <Compile Include="viewModel\MasterDetailItemWindowViewModelBase.cs" />
     <Compile Include="viewModel\reports\ReportBaseViewModel.cs" />
     <Compile Include="viewModel\SearchWindowViewModelBase.cs" />
-    <Compile Include="viewModel\system administration\items\ItemManagementViewModel.cs" />
-    <Compile Include="viewModel\system administration\items\ItemTypeManagementViewModel.cs" />
     <Compile Include="viewModel\system administration\locations\SiteToEquipmentUnitMappingViewModel.cs" />
     <Compile Include="viewModel\system administration\reference data\ReferenceDataViewModel.cs" />
     <Compile Include="viewModel\system administration\replication\ReplicationViewModel.cs" />
@@ -128,7 +156,9 @@
       <Name>SqliteNet</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="command\item\expiration\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="images\MMRSLogo.ico" />
   </ItemGroup>
