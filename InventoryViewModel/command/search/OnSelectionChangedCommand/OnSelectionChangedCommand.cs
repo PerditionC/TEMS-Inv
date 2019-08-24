@@ -11,7 +11,7 @@ namespace TEMS.InventoryModel.command.action
     /// command invoked when the selected item in the SearchResults pane is changed
     /// this command should update the details pane view model accordingly
     /// </summary>
-    public abstract class OnSelectionChangedCommand : RelayCommand
+    public class OnSelectionChangedCommand : RelayCommand
     {
         protected DetailsViewModelBase detailsPaneVM;
 
@@ -26,6 +26,12 @@ namespace TEMS.InventoryModel.command.action
         /// update the details view model based on current selection
         /// </summary>
         /// <param name="selectedItem">SearchResult to display details about, may be null for nothing selected</param>
-        protected abstract void UpdateDetailsPane(SearchResult selectedItem);
+        protected virtual void UpdateDetailsPane(SearchResult selectedItem)
+        {
+            if (detailsPaneVM != null)
+            {
+                detailsPaneVM.CurrentItem = selectedItem;
+            }
+        }
     }
 }

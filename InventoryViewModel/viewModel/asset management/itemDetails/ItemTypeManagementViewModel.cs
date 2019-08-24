@@ -3,21 +3,24 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 
 #if NET40
 using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, while in .Net4.5+ it moved to System.dll
+using InventoryViewModel;
 #endif
 
 using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.userManager;
-
+using TEMS.InventoryModel.util;
 
 namespace TEMS_Inventory.views
 {
     /// <summary>
     /// Administration CRUD view model for updating ItemType table
     /// </summary>
-    public class ItemTypeManagementViewModel : ViewModelBase
+    public class ItemTypeManagementViewModel : DetailsViewModelBase
     {
         public ItemTypeManagementViewModel() : base() { }
 
@@ -45,28 +48,6 @@ namespace TEMS_Inventory.views
             get { return UserManager.GetUserManager.CurrentUser().isAdmin; }
         }
 
-        /// <summary>
-        /// Is there a currently active (non-null) item
-        /// </summary>
-        public bool IsActiveItem
-        {
-            get { return _CurrentItem != null; }
-        }
-
-        /// <summary>
-        /// the current item for display (and edit)
-        /// </summary>
-        public ItemType CurrentItem
-        {
-            get { return _CurrentItem; }
-            set
-            {
-                SetProperty(ref _CurrentItem, value, nameof(CurrentItem));
-                RaisePropertyChanged(nameof(IsActiveItem));
-                // TODO auto map CurrentItem -> fields for display; note that Save cmd will do inverse mapping prior to DB saving 
-            }
-        }
-        private ItemType _CurrentItem = null;
 
 
         public bool RequiresBatteryCount
@@ -75,12 +56,9 @@ namespace TEMS_Inventory.views
             {
                 try
                 {
-                    if (CurrentItem is ItemType itemType)
+                    if (batteryType != null)
                     {
-                        if (itemType.batteryType != null)
-                        {
-                            return !string.Equals("None", itemType.batteryType.name, StringComparison.InvariantCultureIgnoreCase);
-                        }
+                        return !string.Equals("None", batteryType.name, StringComparison.InvariantCultureIgnoreCase);
                     }
                 }
                 catch (Exception e)
@@ -91,39 +69,6 @@ namespace TEMS_Inventory.views
             }
         }
 
-        /// <summary>
-        /// Called to convert a CurrentItem into a value to insert into Items collection.
-        /// Only called if CurrentItem is set to a value that does not correspond to any
-        /// existing SearchResult items in the Items collection; i.e. a newly created CurrentItem
-        /// </summary>
-        /// <param name="value">the current ItemBase object to convert from</param>
-        /// <returns>the GenericItemResult that represents the ItemBase object</returns>
-        protected override GenericItemResult ConvertItemsValueFromCurrent(ItemBase value)
-        {
-            if (value is ItemType itemType)
-            {
-                var listItem = new GenericItemResult()
-                {
-                    id = itemType.id,
-                    description = itemType.name,
-                    entity = itemType,
-                    entityType = nameof(ItemType),
-                    isBin = itemType.isBin,
-                    isModule = itemType.isModule,
-                    itemNumber = itemType.itemTypeId.ToString(),
-                    quantity = 0,
-                    /*
-                    siteLocationId = Guid.Empty,
-                    statusId = Guid.Empty,
-                    unitTypeName = null,
-                    parentId = Guid.Empty,
-                    */
-                };
-                return listItem;
-            }
-            throw new ArgumentException("Unable to convert value, expected an ItemType!");
-        }
-
 
         #region OpenManageVendorsWindow Command
 
@@ -132,7 +77,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand OpenManageVendorsWindowCommand
         {
-            get { return InitializeCommand(ref _OpenManageVendorsWindowCommand, param => DoOpenManageVendorsWindowCommand(), param => IsSelectedItem); }
+            get { return InitializeCommand(ref _OpenManageVendorsWindowCommand, param => DoOpenManageVendorsWindowCommand(), param => IsCurrentItemNull); }
         }
         private ICommand _OpenManageVendorsWindowCommand;
 
@@ -166,7 +111,11 @@ namespace TEMS_Inventory.views
             {
                 return InitializeCommand(
                     ref _AddCommand,
-                    param => { CurrentItem = DataRepository.GetDataRepository.GetInitializedItemType(); },
+                    param =>
+                    {
+                        var defaultItem = DataRepository.GetDataRepository.GetInitializedItemType();
+                        Mapper.GetMapper().Map(defaultItem, this);
+                    },
                     param => { return true; }
                 );
             }
@@ -185,26 +134,16 @@ namespace TEMS_Inventory.views
                     ref _CloneCommand,
                     param =>
                     {
-                        var clonedItem = DataRepository.GetDataRepository.GetInitializedItemType();
-                        var itemType = CurrentItem as ItemType;
-                        clonedItem.associatedItems = itemType.associatedItems;
-                        clonedItem.batteryCount = itemType.batteryCount;
-                        clonedItem.batteryType = itemType.batteryType;
-                        clonedItem.category = itemType.category;
-                        clonedItem.expirationRestockCategory = itemType.expirationRestockCategory;
-                        clonedItem.cost = itemType.cost;
-                        clonedItem.isBin = itemType.isBin;
-                        clonedItem.isModule = itemType.isModule;
-                        clonedItem.make = itemType.make;
-                        clonedItem.model = itemType.model;
-                        clonedItem.name = itemType.name;
-                        clonedItem.notes = itemType.notes;
-                        clonedItem.unitOfMeasure = itemType.unitOfMeasure;
-                        clonedItem.vendor = itemType.vendor;
-                        clonedItem.weight = itemType.weight;
-                        clonedItem.documents = new ObservableCollection<Document>(itemType.documents);
-                        clonedItem.images = new ObservableCollection<Image>(itemType.images);
-                        CurrentItem = clonedItem;
+                        // get a new unique id, upon saving this will then map to a new (cloned) record
+                        var defaultItem = DataRepository.GetDataRepository.GetInitializedItemType();
+                        guid = defaultItem.id;
+                        itemTypeId = defaultItem.itemTypeId;
+                        CurrentItem.id = guid;
+                        CurrentItem.entity = null;
+
+                        // TODO verify if need to fixup documents and images
+                        //clonedItem.documents = new ObservableCollection<Document>(itemType.documents);
+                        //clonedItem.images = new ObservableCollection<Image>(itemType.images);
                     },
                     param => { return (CurrentItem != null); }
                 );
@@ -220,7 +159,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand DeleteCommand
         {
-            get { return InitializeCommand(ref _DeleteCommand, param => this.DoDelete(), param => IsSelectedItem); }
+            get { return InitializeCommand(ref _DeleteCommand, param => this.DoDelete(), param => guid != Guid.Empty); }
         }
         private ICommand _DeleteCommand;
 
@@ -229,9 +168,9 @@ namespace TEMS_Inventory.views
         /// Allows subclasses to alter how deletion occurs, e.g. remove additional tables or files
         /// </summary>
         /// <param name="item"></param>
-        protected virtual void DoDeleteItem(ItemBase item)
+        protected virtual void DoDeleteItem(Guid id)
         {
-            DataRepository.GetDataRepository.Delete(item);
+            //DataRepository.GetDataRepository.DeleteItemType(item);
         }
 
         /// <summary>
@@ -250,23 +189,17 @@ namespace TEMS_Inventory.views
                         try
                         {
                             // actually remove from DB
-                            if (CurrentItem != null) DoDeleteItem(CurrentItem);
-                            // update display
-                            Items.Remove(SelectedItem);
-                            //RaisePropertyChanged(nameof(items));
+                            if (CurrentItem != null) DoDeleteItem(guid);
+                            // initiate a new search and selection to update search pane
                         }
                         catch (Exception e)
                         {
-                            logger.Error(e, "Failed to delete selected item!");
+                            logger.Error(e, $"Failed to delete selected item! {guid}");
                             //throw; swallow error, todo - show an error!
                         }
                     },
 
                 });
-
-
-            // either item removed (no item) or delete canceled/failed - either way don't leave item selected
-            SelectedItem = null;
         }
 
         #endregion DeleteCommand
@@ -356,20 +289,17 @@ namespace TEMS_Inventory.views
             {
                 try
                 {
-                    if (CurrentItem is ItemType itemType)
+                    Document doc = new Document
                     {
-                        Document doc = new Document
-                        {
-                            data = SelectDataFile(out string filename, "Document files(*.doc, *.txt) | *.doc; *.txt | All files(*.*) | *.*")
-                        };
-                        if (doc.data.Length > 0)
-                        {
-                            doc.name = filename;
-                            doc.description = filename; // for now so filename shows in tooltip
-                            itemType.documents.Add(doc);
-                            // force change so SaveUser knows currentItem has changed   TODO implement better
-                            itemType.documents = itemType.documents; // forces IsChanged == true & Raising documents changed
-                        }
+                        data = SelectDataFile(out string filename, "Document files(*.doc, *.txt) | *.doc; *.txt | All files(*.*) | *.*")
+                    };
+                    if (doc.data.Length > 0)
+                    {
+                        doc.name = filename;
+                        doc.description = filename; // for now so filename shows in tooltip
+                        documents.Add(doc);
+                        // force change so SaveUser knows currentItem has changed   TODO implement better
+                        documents = documents; // forces IsChanged == true & Raising documents changed
                     }
                 }
                 catch (Exception e)
@@ -402,13 +332,13 @@ namespace TEMS_Inventory.views
         {
             try
             {
-                if (CurrentItem is ItemType itemType /* && currentDocument != null */)
+                if (CurrentDocument != null)
                 {
                     // TODO actually delete from DB
 
-                    itemType.documents.Remove(CurrentDocument);
+                    documents.Remove(CurrentDocument);
                     // force IsChanged and raising properties changed
-                    itemType.documents = itemType.documents;
+                    documents = documents;
                 }
             }
             catch (Exception e)
@@ -479,7 +409,7 @@ namespace TEMS_Inventory.views
         {
             get
             {
-                var imageXofN = (CurrentImage == null) ? "no images" : $"{CurrentImageIndex + 1} of {((ItemType)CurrentItem).images.Count}";
+                var imageXofN = (CurrentImage == null) ? "no images" : $"{CurrentImageIndex + 1} of {images.Count}";
                 return $"Image: {imageXofN}";
             }
         }
@@ -502,12 +432,11 @@ namespace TEMS_Inventory.views
             set
             {
                 // select first image
-                var itemType = CurrentItem as ItemType;
-                if ((value >= 0) && (value < itemType?.images.Count))
+                if ((value >= 0) && (value < images.Count))
                 {
                     SetProperty<int>(ref _currentImageIndex, value, nameof(CurrentImageIndex));
                     //currentImage = itemType.images.First<Image>();
-                    CurrentImage = itemType.images[_currentImageIndex];
+                    CurrentImage = images[_currentImageIndex];
                 }
                 else
                 {
@@ -525,7 +454,7 @@ namespace TEMS_Inventory.views
         {
             get
             {
-                if ((CurrentItem as ItemType)?.images?.Count > 1)
+                if (images?.Count > 1)
                 {
                     System.Diagnostics.Debug.WriteLine("HasMultipleImages == true");
                     return true;
@@ -565,7 +494,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand ImageRightCommand
         {
-            get { return InitializeCommand(ref _ImageRightCommand, param => DoImageRightCommand(), param => HasMultipleImages && (CurrentImageIndex < (((ItemType)CurrentItem)?.images?.Count - 1))); }
+            get { return InitializeCommand(ref _ImageRightCommand, param => DoImageRightCommand(), param => HasMultipleImages && (CurrentImageIndex < (images?.Count - 1))); }
         }
         private ICommand _ImageRightCommand;
 
@@ -602,24 +531,21 @@ namespace TEMS_Inventory.views
         {
             try
             {
-                if (CurrentItem is ItemType itemType)
+                Image image = new Image
                 {
-                    Image image = new Image
-                    {
-                        data = SelectDataFile(out string filename, "Image files(*.jpg, *.png, *.bmp, *.gif) | *.jpg; *.png; *.bmp; *.gif | All files(*.*) | *.*")
-                    };
-                    if (image.data.Length > 0)
-                    {
-                        image.name = filename;
-                        image.description = filename; // for now so filename shows in tooltip
-                        itemType.images.Add(image);
-                        // force IsChanged and raising properties changed
-                        itemType.images = itemType.images;
-                        // raise so left and right arrows visibility update correctly
-                        RaisePropertyChanged(nameof(HasMultipleImages));
-                        // assume added as last image in index
-                        CurrentImageIndex = itemType.images.Count - 1;
-                    }
+                    data = SelectDataFile(out string filename, "Image files(*.jpg, *.png, *.bmp, *.gif) | *.jpg; *.png; *.bmp; *.gif | All files(*.*) | *.*")
+                };
+                if (image.data.Length > 0)
+                {
+                    image.name = filename;
+                    image.description = filename; // for now so filename shows in tooltip
+                    images.Add(image);
+                    // force IsChanged and raising properties changed
+                    images = images;
+                    // raise so left and right arrows visibility update correctly
+                    RaisePropertyChanged(nameof(HasMultipleImages));
+                    // assume added as last image in index
+                    CurrentImageIndex = images.Count - 1;
                 }
             }
             catch (Exception e)
@@ -645,17 +571,17 @@ namespace TEMS_Inventory.views
         {
             try
             {
-                if (CurrentItem is ItemType itemType /* && currentImage != null */)
+                if (CurrentImage != null)
                 {
                     // TODO actually delete from DB
 
-                    itemType.images.RemoveAt(CurrentImageIndex);
+                    images.RemoveAt(CurrentImageIndex);
                     // force IsChanged and raising properties changed
-                    itemType.images = itemType.images;
+                    images = images;
                     // raise so left and right arrows visibility update correctly
                     RaisePropertyChanged(nameof(HasMultipleImages));
                     // update displayed image
-                    if (CurrentImageIndex >= itemType.images.Count)
+                    if (CurrentImageIndex >= images.Count)
                         CurrentImageIndex = CurrentImageIndex - 1;
                     else
                         CurrentImageIndex = CurrentImageIndex;

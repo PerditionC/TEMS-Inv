@@ -17,6 +17,7 @@ namespace Tems_Inventory.Tests
     using TEMS.InventoryModel.entity.db.query;
     using TEMS.InventoryModel.entity.db.user;
     using TEMS.InventoryModel.userManager;
+    using TEMS_Inventory.views;
 
     [TestFixture]
     public sealed class ICommandTests
@@ -25,6 +26,10 @@ namespace Tems_Inventory.Tests
 
         private string SampleItemInstance = "b6277b55-7608-4b22-8407-688fca89dbf2";   // ** GUID subject to change, really should save iteminstance then check for that one
         private string SampleItemNumber = "D600-1CFD";
+
+
+        private sealed class TestDetailsViewModel : DetailsViewModelBase { }
+
 
         /// <summary>
         /// loads SQLite and creates and populates our test DB
@@ -391,23 +396,32 @@ namespace Tems_Inventory.Tests
                 SelectItemStatusValuesEnabled = false,
                 SelectItemCategoryValuesEnabled = false
             };
-            var cmd = new SearchItemsCommand(QueryResultEntitySelector.ItemType, searchFilter);
-            Assert.NotNull(cmd, nameof(SearchItemsCommand));
+            Assert.NotNull(searchFilter, nameof(SearchFilterOptions));
+            var resultVM = new TestDetailsViewModel();
+            Assert.NotNull(resultVM, nameof(TestDetailsViewModel));
+            var onSelectionChangedCommand = new OnSelectionChangedCommand(resultVM);
+            Assert.NotNull(onSelectionChangedCommand, nameof(OnSelectionChangedCommand));
+            var searchResultViewModel = new SearchResultViewModel(onSelectionChangedCommand);
+            Assert.NotNull(searchResultViewModel, nameof(SearchResultViewModel));
+            var searchCmd = new SearchItemsCommand(QueryResultEntitySelector.ItemType, searchResultViewModel);
+            Assert.NotNull(searchCmd, nameof(SearchItemsCommand));
 
-            Assert.IsTrue(cmd.CanExecute(searchFilter));
+            Assert.IsTrue(searchCmd.CanExecute(searchFilter));
 
-            Assert.IsNull(cmd.selectedItem);
-            Assert.That(cmd.searchResults.Count, Is.EqualTo(0));
-            cmd.Execute(null);
-            Assert.That(cmd.searchResults.Count, Is.GreaterThan(0));
+            Assert.IsNull(resultVM.CurrentItem);  // nothing selected to display details of
+            Assert.That(searchResultViewModel.Items.Count, Is.EqualTo(0)); // no search results or empty search results
+            searchCmd.Execute(searchFilter);
+            Assert.That(searchResultViewModel.Items.Count, Is.GreaterThan(0));
 
-            var searchResult = cmd.searchResults.First();
-            Assert.NotNull(searchResult);
+            searchResultViewModel.SelectedItem = searchResultViewModel.Items.First();
+            Assert.NotNull(searchResultViewModel.SelectedItem);
+            Assert.NotNull(resultVM.CurrentItem);
+
             var loadCmd = new LoadItemCommand();
-            Assert.IsTrue(loadCmd.CanExecute(searchResult));
+            Assert.IsTrue(loadCmd.CanExecute(resultVM.CurrentItem));
 
             Assert.IsNull(loadCmd.ItemLoaded);
-            loadCmd.Execute(searchResult);
+            loadCmd.Execute(resultVM.CurrentItem);
             Assert.NotNull(loadCmd.ItemLoaded);
             var item = loadCmd.ItemLoaded;
             Assert.NotNull(item);
@@ -480,7 +494,7 @@ namespace Tems_Inventory.Tests
             var item = db.Load<ItemInstance>(SampleItemInstance);
             Assert.NotNull(item);
             // force known value
-            item.status = db.ReferenceData[nameof(ItemStatus)].ByName<ItemStatus>("Available");  
+            item.status = db.ReferenceData[nameof(ItemStatus)].ByName<ItemStatus>("Available");
             db.Save(item);
             item = db.Load<ItemInstance>(SampleItemInstance);
             Assert.That(item.status.name, Is.EqualTo("Available"));
@@ -502,16 +516,32 @@ namespace Tems_Inventory.Tests
                 SelectItemStatusValuesEnabled = false,
                 SelectItemCategoryValuesEnabled = false
             };
-            var searchCmd = new SearchItemsCommand(QueryResultEntitySelector.ItemInstance, searchFilter);
+            Assert.NotNull(searchFilter, nameof(SearchFilterOptions));
+            var resultVM = new TestDetailsViewModel();
+            Assert.NotNull(resultVM, nameof(TestDetailsViewModel));
+            var onSelectionChangedCommand = new OnSelectionChangedCommand(resultVM);
+            Assert.NotNull(onSelectionChangedCommand, nameof(OnSelectionChangedCommand));
+            var searchResultViewModel = new SearchResultViewModel(onSelectionChangedCommand);
+            Assert.NotNull(searchResultViewModel, nameof(SearchResultViewModel));
+            var searchCmd = new SearchItemsCommand(QueryResultEntitySelector.ItemType, searchResultViewModel);
             Assert.NotNull(searchCmd, nameof(SearchItemsCommand));
-            searchCmd.Execute(null);
-            var results = searchCmd.searchResults.FirstOrDefault();
-            Assert.NotNull(results);
-            Assert.NotNull(searchCmd.selectedItem);
-            Assert.That(searchCmd.selectedItem.id, Is.Not.EqualTo(item.id));
+            //var searchFilterOptionsViewModel = new SearchFilterOptionsViewModel(searchFilter, QueryResultEntitySelector.ItemInstance, searchResultViewModel);
+            //Assert.NotNull(searchFilterOptionsViewModel);
+
+            Assert.IsTrue(searchCmd.CanExecute(searchFilter));
+
+            Assert.IsNull(resultVM.CurrentItem);  // nothing selected to display details of
+            Assert.That(searchResultViewModel.Items.Count, Is.EqualTo(0)); // no search results or empty search results
+            searchCmd.Execute(searchFilter);
+            Assert.That(searchResultViewModel.Items.Count, Is.GreaterThan(0));
+
+            searchResultViewModel.SelectedItem = searchResultViewModel.Items.First();
+            Assert.NotNull(searchResultViewModel.SelectedItem);
+            Assert.NotNull(resultVM.CurrentItem);
+            Assert.That(resultVM.CurrentItem.id, Is.Not.EqualTo(item.id));
 
             // delete new item and restore old item to Available
-            var newItem = db.Load<ItemInstance>(searchCmd.selectedItem.id);
+            var newItem = db.Load<ItemInstance>(resultVM.CurrentItem.id);
             Assert.That(newItem.status.name, Is.EqualTo("Available"));
             item.status = db.ReferenceData[nameof(ItemStatus)].ByName<ItemStatus>("Available");
             item.removedServiceDate = null;

@@ -2,22 +2,17 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 using System;
-using NLog;
 
 namespace TEMS_Inventory.views
 {
     /// <summary>
     /// Interaction logic for ItemTypeManagementWindow.xaml
     /// </summary>
-    public partial class ItemTypeManagementWindow : BasicSearchWindowBase
+    public partial class ItemTypeManagementWindow : BasicWindowBase
     {
-        public ItemTypeManagementWindow() : this(null) { }
-        public ItemTypeManagementWindow(ItemTypeManagementViewModel ViewModel)
+        public ItemTypeManagementWindow(ItemTypeManagementViewModel ViewModel) : base(ViewModel)
         {
-            this.ViewModel = ViewModel ?? new ItemTypeManagementViewModel();
-            this.DataContext = this.ViewModel;
             InitializeComponent();
-            InitializeViewModel();
         }
     }
 }

@@ -5,15 +5,18 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+#if NET40
+using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, while in .Net4.5+ it moved to System.dll
+#endif
+
 using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.entity.db.query;
 
 namespace TEMS_Inventory.views
 {
-    public class ServiceHistoryViewModel : HistoryWindowViewModel
+    public class HistoryServiceViewModel : EventHistoryViewModelBase
     {
-        public ServiceHistoryViewModel() : this(null) { }
-        public ServiceHistoryViewModel(SearchFilterOptions SearchFilter) : base(SearchFilter) { }
+        public HistoryServiceViewModel() : base() { }
 
         /// <summary>
         /// Command to open edit item window with this item selected so can be modified/viewed
@@ -24,17 +27,7 @@ namespace TEMS_Inventory.views
             ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
         }
 
-
-        /// ****** PUT THIS IN ICommand OnUpdateServiceHistorySelection *********
-        /// <summary>
-        /// Invoked when the current SelectedItem changes to update corresponding Events collection for newly selected item(s)
-        /// </summary>
-        /// <param name="SelectedItem"></param>
-        public override void UpdateEvents(SearchResult SelectedItem)
-        {
-            Events = new ObservableCollection<ItemBase>(((IEnumerable)DataRepository.GetDataRepository.GetItemServiceEvents(SelectedItem)).Cast<ItemBase>());
-        }
-
+        /*
         /// <summary>
         /// Command to open edit item window with this item selected so can be modified/viewed
         /// </summary>
@@ -53,6 +46,7 @@ namespace TEMS_Inventory.views
 
             ShowWindow(newWin);
         }
+        */
 
 
 
@@ -61,14 +55,16 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand ServiceItemCommand
         {
-            get { return InitializeCommand(ref _ServiceItemCommand, param => DoServiceItemCommand(), param => isCurrentItem()); }
+            get { return InitializeCommand(ref _ServiceItemCommand, param => DoServiceItemCommand(), param => !IsCurrentItemNull); }
         }
         private ICommand _ServiceItemCommand;
 
         private void DoServiceItemCommand()
         {
-            var newWin = new ServiceDetailsWindow((currentItem as ItemInstance));
+            /*
+            var newWin = new DetailsServiceViewModel((currentItem as ItemInstance));
             ShowChildWindow(newWin);
+            */
         }
     }
 }

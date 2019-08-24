@@ -1,4 +1,4 @@
-﻿<views:BasicSearchWindowBase x:Class="TEMS_Inventory.views.DeployRecoverHistoryWindow"
+﻿<views:BasicWindowBase x:Class="TEMS_Inventory.views.DeployRecoverHistoryWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
@@ -15,7 +15,7 @@
         Title="Deploy (and Recover) History" >
 
     <DockPanel Background="OldLace" x:Name="rootItem">
-        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" SearchFilterCommand="{Binding SearchFilterCommand, Mode=TwoWay}" />
+        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" DataContext="{Binding SearchFilter}" />
 
         <!--  change so left is treeview, on select item open in right side for details
         Note: no add or delete as that is done on Item view (since effects all sites)
@@ -269,4 +269,4 @@
             </DockPanel>
         </Grid>
     </DockPanel>
-</views:BasicSearchWindowBase>
+</views:BasicWindowBase>

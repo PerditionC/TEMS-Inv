@@ -1,4 +1,4 @@
-﻿<views:BasicSearchWindowBase x:Class="TEMS_Inventory.views.DamagedMissingHistoryWindow"
+﻿<views:BasicWindowBase x:Class="TEMS_Inventory.views.DeployRecoverDetailsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
@@ -69,4 +69,4 @@
 
         </GroupBox>
     </DockPanel>
-    </views:BasicSearchWindowBase>
+    </views:BasicWindowBase>

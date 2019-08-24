@@ -5,15 +5,18 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
 
+#if NET40
+using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, while in .Net4.5+ it moved to System.dll
+#endif
+
 using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.entity.db.query;
 
 namespace TEMS_Inventory.views
 {
-    public class HistoryDamagedMissingViewModel : HistoryWindowViewModel
+    public class HistoryDamagedMissingViewModel : EventHistoryViewModelBase
     {
-        public HistoryDamagedMissingViewModel() : this(null) { }
-        public HistoryDamagedMissingViewModel(SearchFilterOptions SearchFilter) : base(SearchFilter) { }
+        public HistoryDamagedMissingViewModel() : base() { }
 
         /// <summary>
         /// Command to open edit item window with this item selected so can be modified/viewed
@@ -24,30 +27,23 @@ namespace TEMS_Inventory.views
             ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
         }
 
-        /// <summary>
-        /// Invoked when the current SelectedItem changes to update corresponding Events collection for newly selected item(s)
-        /// </summary>
-        /// <param name="SelectedItem"></param>
-        public override void UpdateEvents(SearchResult SelectedItem)
-        {
-            Events = new ObservableCollection<ItemBase>(((IEnumerable)DataRepository.GetDataRepository.GetDamageMissingEvents(SelectedItem)).Cast<ItemBase>());
-        }
-
 
         /// <summary>
         /// Command to create an event record of item as damaged
         /// </summary>
         public ICommand DamagedCommand
         {
-            get { return InitializeCommand(ref _DamagedCommand, param => DoDamagedCommand(), param => isCurrentItem()); }
+            get { return InitializeCommand(ref _DamagedCommand, param => DoDamagedCommand(), param => !IsCurrentItemNull); }
         }
         private ICommand _DamagedCommand;
 
         private void DoDamagedCommand()
         {
+            /*
             var newWin = new DamagedMissingDetailsWindow();
             //searchFilter.SearchText = (currentItem as ItemInstance)?.itemNumber?.ToString() ?? "";
             ShowChildWindow(newWin);
+            */
         }
 
 
@@ -56,14 +52,16 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand MissingCommand
         {
-            get { return InitializeCommand(ref _MissingCommand, param => DoMissingCommand(), param => isCurrentItem()); }
+            get { return InitializeCommand(ref _MissingCommand, param => DoMissingCommand(), param => !IsCurrentItemNull); }
         }
         private ICommand _MissingCommand;
 
         private void DoMissingCommand()
         {
+            /*
             var newWin = new DamagedMissingDetailsWindow();
             ShowChildWindow(newWin);
+            */
         }
 
     }

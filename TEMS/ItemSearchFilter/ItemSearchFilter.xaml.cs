@@ -20,22 +20,22 @@ namespace TEMS_Inventory.UserControls
 
         public ItemSearchFilter()
         {
-            ViewModel = new ItemSearchFilterViewModel();
+            ViewModel = new SearchFilterOptionsViewModel();
             this.DataContext = ViewModel;
 
             InitializeComponent();
         }
 
 
-        public ItemSearchFilterViewModel ViewModel
+        public SearchFilterOptionsViewModel ViewModel
         {
-            get { return (ItemSearchFilterViewModel)GetValue(ViewModelProperty); }
+            get { return (SearchFilterOptionsViewModel)GetValue(ViewModelProperty); }
             set { SetValue(ViewModelProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ViewModel.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ViewModelProperty =
-            DependencyProperty.Register("ViewModel", typeof(ItemSearchFilterViewModel), typeof(ItemSearchFilter));
+            DependencyProperty.Register("ViewModel", typeof(SearchFilterOptionsViewModel), typeof(ItemSearchFilter));
 
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace TEMS_Inventory.UserControls
         public SearchItemsCommand SearchFilterCommand
         {
             get { return (SearchItemsCommand)GetValue(SearchFilterCommandProperty); }
-            set { SetValue(SearchFilterCommandProperty, value); ViewModel.SearchFilterCommand = value; }
+            //set { SetValue(SearchFilterCommandProperty, value); ViewModel.SearchFilterCommand = value; }
         }
 
         public static readonly DependencyProperty SearchFilterCommandProperty =

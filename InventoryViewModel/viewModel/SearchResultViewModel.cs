@@ -12,9 +12,37 @@ using TEMS.InventoryModel.command.action;
 using TEMS.InventoryModel.entity.db.query;
 
 
+/** in Window, need to init
+        {
+            SearchFilterCommand = new SearchItemsCommand(resultEntitySelector, searchFilter);
+
+            // initialize SearchFilter, 
+            // Note: search is not triggered until SearchFilterEnabled == true, so can set values in any order
+            var db = DataRepository.GetDataRepository;
+            SearchFilter.User = UserManager.GetUserManager.CurrentUser();
+
+            // default to all choices possible with all selected
+            SearchFilter.ItemStatusValues = new List<object>(db.ReferenceData[nameof(ItemStatus)]);
+            SearchFilter.SelectedItemStatusValues = new List<object>(SearchFilter.ItemStatusValues);
+
+            SearchFilter.ItemCategoryValues = new List<object>(db.ReferenceData[nameof(ItemCategory)]);
+            SearchFilter.SelectedItemCategoryValues = new List<object>(SearchFilter.ItemCategoryValues);
+
+            SearchFilter.EquipmentUnits = new List<object>(db.ReferenceData[nameof(EquipmentUnitType)]);
+            SearchFilter.SelectedEquipmentUnits = new List<object>(SearchFilter.EquipmentUnits);
+
+            SearchFilter.SelectItemStatusValuesVisible = false;
+            // don't include out of service items by default either
+
+            // from this point on, trigger changes based on any changes to our SearchFilter
+            SearchFilterCommand.PropertyChanged += SearchCmd_PropertyChanged;
+            SearchFilterCommand.SearchFilter.PropertyChanged += SearchFilter_PropertyChanged;
+        }
+ */
+
 namespace TEMS_Inventory.views
 {
-    public abstract class SearchResultViewModel : ViewModelBase
+    public class SearchResultViewModel : ViewModelBase
     {
         private OnSelectionChangedCommand onSelectionChangedCommand;
 

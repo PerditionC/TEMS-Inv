@@ -12,16 +12,16 @@ using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, 
 using TEMS.InventoryModel.command.action;
 using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.entity.db.query;
-using TEMS.InventoryModel.userManager;
+
 
 namespace TEMS_Inventory.views // InventoryViewModel.viewModel
 {
     /// <summary>
     /// performs search filtering (search pane VM) to get a list of items (for result pane VM)
     /// </summary>
-    public class ItemSearchFilterViewModel : ViewModelBase
+    public class SearchFilterOptionsViewModel : ViewModelBase
     {
-        public ItemSearchFilterViewModel(SearchFilterOptions searchFilterOptions, QueryResultEntitySelector resultEntitySelector, SearchResultViewModel searchResultViewModel) : base()
+        public SearchFilterOptionsViewModel(SearchFilterOptions searchFilterOptions, QueryResultEntitySelector resultEntitySelector, SearchResultViewModel searchResultViewModel) : base()
         {
             this.SearchFilter = searchFilterOptions;
             SearchFilterCommand = new SearchItemsCommand(resultEntitySelector, searchResultViewModel);
@@ -60,7 +60,7 @@ namespace TEMS_Inventory.views // InventoryViewModel.viewModel
         /// <summary>
         /// initialization
         /// </summary>
-        public ItemSearchFilterViewModel()
+        public SearchFilterOptionsViewModel()
         {
             RegisterHandlers();
         }
@@ -68,7 +68,7 @@ namespace TEMS_Inventory.views // InventoryViewModel.viewModel
         /// <summary>
         /// cleanup - specifically ensure any events we subscribed to we un-subscribe
         /// </summary>
-        ~ItemSearchFilterViewModel()
+        ~SearchFilterOptionsViewModel()
         {
             UnRegisterHandlers();
         }
@@ -108,7 +108,7 @@ namespace TEMS_Inventory.views // InventoryViewModel.viewModel
             }
             catch (Exception e)
             {
-                logger.Warn(e, "Item Search Filter - unregister handlers.");
+                logger?.Warn(e, "Item Search Filter - unregister handlers.");
             }
 
         }

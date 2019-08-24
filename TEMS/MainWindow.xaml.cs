@@ -203,6 +203,7 @@ namespace TEMS_Inventory.views
                     LogOutBtn();
                     return;
 
+/*
                 // asset management
                 case "GenInvMngt":
                     newWin = new GeneralInventoryManagementWindow();
@@ -239,6 +240,7 @@ namespace TEMS_Inventory.views
                 case "ManageItemTypes":
                     newWin = new ItemTypeManagementWindow();
                     break;
+        */
                 case "EditReferenceData":
                     newWin = new ReferenceDataWindow();
                     break;

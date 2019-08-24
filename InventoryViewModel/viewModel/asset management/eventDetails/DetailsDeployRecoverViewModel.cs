@@ -25,7 +25,7 @@ namespace TEMS_Inventory.views
             {
                 SetProperty(ref _StatusAvailable, value, nameof(StatusAvailable));
                 RaisePropertyChanged(nameof(StatusDeployed));
-                updateStatusSearchFilter();
+                //updateStatusSearchFilter();
             }
         }
         public bool StatusDeployed
@@ -35,6 +35,7 @@ namespace TEMS_Inventory.views
         }
         private bool _StatusAvailable = true;
 
+        /*
         private void updateStatusSearchFilter()
         {
             // save if currently disabled or not so we don't enable too early (if currently not enabled)
@@ -57,5 +58,6 @@ namespace TEMS_Inventory.views
             // trigger update is currently enabled
             SearchFilter.SearchFilterEnabled = wasEnabled;
         }
+        */
     }
 }

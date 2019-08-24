@@ -21,8 +21,10 @@ namespace TEMS_Inventory.views
         public SearchResult CurrentItem
         {
             get { return _CurrentItem; }
-            set { SetProperty(ref _CurrentItem, value, nameof(CurrentItem)); }
+            set { SetProperty(ref _CurrentItem, value, nameof(CurrentItem)); RaisePropertyChanged(nameof(IsCurrentItemNull)); }
         }
         private SearchResult _CurrentItem = null;
+
+        public bool IsCurrentItemNull { get { return _CurrentItem == null; } }
     }
 }

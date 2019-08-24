@@ -16,7 +16,7 @@ namespace TEMS_Inventory.views
     /// base class for detail pane view models that show a list of events
     /// subclasses may add additional ICommand actions to perform on selected event
     /// </summary>
-    public abstract class HistoryDetailsViewModelBase : DetailsViewModelBase
+    public abstract class EventHistoryViewModelBase : DetailsViewModelBase
     {
         /// <summary>
         /// maintains results from last Search (or empty list initially)

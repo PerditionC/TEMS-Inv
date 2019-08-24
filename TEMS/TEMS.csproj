@@ -137,7 +137,6 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
-    <Compile Include="BasicSearchWindowBase.cs" />
     <Compile Include="BasicWindowBase.cs" />
     <Compile Include="FilePicker\FileOpenPicker.cs" />
     <Compile Include="FilePicker\FilePickerBase.xaml.cs">

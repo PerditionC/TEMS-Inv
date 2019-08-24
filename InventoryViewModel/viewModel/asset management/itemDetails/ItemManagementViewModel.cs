@@ -7,9 +7,9 @@ using System.Linq;
 
 #if NET40
 using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, while in .Net4.5+ it moved to System.dll
-using TEMS.InventoryModel.command.action;
 #endif
 
+using TEMS.InventoryModel.command.action;
 using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.userManager;
 using TEMS.InventoryModel.util;
@@ -112,11 +112,13 @@ namespace TEMS_Inventory.views
 
         private void DoOpenEditItemTypeWindowCommand()
         {
+            /*
             var viewModel = new ItemTypeManagementViewModel();
             var searchFilter = viewModel.SearchFilter;
             searchFilter.SearchFilterVisible = false;
             searchFilter.SearchText = (CurrentItem as Item)?.itemNumber?.ToString() ?? "";
             ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+            */
         }
 
         #endregion // Open item edit Window
@@ -153,7 +155,7 @@ namespace TEMS_Inventory.views
                     ref _CloneCommand,
                     param =>
                     {
-                        var item = CurrentItem as Item;
+                        var item = CurrentItem;
                         var clonedItem = DataRepository.GetDataRepository.GetInitializedItem(item.parent, item.itemType);
                         clonedItem.count = item.count;
                         clonedItem.expirationDate = item.expirationDate;
@@ -185,8 +187,10 @@ namespace TEMS_Inventory.views
                         // see if SelectedItem is a header and use it's parent as parent
                         if (parent == null)
                         {
+                            /*
                             if ((SelectedItem != null) && (SelectedItem is GroupHeader))
                                 parent = SelectedItem.parent.entity as Item;
+                            */
                         }
                         // but if make sure it is bin or module, otherwise no parent (top level)
                         else if (!(parent.itemType.isBin || parent.itemType.isModule))
@@ -221,12 +225,14 @@ namespace TEMS_Inventory.views
 
             // after saving update tree (will reload from db hence must be done after saving)
             var childItem = CurrentItem as Item;
+            /*
             if (SelectedItem?.parent?.parent?.parentId != childItem?.parentId)
             {
                 if (SearchFilterCommand.CanExecute(null)) SearchFilterCommand.Execute(null);
                 CurrentItem = childItem;
                 if (CurrentItem == null) logger.Debug("CurrentItem null after saving.");
             }
+            */
         }
 
 
@@ -244,9 +250,11 @@ namespace TEMS_Inventory.views
                         try
                         {
                             // remove from list
+                            /*
                             var pList = SelectedItem.parent.children;
                             var index = pList.IndexOf(SelectedItem);
                             if (index >= 0) pList.RemoveAt(index);
+                            */
                             // and from DB
                             DeleteItemCommand.Execute(CurrentItem);
                             // indicate nothing selected
@@ -265,5 +273,4 @@ namespace TEMS_Inventory.views
         private ICommand _DeleteCommand;
         private ICommand DeleteItemCommand = new DeleteItemCommand();
     }
-}
 }
