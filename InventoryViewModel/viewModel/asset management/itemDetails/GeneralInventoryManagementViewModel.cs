@@ -28,19 +28,9 @@ using TEMS.InventoryModel.userManager;
 
 namespace TEMS_Inventory.views
 {
-    public class GeneralInventoryManagementViewModel : DetailsViewModelBase
+    public class GeneralInventoryManagementViewModel : ItemDetailsViewModel
     {
         public GeneralInventoryManagementViewModel() : base() { }
-
-        /// <summary>
-        /// does active user have administrative privileges or just normal user privileges
-        /// true if limited to user privileges
-        /// </summary>
-        public bool IsAdmin
-        {
-            get { return UserManager.GetUserManager.CurrentUser().isAdmin; }
-        }
-
 
         /// <summary>
         /// Command to open edit item window with this item selected so can be modified/viewed

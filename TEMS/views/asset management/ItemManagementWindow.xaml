@@ -13,12 +13,12 @@
         Height="600" Width="960" WindowStartupLocation="CenterOwner"
         Icon="/images/MMRSLogo.ico"
         Title="Item Management" >
-    <Window.InputBindings>
+    <views:BasicWindowBase.InputBindings>
         <!--<KeyBinding Command="{Binding SaveCommand,Source={Binding ViewModel}}" Key="S" Modifiers="Ctrl"/>-->
-    </Window.InputBindings>
+    </views:BasicWindowBase.InputBindings>
 
     <DockPanel Background="OldLace" x:Name="rootItem">
-        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" SearchFilterCommand="{Binding SearchFilterCommand, Mode=TwoWay}" />
+        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" />
 
 
         <!--  change so left is treeview, on select item open in right side for details

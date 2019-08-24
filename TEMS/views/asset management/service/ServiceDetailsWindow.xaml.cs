@@ -10,7 +10,7 @@ namespace TEMS_Inventory.views
     /// </summary>
     public partial class ServiceDetailsWindow : BasicWindowBase
     {
-        public ServiceDetailsWindow(HistoryServiceViewModel ViewModel) : base(ViewModel)
+        public ServiceDetailsWindow(DetailsDeployRecoverViewModel ViewModel) : base(ViewModel)
         {
             InitializeComponent();
         }

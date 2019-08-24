@@ -87,30 +87,42 @@ namespace Tems_Inventory.InventoryViewModel.Tests
             Assert.AreEqual(searchResultViewModel.Items.Count, 1);
         }
 
-        [Test]
-        public void GeneralInventoryManagementViewModel02_Save()
+        private SearchDetailWindowViewModel GetSearchDetailWindowViewModelForGIM()
         {
             var searchFilter = new SearchFilterOptions();
             searchFilter.Initialize();
             Assert.NotNull(searchFilter, nameof(SearchFilterOptions));
+
             var vm = new GeneralInventoryManagementViewModel();
             Assert.NotNull(vm, nameof(GeneralInventoryManagementViewModel));
+
             var onSelectionChangedCommand = new UpdateDetailsGeneralInventoryManagementCommand(vm);
             Assert.NotNull(onSelectionChangedCommand, nameof(OnSelectionChangedCommand));
+
             var searchResultViewModel = new SearchResultViewModel(onSelectionChangedCommand);
             Assert.NotNull(searchResultViewModel, nameof(SearchResultViewModel));
+
             var searchFilterOptionsViewModel = new SearchFilterOptionsViewModel(searchFilter, QueryResultEntitySelector.ItemInstance, searchResultViewModel);
             Assert.NotNull(searchFilterOptionsViewModel);
 
-            searchFilter.SearchText = SampleItemNumber;
-            searchFilter.SearchFilterEnabled = true;
-            searchFilterOptionsViewModel.SearchTextCommand.Execute(null);
-            Assert.NotNull(searchResultViewModel.Items);
-            Assert.AreEqual(searchResultViewModel.Items.Count, 1);
+            var GIM = new SearchDetailWindowViewModel(searchFilterOptionsViewModel, searchResultViewModel, vm);
+            return GIM;
+        }
+
+        [Test]
+        public void GeneralInventoryManagementViewModel02_Save()
+        {
+            var searchWin = GetSearchDetailWindowViewModelForGIM();
+
+            searchWin.SearchFilterOptions.SearchFilter.SearchText = SampleItemNumber;
+            searchWin.SearchFilterOptions.SearchFilter.SearchFilterEnabled = true;
+            searchWin.SearchFilterOptions.SearchTextCommand.Execute(null);
+            Assert.NotNull(searchWin.SearchResult.Items);
+            Assert.AreEqual(searchWin.SearchResult.Items.Count, 1);
 
 
-            Assert.NotNull(searchResultViewModel.SelectedItem);
-            Assert.NotNull(vm.CurrentItem);
+            Assert.NotNull(searchWin.SearchResult.SelectedItem);
+            Assert.NotNull(searchWin.Details.CurrentItem);
             /* TODO implement save command, it should map vm to ItemInstance and call DB.save; also add properties to vm for mapping
             Assert.False(vm.SaveCommand.CanExecute(null), "Can Save");  // nothing changed so no changes to save
 

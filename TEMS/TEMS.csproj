@@ -143,8 +143,11 @@
       <DependentUpon>FilePickerBase.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="ItemSearchFilter\ItemSearchFilter.xaml.cs">
+    <Compile Include="panes\ItemSearchFilter.xaml.cs">
       <DependentUpon>ItemSearchFilter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="panes\ItemSearchResults.xaml.cs">
+      <DependentUpon>ItemSearchResults.xaml</DependentUpon>
     </Compile>
     <Compile Include="ListAndPropertyGrid\ListAndPropertyGrid.xaml.cs">
       <DependentUpon>ListAndPropertyGrid.xaml</DependentUpon>
@@ -157,8 +160,8 @@
     <Compile Include="views\asset management\damaged or missing\DamagedMissingDetailsWindow.xaml.cs">
       <DependentUpon>DamagedMissingDetailsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="views\asset management\deploy\DeployRecoverDetailsWindow.xaml.cs">
-      <DependentUpon>DeployRecoverDetailsWindow.xaml</DependentUpon>
+    <Compile Include="views\asset management\service\ServiceDetailsWindow.xaml.cs">
+      <DependentUpon>ServiceDetailsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\asset management\deploy\DeployRecoverHistoryWindow.xaml.cs">
       <DependentUpon>DeployRecoverHistoryWindow.xaml</DependentUpon>
@@ -211,8 +214,13 @@
     <Page Include="FilePicker\FilePickerBase.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ItemSearchFilter\ItemSearchFilter.xaml">
+    <Page Include="panes\ItemSearchFilter.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="panes\ItemSearchResults.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="ListAndPropertyGrid\ListAndPropertyGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -251,7 +259,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="views\asset management\deploy\DeployRecoverDetailsWindow.xaml">
+    <Page Include="views\asset management\service\ServiceDetailsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -277,10 +285,6 @@
     </Page>
     <Page Include="views\asset management\ItemTypeManagementWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="views\asset management\service\ServiceDetailsWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="views\asset management\service\ServiceHistoryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

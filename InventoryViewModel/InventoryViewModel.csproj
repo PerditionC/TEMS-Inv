@@ -113,6 +113,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="tests\GIMViewModelTests.cs" />
     <Compile Include="tests\ICommandTests.cs" />
+    <Compile Include="viewModel\asset management\ItemDetailsViewModel.cs" />
     <Compile Include="viewModel\asset management\eventHistory\HistoryDamagedMissingViewModel.cs" />
     <Compile Include="viewModel\asset management\eventHistory\HistoryDeployRecoverViewModel.cs" />
     <Compile Include="viewModel\asset management\eventHistory\HistoryExpirationReplaceViewModel.cs" />
@@ -120,19 +121,19 @@
     <Compile Include="viewModel\asset management\itemDetails\ItemInstanceManagementViewModel.cs" />
     <Compile Include="viewModel\asset management\itemDetails\ItemTypeManagementViewModel.cs" />
     <Compile Include="viewModel\asset management\itemDetails\ItemManagementViewModel.cs" />
-    <Compile Include="viewModel\EventHistoryViewModelBase.cs" />
+    <Compile Include="viewModel\asset management\EventHistoryViewModelBase.cs" />
     <Compile Include="viewModel\asset management\eventDetails\DetailsDamagedMissingViewModel.cs" />
     <Compile Include="viewModel\asset management\eventDetails\DetailsDeployRecoverViewModel.cs" />
     <Compile Include="viewModel\asset management\eventDetails\DetailsExpirationReplaceViewModel.cs" />
     <Compile Include="viewModel\asset management\eventDetails\DetailsServiceViewModel.cs" />
-    <Compile Include="viewModel\EventDetailsViewModel.cs" />
+    <Compile Include="viewModel\asset management\EventDetailsViewModel.cs" />
     <Compile Include="viewModel\asset management\itemDetails\GeneralInventoryManagementViewModel.cs" />
     <Compile Include="viewModel\DetailsViewModelBase.cs" />
     <Compile Include="viewModel\SearchResultViewModel.cs" />
     <Compile Include="viewModel\ItemListToAddEditDeleteViewModel.cs" />
     <Compile Include="viewModel\SearchFilterOptionsViewModel.cs" />
     <Compile Include="viewModel\labels\ViewPrintLabelsViewModel.cs" />
-    <Compile Include="viewModel\MasterDetailItemWindowViewModelBase.cs" />
+    <Compile Include="viewModel\unused -MasterDetailItemWindowViewModelBase.cs" />
     <Compile Include="viewModel\reports\ReportBaseViewModel.cs" />
     <Compile Include="viewModel\system administration\locations\SiteToEquipmentUnitMappingViewModel.cs" />
     <Compile Include="viewModel\system administration\reference data\ReferenceDataViewModel.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="viewModel\system administration\users\ChangePasswordViewModel.cs" />
     <Compile Include="viewModel\system administration\users\ManageUsersViewModel.cs" />
     <Compile Include="viewModel\system administration\vendors\ManageVendorsViewModel.cs" />
+    <Compile Include="viewModel\SearchDetailWindowViewModel.cs" />
     <Compile Include="viewModel\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>

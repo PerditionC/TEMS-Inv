@@ -12,7 +12,6 @@ using InventoryViewModel;
 #endif
 
 using TEMS.InventoryModel.entity.db;
-using TEMS.InventoryModel.userManager;
 using TEMS.InventoryModel.util;
 
 namespace TEMS_Inventory.views
@@ -20,7 +19,7 @@ namespace TEMS_Inventory.views
     /// <summary>
     /// Administration CRUD view model for updating ItemType table
     /// </summary>
-    public class ItemTypeManagementViewModel : DetailsViewModelBase
+    public class ItemTypeManagementViewModel : ItemDetailsViewModel
     {
         public ItemTypeManagementViewModel() : base() { }
 
@@ -38,15 +37,6 @@ namespace TEMS_Inventory.views
             SearchFilter.SelectEquipmentUnitsEnabled = false;
 
          */
-
-        /// <summary>
-        /// does active user have administrative privileges or just normal user privileges
-        /// true if limited to user privileges
-        /// </summary>
-        public bool IsAdmin
-        {
-            get { return UserManager.GetUserManager.CurrentUser().isAdmin; }
-        }
 
 
 

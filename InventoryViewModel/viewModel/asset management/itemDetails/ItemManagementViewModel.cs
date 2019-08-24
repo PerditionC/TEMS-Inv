@@ -11,7 +11,6 @@ using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, 
 
 using TEMS.InventoryModel.command.action;
 using TEMS.InventoryModel.entity.db;
-using TEMS.InventoryModel.userManager;
 using TEMS.InventoryModel.util;
 
 namespace TEMS_Inventory.views
@@ -19,37 +18,19 @@ namespace TEMS_Inventory.views
     /// <summary>
     /// Administration CRUD view model for updating Item table
     /// </summary>
-    public class ItemManagementViewModel : ViewModelBase
+    public class ItemManagementViewModel : ItemDetailsViewModel
     {
         public ItemManagementViewModel() : base() { }
 
         /// <summary>
-        /// does active user have administrative privileges or just normal user privileges
-        /// true if limited to user privileges
-        /// </summary>
-        public bool IsAdmin
-        {
-            get { return UserManager.GetUserManager.CurrentUser().isAdmin; }
-        }
-
-        /// <summary>
-        /// Is there a currently active (non-null) item
-        /// </summary>
-        public bool IsActiveItem
-        {
-            get { return _CurrentItem != null; }
-        }
-
-        /// <summary>
         /// the current item for display (and edit)
         /// </summary>
-        public Item CurrentItem
+        public Item CurrentItem_2remove
         {
             get { return _CurrentItem; }
             set
             {
-                SetProperty(ref _CurrentItem, value, nameof(CurrentItem));
-                RaisePropertyChanged(nameof(IsActiveItem));
+                SetProperty(ref _CurrentItem, value, nameof(CurrentItem_2remove));
             }
         }
         private Item _CurrentItem = null;
@@ -61,9 +42,9 @@ namespace TEMS_Inventory.views
             {
                 if (_AllBinsAndModules == null) _AllBinsAndModules = DataRepository.GetDataRepository.AllBinsAndModules();
 
-                if (CurrentItem != _childItem)
+                if (CurrentItem_2remove != _childItem)
                 {
-                    _childItem = CurrentItem as Item;
+                    _childItem = CurrentItem_2remove as Item;
                     if (_childItem == null)
                     {
                         // no item, no parent
@@ -106,7 +87,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand OpenEditItemTypeWindowCommand
         {
-            get { return InitializeCommand(ref _OpenEditItemTypeWindowCommand, param => DoOpenEditItemTypeWindowCommand(), param => IsActiveItem); }
+            get { return InitializeCommand(ref _OpenEditItemTypeWindowCommand, param => DoOpenEditItemTypeWindowCommand(), param => !IsCurrentItemNull); }
         }
         private ICommand _OpenEditItemTypeWindowCommand;
 
@@ -131,7 +112,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand OpenSelectItemTypeWindowCommand
         {
-            get { return InitializeCommand(ref _OpenSelectItemTypeWindowCommand, param => DoOpenSelectItemTypeWindowCommand(), param => IsActiveItem); }
+            get { return InitializeCommand(ref _OpenSelectItemTypeWindowCommand, param => DoOpenSelectItemTypeWindowCommand(), param => !IsCurrentItemNull); }
         }
         private ICommand _OpenSelectItemTypeWindowCommand;
 
@@ -155,16 +136,16 @@ namespace TEMS_Inventory.views
                     ref _CloneCommand,
                     param =>
                     {
-                        var item = CurrentItem;
+                        var item = CurrentItem_2remove;
                         var clonedItem = DataRepository.GetDataRepository.GetInitializedItem(item.parent, item.itemType);
                         clonedItem.count = item.count;
                         clonedItem.expirationDate = item.expirationDate;
                         clonedItem.notes = item.notes;
                         clonedItem.vehicleCompartment = item.vehicleCompartment;
                         clonedItem.vehicleLocation = item.vehicleLocation;
-                        CurrentItem = clonedItem;
+                        CurrentItem_2remove = clonedItem;
                     },
-                    param => { return (CurrentItem != null); }
+                    param => { return (CurrentItem_2remove != null); }
                 );
             }
         }
@@ -183,7 +164,7 @@ namespace TEMS_Inventory.views
                     param =>
                     {
                         // use current selection as parent for newly added item
-                        var parent = (Item)CurrentItem;
+                        var parent = (Item)CurrentItem_2remove;
                         // see if SelectedItem is a header and use it's parent as parent
                         if (parent == null)
                         {
@@ -197,7 +178,7 @@ namespace TEMS_Inventory.views
                         {
                             parent = parent.parent;
                         }
-                        CurrentItem = DataRepository.GetDataRepository.GetInitializedItem(parent, null);
+                        CurrentItem_2remove = DataRepository.GetDataRepository.GetInitializedItem(parent, null);
                     },
                     param => { return true; }
                 );
@@ -218,13 +199,13 @@ namespace TEMS_Inventory.views
         protected void SaveEntity()
         {
             // for each city with equipments item is in, then ensure an item instance exists (added only if Item does not already exist)
-            if (addItemCommand.CanExecute(CurrentItem)) addItemCommand.Execute(CurrentItem);
+            if (addItemCommand.CanExecute(CurrentItem_2remove)) addItemCommand.Execute(CurrentItem_2remove);
 
             // and ensure changes are saved
-            DataRepository.GetDataRepository.Save(CurrentItem);
+            DataRepository.GetDataRepository.Save(CurrentItem_2remove);
 
             // after saving update tree (will reload from db hence must be done after saving)
-            var childItem = CurrentItem as Item;
+            var childItem = CurrentItem_2remove as Item;
             /*
             if (SelectedItem?.parent?.parent?.parentId != childItem?.parentId)
             {
@@ -256,9 +237,9 @@ namespace TEMS_Inventory.views
                             if (index >= 0) pList.RemoveAt(index);
                             */
                             // and from DB
-                            DeleteItemCommand.Execute(CurrentItem);
+                            DeleteItemCommand.Execute(CurrentItem_2remove);
                             // indicate nothing selected
-                            CurrentItem = null; // SelectedItem is set to parent header
+                            CurrentItem_2remove = null; // SelectedItem is set to parent header
                         }
                         catch (Exception e)
                         {
@@ -266,7 +247,7 @@ namespace TEMS_Inventory.views
                             StatusMessage = $"Failed to remove Item - {e.Message}";
                         }
                     },
-                    param => { return DeleteItemCommand.CanExecute(CurrentItem); }
+                    param => { return DeleteItemCommand.CanExecute(CurrentItem_2remove); }
                 );
             }
         }

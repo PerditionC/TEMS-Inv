@@ -9,8 +9,6 @@
     xmlns:WPFToolkit="clr-namespace:DW.WPFToolkit.Controls;assembly=WPFToolkit"
     xmlns:views="clr-namespace:TEMS_Inventory.views"
     xmlns:uc="clr-namespace:TEMS_Inventory.UserControls"
-        xmlns:local="clr-namespace:TEMS_Inventory.views"
-
         mc:Ignorable="d"
         Height="500" Width="800" WindowStartupLocation="CenterOwner"
         Icon="/images/MMRSLogo.ico"

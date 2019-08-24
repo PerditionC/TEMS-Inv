@@ -15,7 +15,7 @@
         Title="Deploy (and Recover) History" >
 
     <DockPanel Background="OldLace" x:Name="rootItem">
-        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" SearchFilterCommand="{Binding SearchFilterCommand, Mode=TwoWay}" />
+        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" />
 
         <!--  change so left is treeview, on select item open in right side for details
         Note: no add or delete as that is done on Item view (since effects all sites)
