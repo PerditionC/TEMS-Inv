@@ -6,3 +6,5 @@ This software is licensed under an APACHE 2.0 license, with portions based on so
 TEMS, Tidewater EMS, and other trademarks belong to their respective corporations.
 
 =======
+
+See [documentation](docs/README.md) for more details.
