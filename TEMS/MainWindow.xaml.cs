@@ -71,21 +71,9 @@ namespace TEMS_Inventory.views
                 }
                 else
                 {
-                    logger.Trace("Showing " + msg.viewModel.GetType().ToString());
-                    Window window = null;
-                    var vmType = msg.viewModel.GetType().Name.ToString();
-                    switch (vmType)
-                    {
-                        case nameof(ManageVendorsViewModel):
-                            window = new ManageVendorsWindow(msg.viewModel as ManageVendorsViewModel);
-                            break;
-                        case nameof(ItemTypeManagementViewModel):
-                            window = new ItemTypeManagementWindow(msg.viewModel as ItemTypeManagementViewModel);
-                            break;
-                        case nameof(ItemManagementWindow):
-                            window = new ItemManagementWindow(msg.viewModel as ItemManagementViewModel);
-                            break;
-                    }
+                    logger.Trace("Showing " + msg.WindowName);
+                    Window window = ViewModelToWindowMapper.GetWindow(msg.WindowName);
+                    // TODO update ViewModel with any other msg parameters, e.g. SearchText
                     if (window != null)
                     {
                         window.Owner = App.Current.MainWindow; /* this */
@@ -203,48 +191,6 @@ namespace TEMS_Inventory.views
                     LogOutBtn();
                     return;
 
-/*
-                // asset management
-                case "GenInvMngt":
-                    newWin = new GeneralInventoryManagementWindow();
-                    break;
-                case "DeployRecover":
-                    newWin = new DeployRecoverHistoryWindow();
-                    break;
-                case "DamagedMissing":
-                    newWin = new DamagedMissingHistoryWindow();
-                    break;
-                case "Service":
-                    newWin = new ServiceHistoryWindow();
-                    break;
-                case "Expiration":
-                    newWin = new ExpirationWindow();
-                    break;
-
-                // System Administration
-                case "ManageUsers":
-                    newWin = new ManageUsersWindow();
-                    break;
-                case "Replication":
-                    newWin = new ReplicationWindow();
-                    break;
-                case "ManageVendors":
-                    newWin = new ManageVendorsWindow();
-                    break;
-                case "SiteToEquipMapping":
-                    newWin = new SiteToEquipmentUnitMappingWindow();
-                    break;
-                case "ManageItems":
-                    newWin = new ItemManagementWindow();
-                    break;
-                case "ManageItemTypes":
-                    newWin = new ItemTypeManagementWindow();
-                    break;
-        */
-                case "EditReferenceData":
-                    newWin = new ReferenceDataWindow();
-                    break;
-
                 // reports
                 case "ReportSummary":
                     newWin = new ReportWindow("Inventory Report");
@@ -279,12 +225,9 @@ namespace TEMS_Inventory.views
                     initializeDamagedOrMissingReport((ReportWindow)newWin);
                     break;
 
-                // view/print labels
-                case "Labels":
-                    newWin = new ViewPrintLabelsWindow();
+                default:
+                    newWin = ViewModelToWindowMapper.GetWindow(selectedItem?.tag);
                     break;
-
-                    // no default required
             }
 
             if (newWin == null)

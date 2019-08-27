@@ -10,7 +10,7 @@ namespace TEMS_Inventory.views
     /// </summary>
     public partial class ItemTypeManagementWindow : BasicWindowBase
     {
-        public ItemTypeManagementWindow(ItemTypeManagementViewModel ViewModel) : base(ViewModel)
+        public ItemTypeManagementWindow(SearchDetailWindowViewModel ViewModel) : base(ViewModel)
         {
             InitializeComponent();
         }

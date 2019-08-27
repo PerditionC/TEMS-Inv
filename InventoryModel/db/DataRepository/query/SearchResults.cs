@@ -28,9 +28,12 @@ namespace TEMS.InventoryModel.entity.db.query
         public Guid id
         {
             get { return _id; }
-            set { SetProperty(ref _id, value, nameof(id)); }
+            set
+            {
+                SetProperty(ref _id, value, nameof(id));
+                entity = null;
+            }
         }
-
         private Guid _id = Guid.Empty;
 
         /// <summary>
@@ -39,25 +42,43 @@ namespace TEMS.InventoryModel.entity.db.query
         public string entityType
         {
             get { return _entityType; }
-            set { SetProperty(ref _entityType, value, nameof(entityType)); }
+            set {
+                SetProperty(ref _entityType, value, nameof(entityType));
+                entity = null;
+            }
         }
-
         private string _entityType = null;
 
         /// <summary>
-        /// Maintains a reference to entity referenced by this query result, returns null if non specified or already garbage collected
-        /// initially a WeakReference but this led to issues with entity being garbage collected too soon, reconsider if add method to reload so can be transparently reloaded
+        /// Maintains a weak reference to entity referenced by this query result, returns null if non specified or unable to load from DB
+        /// Note: use entityType == null or id==Guid.Empty instead of entity==null for basic checks to avoid unnecessary DB queries
         /// </summary>
         public ItemBase entity
         {
-            /*
-            get { return _entity.IsAlive ? _entity.Target as ItemBase : null; }
-            set { SetProperty(ref _entity, new WeakReference(value), nameof(entity)); }
-            */
-            get; set;
-        }
+            get
+            {
+                if (!_entity.IsAlive || (_entity.Target == null))
+                {
+                    // perform the load, note may throw Exception if unable to load value
+                    try
+                    {
+                        if (id == Guid.Empty) throw new ArgumentOutOfRangeException("Unknown entity id!");
+                        if (string.IsNullOrEmpty(entityType)) throw new ArgumentOutOfRangeException("Unknown entity type!");
 
-        //private WeakReference _entity = new WeakReference(null);
+                        _entity = new WeakReference(DataRepository.GetDataRepository.Load(id, entityType) as ItemBase);
+                    }
+                    catch (Exception e)
+                    {
+                        logger.Error(e, $"Error transparently loading entity from DB! type={entityType}, id={id}");
+                        // WARNING! we swallow exception here, could be bad, but we expect failures if item not in DB, etc.
+                        _entity = new WeakReference(null);
+                    }
+                }
+                return (ItemBase)_entity.Target;
+            }
+            set { SetProperty(ref _entity, new WeakReference(value), nameof(entity)); }
+        }
+        private WeakReference _entity = new WeakReference(null);
 
         /// <summary>
         /// basic textual description of component, e.g. name, description, title, ...

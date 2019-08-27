@@ -6,11 +6,11 @@ using System;
 namespace TEMS_Inventory.views
 {
     /// <summary>
-    /// Interaction logic for ExpirationReplaceHistoryWindow.xaml
+    /// Interaction logic for DamagedMissingDetailsWindow.xaml
     /// </summary>
-    public partial class ExpirationHistoryWindow : BasicWindowBase
+    public partial class DeployRecoverDetailsWindow : BasicWindowBase
     {
-        public ExpirationHistoryWindow(SearchDetailWindowViewModel ViewModel) : base(ViewModel)
+        public DeployRecoverDetailsWindow(DetailsDeployRecoverViewModel ViewModel) : base(ViewModel)
         {
             InitializeComponent();
         }

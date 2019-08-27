@@ -8,7 +8,7 @@ using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, 
 #endif
 
 using TEMS.InventoryModel.entity.db;
-using TEMS.InventoryModel.util;
+using TEMS.InventoryModel.util.attribute;
 
 namespace TEMS_Inventory.views
 {
@@ -19,6 +19,78 @@ namespace TEMS_Inventory.views
     {
         public ItemInstanceManagementViewModel() : base() { }
 
-        // *** TODO add all the properties from ItemInstance here
+        // primary external id; as used in barcode, e.g. D236-19807-NFR
+        [DisplayNameProperty]
+        public string itemNumber
+        {
+            get { return $"{item?.itemNumber}-{siteLocation?.locSuffix}"; }
+        }
+
+        // item specific details for a the specific equipment unit this item instance is part of
+        public Item item
+        {
+            get { return _item; }
+            set
+            {
+                SetProperty(ref _item, value, nameof(item));
+            }
+        }
+        private Item _item;
+
+        // jurisdiction this specific item is located at
+        public SiteLocation siteLocation
+        {
+            get { return _siteLocation; }
+            set
+            {
+                SetProperty(ref _siteLocation, value, nameof(siteLocation));
+            }
+        }
+        private SiteLocation _siteLocation;
+
+
+        // unique serial # if applicable
+        public string serialNumber
+        {
+            get { return _serialNumber; }
+            set { SetProperty(ref _serialNumber, value, nameof(serialNumber)); }
+        }
+        private string _serialNumber = null;
+
+        // grant #, external reference # for grant purposes
+        public string grantNumber { get { return _grantNumber; } set { SetProperty(ref _grantNumber, value, nameof(grantNumber)); } }
+        private string _grantNumber = null;
+
+        // item status, Available, Damaged, etc.
+        public ItemStatus status
+        {
+            get { return _status; }
+            set
+            {
+                SetProperty(ref _status, value, nameof(status));
+            }
+        }
+        private ItemStatus _status;
+
+        // initial service date
+        public DateTime inServiceDate { get { return _inServiceDate; } set { SetProperty(ref _inServiceDate, value, nameof(inServiceDate)); } }
+        private DateTime _inServiceDate = DateTime.MinValue;
+
+        // when removed from service, null if still in service
+        public DateTime? removedServiceDate { get { return _removedServiceDate; } set { SetProperty(ref _removedServiceDate, value, nameof(removedServiceDate)); } }
+        private DateTime? _removedServiceDate = null;
+
+        // has seal been broken
+        public bool isSealBroken { get { return _isSealBroken; } set { SetProperty(ref _isSealBroken, value, nameof(isSealBroken)); } }
+        private bool _isSealBroken = false;
+
+        // has barcode been affixed to item
+        // barcode is itemNumber
+        public bool hasBarcode { get { return _hasBarcode; } set { SetProperty(ref _hasBarcode, value, nameof(hasBarcode)); } }
+        private bool _hasBarcode = false;
+
+        // additional remarks about item
+        public string notes { get { return _notes; } set { SetProperty(ref _notes, value, nameof(notes)); } }
+        private string _notes = null;
     }
 }

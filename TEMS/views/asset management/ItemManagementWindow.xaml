@@ -14,11 +14,11 @@
         Icon="/images/MMRSLogo.ico"
         Title="Item Management" >
     <views:BasicWindowBase.InputBindings>
-        <!--<KeyBinding Command="{Binding SaveCommand,Source={Binding ViewModel}}" Key="S" Modifiers="Ctrl"/>-->
+        <KeyBinding Command="{Binding Details.SaveCommand}" Key="S" Modifiers="Ctrl"/>
     </views:BasicWindowBase.InputBindings>
 
     <DockPanel Background="OldLace" x:Name="rootItem">
-        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" />
+        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" DataContext="{Binding SearchFilterOptions}"/>
 
 
         <!--  change so left is treeview, on select item open in right side for details
@@ -35,7 +35,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <DockPanel  Grid.Column="0" Grid.Row="0"  Margin="3,2,2,3" >
+            <DockPanel  Grid.Column="0" Grid.Row="0"  Margin="3,2,2,3" DataContext="{Binding SearchResult}">
                 <Grid MinWidth="50" VerticalAlignment="Stretch" Margin="5,0" DockPanel.Dock="Right">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -51,7 +51,7 @@
 
                     <Button Grid.Row="1" x:Name="AddButton"    VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding AddCommand}" Content="_Add" />
                     <Button Grid.Row="2" x:Name="CloneButton"  VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding CloneCommand}" Content="_Clone" Visibility="Visible" />
-                    <Button Grid.Row="3" x:Name="EditButton"   VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding EditCommand}" Content="_Edit" Visibility="Collapsed"/>
+                    <Button Grid.Row="3" x:Name="EditButton"   VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Content="_Edit" Visibility="Collapsed"/>
                     <Button Grid.Row="4" x:Name="DeleteButton" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding DeleteCommand}" Content="_Delete" />
                 </Grid>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom" >
@@ -222,7 +222,7 @@
 
             <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" />
 
-            <DockPanel Grid.Column="2" Grid.Row="0" Margin="5,2,2,3" >
+            <DockPanel Grid.Column="2" Grid.Row="0" Margin="5,2,2,3" DataContext="{Binding Details}">
                 <DockPanel DockPanel.Dock="Bottom" Margin="3">
                     <Button x:Name="SaveButton" HorizontalAlignment="Center" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding SaveCommand}" Content="_Save" />
                 </DockPanel>
@@ -232,7 +232,7 @@
                             <TextBox Background="Transparent" BorderThickness="0" ToolTip="Identifies this unique item" >
                                 <TextBox.Style>
                                     <Style TargetType="{x:Type TextBox}">
-                                        <Setter Property="Text" Value="{Binding CurrentItem.itemNumber, Mode=OneWay}"/>
+                                        <Setter Property="Text" Value="{Binding itemNumber, Mode=OneWay}"/>
                                         <Setter Property="BorderThickness" Value="0" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding CurrentItem}" Value="{x:Null}">
@@ -247,17 +247,16 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <DockPanel DockPanel.Dock="Bottom" Margin="3">
                             <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
-                                <!--
+                                <Label Content="{Binding itemType.name, Mode=OneWay, FallbackValue=Unknown Item}"/>
                                 <WPFToolkit:TitledItem Title="DB key:">
-                                    <TextBox Text="{Binding CurrentItem.PrimaryKey}" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
+                                    <TextBox Text="{Binding PrimaryKey}" IsEnabled="False" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
                                 </WPFToolkit:TitledItem>
-                                -->
                                 <!--
                                 <WPFToolkit:TitledItem Title="Name:">
                                     <TextBox x:Name="tbName" Text="{Binding CurrentItem.itemType.name, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding isDetailViewInActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DockPanel}}" ToolTip="Name of this item" />
                                 </WPFToolkit:TitledItem>
                                 -->
-                                <WPFToolkit:TitledItem Title="Item Type:" Margin="0,0,0,13" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                <WPFToolkit:TitledItem Title="Item Type:" Margin="0,0,0,13" IsEnabled="{Binding itemType, Converter={StaticResource NullToBooleanConverter}}">
                                     <DockPanel>
                                         <WrapPanel Orientation="Horizontal" DockPanel.Dock="Right" >
                                             <!-- <Button Content="Select Type" ToolTip="opens quick search for item type" Command="{Binding OpenSelectItemTypeWindowCommand}" Margin="5,0,5,0"/> -->
@@ -278,48 +277,48 @@
                                     <!-- TextPath="name"
                                                   IsSynchronizedWithCurrentItem="True" -->
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Unit:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                    <ComboBox DisplayMemberPath="name" ItemsSource="{Binding cache[EquipmentUnitType]}" SelectedItem="{Binding CurrentItem.unitType}" ToolTip="Select equipment unit (trailer) type" />
+                                <WPFToolkit:TitledItem Title="Unit:" IsEnabled="{Binding IsCurrentItemNull}">
+                                    <ComboBox DisplayMemberPath="name" ItemsSource="{Binding cache[EquipmentUnitType]}" SelectedItem="{Binding unitType}" ToolTip="Select equipment unit (trailer) type" />
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Vehicle" Margin="0,0,0,10" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                <WPFToolkit:TitledItem Title="Vehicle" Margin="0,0,0,10" IsEnabled="{Binding IsCurrentItemNull}">
                                     <StackPanel>
                                         <WPFToolkit:TitledItem Title="Location:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                            <ComboBox DisplayMemberPath="name" ItemsSource="{Binding cache[VehicleLocation]}" SelectedItem="{Binding CurrentItem.vehicleLocation}" ToolTip="Select vehicle location" />
+                                            <ComboBox DisplayMemberPath="name" ItemsSource="{Binding cache[VehicleLocation]}" SelectedItem="{Binding vehicleLocation}" ToolTip="Select vehicle location" />
                                         </WPFToolkit:TitledItem>
                                         <WPFToolkit:TitledItem Title="Compartment:" >
                                             <!-- TODO enable only if Location != trailer -->
-                                            <TextBox Text="{Binding CurrentItem.vehicleCompartment}" />
+                                            <TextBox Text="{Binding vehicleCompartment}" />
                                         </WPFToolkit:TitledItem>
                                     </StackPanel>
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Count:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}" >
-                                    <WPFToolkit:NumberBox Number="{Binding CurrentItem.count}" 
+                                    <WPFToolkit:NumberBox Number="{Binding count}" 
                                                           UpDownButtonsPosition="Right" UpDownBehavior="ArrowsAndButtons"
                                                           AcceptUpDownOnNull="False" DefaultNumber="1"
                                                           Minimum="1" Step="1" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Restock:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
                                     <StackPanel Orientation="Horizontal">
-                                        <RadioButton IsChecked="{Binding CurrentItem.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                        <RadioButton IsChecked="{Binding expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
                                                  ConverterParameter={x:Static inventoryModel:ExpirationCategory.None}}" Content="None - no expiration" />
-                                        <RadioButton IsChecked="{Binding CurrentItem.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                        <RadioButton IsChecked="{Binding expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
                                                  ConverterParameter={x:Static inventoryModel:ExpirationCategory.AnnualRestock}}" Content="Annual" 
                                                  Margin="20,0" />
-                                        <RadioButton IsChecked="{Binding CurrentItem.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                        <RadioButton IsChecked="{Binding expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
                                                  ConverterParameter={x:Static inventoryModel:ExpirationCategory.DateSpecificRestock}}" Content="By specific date" />
                                     </StackPanel>
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Expiration:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
                                     <!-- TODO enable if CurrentItem!=NULL and expirationRestockCategory!=None -->
-                                    <DatePicker SelectedDate="{Binding CurrentItem.expirationDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
+                                    <DatePicker SelectedDate="{Binding expirationDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Within:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                    <WPFToolkit:ComboBoxEx x:Name="ParentComboBox" DisplayMemberPath="itemNumber" ItemsSource="{Binding Path=PossibleParents}" SelectedItem="{Binding CurrentItem.parent}" ToolTip="bin or module that contains this item" SelectionBoxNullValueText="Not in a bin or module" NullValueText="N/A"/>
+                                    <WPFToolkit:ComboBoxEx x:Name="ParentComboBox" DisplayMemberPath="itemNumber" ItemsSource="{Binding Path=PossibleParents}" SelectedItem="{Binding parent}" ToolTip="bin or module that contains this item" SelectionBoxNullValueText="Not in a bin or module" NullValueText="N/A"/>
                                     <!-- <ComboBox x:Name="ParentComboBox" DisplayMemberPath="itemNumber" ItemsSource="{Binding Path=PossibleParents}" SelectedItem="{Binding CurrentItem.parent}" ToolTip="bin or module that contains this item"  KeyDown="ParentComboBox_KeyDown" IsEditable="True" /> -->
                                     <!--<TextBox Text="{Binding CurrentItem.parent.name}" /> -->
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Notes:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                    <TextBox Text="{Binding CurrentItem.notes}" AcceptsReturn="True" AcceptsTab="True" MinLines="3" MaxLines="5" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                                    <TextBox Text="{Binding notes}" AcceptsReturn="True" AcceptsTab="True" MinLines="3" MaxLines="5" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
                                     <!-- xml:lang="en-US" SpellCheck.IsEnabled="True" Note:MS implementation throws Exceptions but works with Win7/Net4 and possibly others -->
                                 </WPFToolkit:TitledItem>
                             </WPFToolkit:TitledItemsControl>

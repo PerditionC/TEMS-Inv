@@ -2,7 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 using System;
-
+using System.Collections.Generic;
 using SQLite;
 
 using TEMS.InventoryModel.util.attribute;
@@ -28,7 +28,16 @@ namespace TEMS.InventoryModel.entity.db
         // Note: GUID used for replication purposes
         [PrimaryKey]
         [HideProperty]
-        public Guid id { get { return _id; } set { SetProperty(ref _id, value, nameof(id)); RaisePropertyChanged(nameof(PrimaryKey)); } }
+        public Guid id
+        {
+            get { return _id; }
+            set
+            {
+                SetProperty(ref _id, value, nameof(id), new string[] { nameof(PrimaryKey) });
+                //SetProperty(ref _id, value, nameof(id), new List<string>() { nameof(PrimaryKey) });
+                //RaisePropertyChanged(nameof(PrimaryKey));
+            }
+        }
 
         private Guid _id;
 

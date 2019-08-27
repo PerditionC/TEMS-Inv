@@ -32,14 +32,25 @@ namespace TEMS.InventoryModel.command.action
             // parameters may be null
             if (parameters is Item item)
             {
-                // validate that Item is not already in DB, can not add if already exists
+                // validate that Item is in DB
                 if ((item.id != null) && (item.id != Guid.Empty))
                 {
                     // verify Item exists (can't delete what isn't there)
                     return DataRepository.GetDataRepository.Exists(item);
                 }
             }
-            //logger.Warn($"{nameof(DeleteItemCommand.IsValidParameters)} invoked with invalid parameter, must pass in Item object!");
+            else if (parameters is ItemBase itemBase)
+            {
+                if (itemBase != null)
+                {
+                    if (itemBase.PrimaryKey is Guid)
+                        return Guid.Empty != (Guid)itemBase.PrimaryKey;
+                    if (itemBase.PrimaryKey is string)
+                        return !string.IsNullOrEmpty((string)itemBase.PrimaryKey);
+                }
+            }
+
+            // else fall through to return false, we don't know how to delete this item or it is not a valid item to delete
             return false;
         }
 

@@ -142,60 +142,6 @@ namespace TEMS_Inventory.views
         private ICommand _CloneCommand;
 
 
-        #region DeleteCommand
-
-        /// <summary>
-        /// Command to remove selected item from items collection and remove (delete or mark deleted) in backend DB
-        /// </summary>
-        public ICommand DeleteCommand
-        {
-            get { return InitializeCommand(ref _DeleteCommand, param => this.DoDelete(), param => guid != Guid.Empty); }
-        }
-        private ICommand _DeleteCommand;
-
-        /// <summary>
-        /// default implementation just deletes from database if db is open
-        /// Allows subclasses to alter how deletion occurs, e.g. remove additional tables or files
-        /// </summary>
-        /// <param name="item"></param>
-        protected virtual void DoDeleteItem(Guid id)
-        {
-            //DataRepository.GetDataRepository.DeleteItemType(item);
-        }
-
-        /// <summary>
-        /// Removes the selected item from list of items including marking deleted in database
-        /// </summary>
-        private void DoDelete()
-        {
-            Mediator.InvokeCallback(nameof(YesNoDialogMessage),
-                new YesNoDialogMessage
-                {
-                    caption = "Delete",
-                    message = "Do you want to delete this item?",
-                    NoAction = (x) => { /* do nothing */ },
-                    YesAction = (x) =>
-                    {
-                        try
-                        {
-                            // actually remove from DB
-                            if (CurrentItem != null) DoDeleteItem(guid);
-                            // initiate a new search and selection to update search pane
-                        }
-                        catch (Exception e)
-                        {
-                            logger.Error(e, $"Failed to delete selected item! {guid}");
-                            //throw; swallow error, todo - show an error!
-                        }
-                    },
-
-                });
-        }
-
-        #endregion DeleteCommand
-
-
-
         #region documents
 
         public Document CurrentDocument
@@ -590,12 +536,6 @@ namespace TEMS_Inventory.views
 
         #region ItemType values
         // mirror of ItemType object, use AutoMapper to convert back & forth between view model and db model
-
-        // id (Primary Key) and name (DisplayNameProperty) are derived from ReferenceData
-        // where id is internal DB primary key, unique per item type, GUID used for replication
-        // and name is the item name/description, e.g. XL Rubber Gloves
-        public Guid guid { get { return _guid; } set { SetProperty(ref _guid, value, nameof(guid)); } }
-        private Guid _guid = Guid.Empty;
 
         // external id #, items with same item type id correspond to items of same type
         // Note: identical itemId implies itemNumber differs only by locSuffix

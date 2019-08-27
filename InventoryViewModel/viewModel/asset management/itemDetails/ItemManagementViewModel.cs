@@ -7,11 +7,12 @@ using System.Linq;
 
 #if NET40
 using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, while in .Net4.5+ it moved to System.dll
+using InventoryViewModel;
 #endif
 
 using TEMS.InventoryModel.command.action;
 using TEMS.InventoryModel.entity.db;
-using TEMS.InventoryModel.util;
+using TEMS.InventoryModel.entity.db.query;
 
 namespace TEMS_Inventory.views
 {
@@ -22,61 +23,37 @@ namespace TEMS_Inventory.views
     {
         public ItemManagementViewModel() : base() { }
 
-        /// <summary>
-        /// the current item for display (and edit)
-        /// </summary>
-        public Item CurrentItem_2remove
-        {
-            get { return _CurrentItem; }
-            set
-            {
-                SetProperty(ref _CurrentItem, value, nameof(CurrentItem_2remove));
-            }
-        }
-        private Item _CurrentItem = null;
-
-
         public IList<Item> PossibleParents
         {
             get
             {
                 if (_AllBinsAndModules == null) _AllBinsAndModules = DataRepository.GetDataRepository.AllBinsAndModules();
 
-                if (CurrentItem_2remove != _childItem)
+                if (itemType == null)
                 {
-                    _childItem = CurrentItem_2remove as Item;
-                    if (_childItem == null)
-                    {
-                        // no item, no parent
-                        _possibleParents = new List<Item>(0);
-                    }
-                    else if (_childItem.itemType == null)
-                    {
-                        // don't know what item is yet, so allow any bin or module or none
-                        _possibleParents = _AllBinsAndModules;
-                    }
-                    else if (_childItem.itemType.isBin)
-                    {
-                        // bins are top level only
-                        _possibleParents = new List<Item>(0);
-                    }
-                    else if (_childItem.itemType.isModule)
-                    {
-                        // modules are top level or in a bin only
-                        _possibleParents = _AllBinsAndModules.Where(x => (x.unitType.unitCode == _childItem.unitType.unitCode) && x.itemType.isBin).ToList();
-                    }
-                    else /* !.isBin && !.isModule == .isItem */
-                    {
-                        // items can be top level or in a bin or module
-                        _possibleParents = _AllBinsAndModules.Where(x => (x.unitType.unitCode == _childItem.unitType.unitCode)).ToList();
-                    }
+                    // don't know what item is yet, so allow any bin or module or none
+                    _possibleParents = _AllBinsAndModules;
+                }
+                else if (itemType.isBin)
+                {
+                    // bins are top level only
+                    _possibleParents = new List<Item>(0);
+                }
+                else if (itemType.isModule)
+                {
+                    // modules are top level or in a bin only
+                    _possibleParents = _AllBinsAndModules.Where(x => (x.unitType.unitCode == unitType.unitCode) && x.itemType.isBin).ToList();
+                }
+                else /* !.isBin && !.isModule == .isItem */
+                {
+                    // items can be top level or in a bin or module
+                    _possibleParents = _AllBinsAndModules.Where(x => (x.unitType.unitCode == unitType.unitCode)).ToList();
                 }
 
                 return _possibleParents;
             }
         }
         private IList<Item> _AllBinsAndModules = null;
-        private Item _childItem = null;
         private IList<Item> _possibleParents = new List<Item>(0);
 
 
@@ -136,16 +113,14 @@ namespace TEMS_Inventory.views
                     ref _CloneCommand,
                     param =>
                     {
-                        var item = CurrentItem_2remove;
-                        var clonedItem = DataRepository.GetDataRepository.GetInitializedItem(item.parent, item.itemType);
-                        clonedItem.count = item.count;
-                        clonedItem.expirationDate = item.expirationDate;
-                        clonedItem.notes = item.notes;
-                        clonedItem.vehicleCompartment = item.vehicleCompartment;
-                        clonedItem.vehicleLocation = item.vehicleLocation;
-                        CurrentItem_2remove = clonedItem;
+                        // get a new unique id, upon saving this will then map to a new (cloned) record
+                        var defaultItem = DataRepository.GetDataRepository.GetInitializedItem(parent, itemType);
+                        guid = defaultItem.id;
+                        itemId = defaultItem.itemId;
+                        CurrentItem.id = guid;
+                        CurrentItem.entity = null;
                     },
-                    param => { return (CurrentItem_2remove != null); }
+                    param => { return (CurrentItem != null) && (CurrentItem is GenericItemResult); }  // Item is selected and actual Item not header placeholder
                 );
             }
         }
@@ -154,6 +129,11 @@ namespace TEMS_Inventory.views
 
         /// <summary>
         /// Command to add an item
+        /// An item is added to the hierarchy based on current selected
+        ///     current is a top level object or bin or module then add to it
+        ///     otherwise add to current selection's parent
+        ///     i.e. click add with a bin or bin header selected add to that bin
+        ///     but click add with a non-bin/non-module item or Items header selected then add to parent bin/module/trailer
         /// </summary>
         public ICommand AddCommand
         {
@@ -163,95 +143,143 @@ namespace TEMS_Inventory.views
                     ref _AddCommand,
                     param =>
                     {
-                        // use current selection as parent for newly added item
-                        var parent = (Item)CurrentItem_2remove;
-                        // see if SelectedItem is a header and use it's parent as parent
-                        if (parent == null)
+                        // determine parent
+                        Item parent;
+                        if (CurrentItem is GenericItemResult)
                         {
-                            /*
-                            if ((SelectedItem != null) && (SelectedItem is GroupHeader))
-                                parent = SelectedItem.parent.entity as Item;
-                            */
+                            if ((itemType != null) && (itemType.isBin || itemType.isModule))
+                            {
+                                parent = (CurrentItem?.entity as Item);
+                            }
+                            else
+                            {
+                                parent = (CurrentItem?.entity as Item)?.parent;
+                            }
                         }
-                        // but if make sure it is bin or module, otherwise no parent (top level)
-                        else if (!(parent.itemType.isBin || parent.itemType.isModule))
+                        else
                         {
-                            parent = parent.parent;
+                            throw new NotImplementedException("Add logic for adding item with header selected!");
                         }
-                        CurrentItem_2remove = DataRepository.GetDataRepository.GetInitializedItem(parent, null);
+
+                        // create the object
+                        var defaultItem = DataRepository.GetDataRepository.GetInitializedItem(parent, itemType);
+                        guid = defaultItem.id;
+                        itemId = defaultItem.itemId;
+                        CurrentItem.id = guid;
+                        CurrentItem.entity = null;
+
+                        // at this point since this VM reflects an Item that does not yet exist in DB - attempts to retrieve CurrentItem.entity will fail!
                     },
-                    param => { return true; }
+                    param => { return CurrentItem.entityType != null; }  // simple flag, we set entityType to "Item" after saved, otherwise an unsaved potentially not fully valid Item so can't Add again yet
                 );
             }
         }
         private ICommand _AddCommand;
 
-        // ensure Item and ItemInstances correctly added together (used when saved not added)
-        ICommand addItemCommand = new AddItemCommand();
 
-        /// <summary>
-        /// Perform the actual save, the default implementation saves CurrentItem
-        /// This should be overridden if additional or other tasks are needed, e.g. saving
-        /// unrelated entities as well as CurrentItem
-        /// Note: should only be called if CanSave() is true, so CurrentItem will not
-        /// be null, IsChanged is true, and NONNULL constraints should be satisfied.
-        /// </summary>
-        protected void SaveEntity()
+
+
+        #region Item properties
+
+        // external id #, multiple items may have same itemId if represents the same item just for a different siteLocation
+        // Note: identical itemId implies itemNumber differs only by locSuffix
+        public int itemId { get { return _itemId; } set { SetProperty(ref _itemId, value, nameof(itemId)); } }
+        private int _itemId = 0;
+
+        // partial external id, does not include site location
+        // e.g. D236-19807
+        public string itemNumber
         {
-            // for each city with equipments item is in, then ensure an item instance exists (added only if Item does not already exist)
-            if (addItemCommand.CanExecute(CurrentItem_2remove)) addItemCommand.Execute(CurrentItem_2remove);
-
-            // and ensure changes are saved
-            DataRepository.GetDataRepository.Save(CurrentItem_2remove);
-
-            // after saving update tree (will reload from db hence must be done after saving)
-            var childItem = CurrentItem_2remove as Item;
-            /*
-            if (SelectedItem?.parent?.parent?.parentId != childItem?.parentId)
-            {
-                if (SearchFilterCommand.CanExecute(null)) SearchFilterCommand.Execute(null);
-                CurrentItem = childItem;
-                if (CurrentItem == null) logger.Debug("CurrentItem null after saving.");
-            }
-            */
+            get { return unitType?.unitCode + string.Format("{0:D}-{1:D}", itemType?.itemTypeId, itemId /* oldItemId */); }
         }
 
-
-        /// <summary>
-        /// Command to remove an item (and associated ItemInstances)
-        /// </summary>
-        public ICommand DeleteCommand
+        // general details about this item
+        public ItemType itemType
         {
-            get
+            get { return _itemType; }
+            set
             {
-                return InitializeCommand(
-                    ref _DeleteCommand,
-                    param =>
-                    {
-                        try
-                        {
-                            // remove from list
-                            /*
-                            var pList = SelectedItem.parent.children;
-                            var index = pList.IndexOf(SelectedItem);
-                            if (index >= 0) pList.RemoveAt(index);
-                            */
-                            // and from DB
-                            DeleteItemCommand.Execute(CurrentItem_2remove);
-                            // indicate nothing selected
-                            CurrentItem_2remove = null; // SelectedItem is set to parent header
-                        }
-                        catch (Exception e)
-                        {
-                            // don't throw
-                            StatusMessage = $"Failed to remove Item - {e.Message}";
-                        }
-                    },
-                    param => { return DeleteItemCommand.CanExecute(CurrentItem_2remove); }
-                );
+                SetProperty(ref _itemType, value, nameof(itemType));
+                RaisePropertyChanged(nameof(PossibleParents));
             }
         }
-        private ICommand _DeleteCommand;
-        private ICommand DeleteItemCommand = new DeleteItemCommand();
+        private ItemType _itemType;
+
+        #region item specific details
+
+        // vehicle location, usually trailer
+        public VehicleLocation vehicleLocation
+        {
+            get { return _vehicleLocation; }
+            set
+            {
+                SetProperty(ref _vehicleLocation, value, nameof(vehicleLocation));
+            }
+        }
+        private VehicleLocation _vehicleLocation;
+
+        // vehicle compartment, if not trailer then description of where in vehicle
+        public string vehicleCompartment { get { return _vehicleCompartment; } set { SetProperty(ref _vehicleCompartment, value, nameof(vehicleCompartment)); } }
+        private string _vehicleCompartment = null;
+
+        // for non-serialized items, how many of this specific item (same type, location, bin, etc)
+        public int count
+        {
+            get { return _count; }
+            set
+            {
+                // count can not be negative
+                if (value < 0)
+                {
+                    throw new ArgumentOutOfRangeException("count", value, "count of items must be nonnegative (>=0)");
+                }
+                SetProperty(ref _count, value, nameof(count));
+            }
+        }
+
+        private int _count = 1;
+
+        // for items that expire, when expires; null if does not expire
+        // update with new expiration date (reset) when item replenished/restocked
+        // Note: items currently expire & are replaced at same time for any item of a given type regardless of site location
+        // however, may not be replaced on all differing equipments at same time; i.e. all widgets in MMRS replaced at
+        // same time, but widgets in DMSU may be done at a different time.  Move to ItemInstance if expiration becomes site controlled.
+        // see ItemType.expirationRestockCategory to determine if expirationDate required and if annual date or date specific
+        public DateTime? expirationDate { get { return _expirationDate; } set { SetProperty(ref _expirationDate, value, nameof(expirationDate)); } }
+
+        private DateTime? _expirationDate = null;
+
+        // bin or module assigned to, null if not in a bin or module; in DB as foreign key for bin/module in Item (this) table
+        public Item parent
+        {
+            get { return _parent; }
+            set
+            {
+                SetProperty(ref _parent, value, nameof(parent));
+            }
+        }
+        private Item _parent = null;
+
+
+        // additional remarks about item
+        public string notes { get { return _notes; } set { SetProperty(ref _notes, value, nameof(notes)); } }
+        private string _notes = null;
+
+        // below items are set when item is created or cloned
+
+        // equipment type item belongs to (MMRS, DMSU, SSU)
+        public EquipmentUnitType unitType
+        {
+            get { return _unitType; }
+            set
+            {
+                SetProperty(ref _unitType, value, nameof(unitType));
+            }
+        }
+        private EquipmentUnitType _unitType = null;
+
+        #endregion item specific details
+
+        #endregion // Item properties
     }
 }

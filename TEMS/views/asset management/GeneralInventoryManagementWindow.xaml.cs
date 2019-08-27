@@ -9,9 +9,9 @@ namespace TEMS_Inventory.views
     /// <summary>
     /// Interaction logic for GeneralInventoryManagementWindow.xaml
     /// </summary>
-    public partial class GeneralInventoryManagementWindow : Window
+    public partial class GeneralInventoryManagementWindow : BasicWindowBase
     {
-        public GeneralInventoryManagementWindow(GeneralInventoryManagementViewModel ViewModel) : base()
+        public GeneralInventoryManagementWindow(SearchDetailWindowViewModel ViewModel) : base(ViewModel)
         {
             InitializeComponent();
         }

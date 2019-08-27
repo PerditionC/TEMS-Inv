@@ -137,6 +137,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="AppErrorTracking.private.cs" />
     <Compile Include="BasicWindowBase.cs" />
     <Compile Include="FilePicker\FileOpenPicker.cs" />
     <Compile Include="FilePicker\FilePickerBase.xaml.cs">
@@ -154,11 +155,15 @@
     </Compile>
     <Compile Include="PropertyDetails.cs" />
     <Compile Include="PropertyObserver.cs" />
+    <Compile Include="ViewModelToWindowMapper.cs" />
     <Compile Include="views\asset management\damaged or missing\DamagedMissingHistoryWindow.xaml.cs">
       <DependentUpon>DamagedMissingHistoryWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\asset management\damaged or missing\DamagedMissingDetailsWindow.xaml.cs">
       <DependentUpon>DamagedMissingDetailsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="views\asset management\deploy\DeployRecoverDetailsWindow.xaml.cs">
+      <DependentUpon>DeployRecoverDetailsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\asset management\service\ServiceDetailsWindow.xaml.cs">
       <DependentUpon>ServiceDetailsWindow.xaml</DependentUpon>
@@ -237,7 +242,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AppErrorTracking.cs" />
-    <Compile Include="AppErrorTracking.private.cs" />
     <Compile Include="ChangePasswordWindow.xaml.cs">
       <DependentUpon>ChangePasswordWindow.xaml</DependentUpon>
     </Compile>
@@ -256,6 +260,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\asset management\damaged or missing\DamagedMissingDetailsWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="views\asset management\deploy\DeployRecoverDetailsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

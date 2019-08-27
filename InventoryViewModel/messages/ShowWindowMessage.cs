@@ -13,6 +13,7 @@ namespace TEMS_Inventory.views
         public bool modal;               // true = dialog or false = non-modal window
         public bool childWindow;         // true to set as child of current window
         public Action<object> callback;  // callback to invoke with window result (may be null if unused)
+        public string WindowName;        // which window to open
         public ViewModelBase viewModel;  // which window to open
     }
 }

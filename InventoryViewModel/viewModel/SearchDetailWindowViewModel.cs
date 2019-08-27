@@ -20,7 +20,7 @@ namespace TEMS_Inventory.views
     /// 1 is the results pane  (SearchResultViewModel) - area with tree or list view of search with options applied
     /// 1 is the detail pane (DetailsViewModelBase descendant) - area with information about element selected from search results
     /// </summary>
-    public class SearchDetailWindowViewModel : NotifyPropertyChanged
+    public class SearchDetailWindowViewModel : ViewModelBase
     {
         public SearchDetailWindowViewModel(SearchFilterOptionsViewModel optionsVM,
                                            SearchResultViewModel resultVM,

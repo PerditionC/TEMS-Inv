@@ -504,14 +504,15 @@ namespace TEMS.InventoryModel.entity.db
         /// <param name="pk"></param>
         /// <param name="TableName"></param>
         /// <returns></returns>
-        public object Load(Object pk, string TableName)
+        public object Load(Object pk, string TableName, Object loadCache = null)
         {
             if (TableName == null) throw new ArgumentNullException("TableName", "Missing required TableName==entity Type");
             if (pk == null) throw new ArgumentNullException("pk", "Missing required value, primary key is null");
 
-            var method = this.GetType().GetMethod("Load", Type.GetTypeArray(new object[] { pk }));
+            if (loadCache == null) loadCache = new Dictionary<Object, Object>(0); // can not be null or next line errrors
+            var method = this.GetType().GetMethod("Load", Type.GetTypeArray(new object[] { pk, loadCache}));
             var objType = Type.GetType("TEMS.InventoryModel.entity.db." + TableName);
-            var item = method.MakeGenericMethod(new Type[] { objType }).Invoke(this, new object[] { pk });
+            var item = method.MakeGenericMethod(new Type[] { objType }).Invoke(this, new object[] { pk, loadCache });
             return item;
         }
 
@@ -521,7 +522,7 @@ namespace TEMS.InventoryModel.entity.db
         /// <typeparam name="T"></typeparam>
         /// <param name="pk"></param>
         /// <returns>the entity and nested entities corresponding to PK for T, throws exception if PK is not found in DB</returns>
-        public T Load<T>(Object pk) where T : class, new()
+        public T Load<T>(Object pk, Dictionary<Object, Object> loadCache = null) where T : class, new()
         {
             logger.Trace(nameof(Load));
             T item = default;
@@ -532,11 +533,29 @@ namespace TEMS.InventoryModel.entity.db
                 item = DataRepository.GetDataRepository.ReferenceData[typeof(T).Name, pk] as T;
                 if (item != null) return item;
 
-                // get the item including related items, throws exception if primary key not found
-                item = dbConnection.Get<T>(pk);
+                // check load cache, used to avoid infinite loops, will return any prior partially loaded objects
+                if (loadCache == null || !loadCache.ContainsKey(pk))
+                {
+                    // get the item including related items, throws exception if primary key not found
+                    item = dbConnection.Get<T>(pk);
 
-                // load in nested entities and mark as not changed
-                LoadChildren(item.GetType(), new List<T>() { item });
+                    // add ourselves to cache in case child or related ancestor tries to load us again
+                    // *** Warning - we use same cache for all objects, if PK can overlap then must further split into per Type Dictionaries!
+                    if (loadCache == null) loadCache = new Dictionary<Object, Object>(1);
+                    loadCache.Add(pk, item);
+
+                    // load in nested entities and mark as not changed
+                    LoadChildren(item.GetType(), new List<T>() { item }, loadCache);
+                }
+                else
+                {
+                    Object o;
+                    if (!loadCache.TryGetValue(pk, out o))
+                    {
+                        throw new ApplicationException($"Failed to load cached value for pk={pk}");
+                    }
+                    item = o as T;
+                }
             }
             catch (SQLite.SQLiteException e)
             {
@@ -616,7 +635,7 @@ namespace TEMS.InventoryModel.entity.db
         /// <typeparam name="T"></typeparam>
         /// <param name="itemType"></param>
         /// <param name="items"></param>
-        private void LoadChildren<T>(Type itemType, IList<T> items) where T : class, new()
+        private void LoadChildren<T>(Type itemType, IList<T> items, Dictionary<Object, Object> loadCache = null) where T : class, new()
         {
             logger.Trace(nameof(LoadChildren));
             if ((items == null) || (!items.Any())) return; // exit early if no parent elements
@@ -644,10 +663,13 @@ namespace TEMS.InventoryModel.entity.db
                             {
                                 // load the related item from DB (will recursively load any of its items as well)
                                 // WARNING: we do not handle loops, if item A hold item B and B holds A will get stuck!
-                                var relatedItem = Load(fk_pk, fk_entityProp.PropertyType.Name);
+                                //if (itemType.Name != fk_entityProp.PropertyType.Name) // avoid loading parent for now, avoid infinite recursion of parent trying to load child *** TODO fix this!!!
+                                {
+                                    var relatedItem = Load(fk_pk, fk_entityProp.PropertyType.Name, loadCache);
 
-                                // and store in our item
-                                fk_entityProp.SetValue(item, relatedItem, null);
+                                    // and store in our item
+                                    fk_entityProp.SetValue(item, relatedItem, null);
+                                }
                             }
                         }
                     }

@@ -10,7 +10,7 @@ namespace TEMS_Inventory.views
     /// </summary>
     public partial class DamagedMissingHistoryWindow : BasicWindowBase
     {
-        public DamagedMissingHistoryWindow(HistoryDamagedMissingViewModel ViewModel) : base(ViewModel)
+        public DamagedMissingHistoryWindow(SearchDetailWindowViewModel ViewModel) : base(ViewModel)
         {
             InitializeComponent();
         }

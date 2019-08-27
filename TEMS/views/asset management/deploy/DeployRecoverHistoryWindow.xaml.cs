@@ -10,7 +10,7 @@ namespace TEMS_Inventory.views
     /// </summary>
     public partial class DeployRecoverHistoryWindow : BasicWindowBase
     {
-        public DeployRecoverHistoryWindow(HistoryDeployRecoverViewModel ViewModel) : base(ViewModel)
+        public DeployRecoverHistoryWindow(SearchDetailWindowViewModel ViewModel) : base(ViewModel)
         {
             InitializeComponent();
         }

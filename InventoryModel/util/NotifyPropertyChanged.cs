@@ -101,7 +101,7 @@ namespace TEMS.InventoryModel.util
         /// <param name="value">the [new] value for the property</param>
         /// <param name="propertyName">the name of the property to update</param>
         /// <returns>return true if value is new and update occurs, false if value is unchanged & no notification</returns>
-        protected bool SetProperty<T>(ref T field, T value, /*[CallerMemberName]*/string propertyName = "")
+        protected bool SetProperty<T>(ref T field, T value, /*[CallerMemberName]*/string propertyName = "", IEnumerable<string> dependentPropertyNames = null)
         {
             // if there is no backing field or value is unchanged then return without signaling change
             // Note: EqualityCompare used to allow types to override Equals from default implementation
@@ -109,6 +109,13 @@ namespace TEMS.InventoryModel.util
             // otherwise update with the new value and signal the change, returning change occurred
             field = value;
             RaisePropertyChanged(propertyName);
+            if (dependentPropertyNames != null)
+            {
+                foreach(var propName in dependentPropertyNames)
+                {
+                    RaisePropertyChanged(propName);
+                }
+            }
             return true;
         }
     }

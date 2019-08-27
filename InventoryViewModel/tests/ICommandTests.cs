@@ -183,56 +183,33 @@ namespace Tems_Inventory.Tests
         }
 
         [Test]
-        public void LoadItemCommand_CanLoad()
-        {
-            var cmd = new LoadItemCommand();
-            Assert.NotNull(cmd, nameof(LoadItemCommand));
-
-            var args = new SearchResult()
-            {
-                id = new Guid("584da062-0a37-4a6d-9d8b-202e202e202e"),
-                entityType = "BatteryType",
-            };
-            Assert.IsTrue(cmd.CanExecute(args));
-
-            args = new SearchResult();
-            Assert.IsFalse(cmd.CanExecute(args));
-
-            args = new SearchResult()
-            {
-                entityType = "BatteryType",
-            };
-            Assert.IsFalse(cmd.CanExecute(args));
-
-            args = new SearchResult()
-            {
-                id = new Guid("584da062-0a37-4a6d-9d8b-202e202e202e"),
-            };
-            Assert.IsFalse(cmd.CanExecute(args));
-
-            Assert.IsFalse(cmd.CanExecute(null));
-        }
-
-        [Test]
         public void LoadItemCommand_DoLoad()
         {
-            var cmd = new LoadItemCommand();
-            Assert.NotNull(cmd, nameof(LoadItemCommand));
-
-            var args = new SearchResult()
+            var searchResult = new SearchResult()
             {
                 id = new Guid("584da062-0a37-4a6d-9d8b-202e202e202e"),
                 entityType = "BatteryType",
             };
-            Assert.IsTrue(cmd.CanExecute(args));
 
-            Assert.IsNull(cmd.ItemLoaded);
-            cmd.Execute(args);
-            Assert.NotNull(cmd.ItemLoaded);
-            BatteryType noBattery = cmd.ItemLoaded as BatteryType;
+            // transparently load entity
+            var entity = searchResult.entity;
+            Assert.NotNull(entity);
+
+            searchResult.id = Guid.Empty;
+            Assert.Throws(typeof(ArgumentOutOfRangeException), () => entity = searchResult.entity);
+
+            searchResult.id = new Guid("584da062-0a37-4a6d-9d8b-202e202e202e");
+            entity = searchResult.entity;
+            Assert.NotNull(entity);
+
+            searchResult.entityType = null;
+            Assert.Throws(typeof(ArgumentOutOfRangeException), () => entity = searchResult.entity);
+
+            searchResult.entityType = "BatteryType";
+            BatteryType noBattery = searchResult.entity as BatteryType;
             Assert.NotNull(noBattery);
             Assert.AreEqual(noBattery.name, "None");
-            Assert.AreEqual(noBattery.id, args.id);
+            Assert.AreEqual(noBattery.id, searchResult.id);
         }
 
         [Test]
@@ -307,7 +284,7 @@ namespace Tems_Inventory.Tests
         [Test]
         public void AddItemCommand()
         {
-            var cmd = new AddItemCommand();
+            var cmd = new SaveItemCommand();
 
             var db = DataRepository.GetDataRepository;
             Assert.NotNull(db);
@@ -417,14 +394,9 @@ namespace Tems_Inventory.Tests
             Assert.NotNull(searchResultViewModel.SelectedItem);
             Assert.NotNull(resultVM.CurrentItem);
 
-            var loadCmd = new LoadItemCommand();
-            Assert.IsTrue(loadCmd.CanExecute(resultVM.CurrentItem));
-
-            Assert.IsNull(loadCmd.ItemLoaded);
-            loadCmd.Execute(resultVM.CurrentItem);
-            Assert.NotNull(loadCmd.ItemLoaded);
-            var item = loadCmd.ItemLoaded;
-            Assert.NotNull(item);
+            Assert.AreNotEqual(Guid.Empty, resultVM.CurrentItem.id);
+            Assert.NotNull(resultVM.CurrentItem.entityType);
+            Assert.NotNull(resultVM.CurrentItem.entity);
         }
 
         [Test]

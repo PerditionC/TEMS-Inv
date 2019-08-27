@@ -89,9 +89,7 @@
     <Compile Include="command\item\deploy\DeployItemCommand.cs" />
     <Compile Include="command\item\deploy\DeployRecoverItemCommandBase.cs" />
     <Compile Include="command\item\deploy\RecoverItemCommand.cs" />
-    <Compile Include="command\item\gim\AddItemCommand.cs" />
     <Compile Include="command\item\gim\DeleteItemCommand.cs" />
-    <Compile Include="command\item\gim\LoadItemCommand.cs" />
     <Compile Include="command\item\gim\SaveItemCommand.cs" />
     <Compile Include="command\item\service\ServiceItemCommand.cs" />
     <Compile Include="command\item\service\ServiceItemCompleteCommand.cs" />
