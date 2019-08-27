@@ -315,3 +315,6 @@ dkms.conf
 
 # libz merge modules from compiled dlls
 *.libz
+
+# private files
+*.private.cs
