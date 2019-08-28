@@ -569,7 +569,7 @@ namespace TEMS.InventoryModel.entity.db
                 foreach (var item in itemResults)
                 {
                     // must be child of current parent (null for top level items), and for current site and equipment unit
-                    if ((item != parentItem) && ((item.parentId == parentItem?.id) || (item.parentId == parentItem?.parentItemId) || ((parentItem == null) && (Guid.Empty == item.parentId))) && ((site == null) || (item.siteLocationId == site.id)) && ((equip == null) || (item.unitTypeName.Equals(equip.name))))
+                    if ((item != parentItem) && ((item.parentId == parentItem?.id) || /*(item.parentId == parentItem?.parentItemId) ||*/ ((parentItem == null) && (Guid.Empty == item.parentId))) && ((site == null) || (item.siteLocationId == site.id)) && ((equip == null) || (item.unitTypeName.Equals(equip.name))))
                     {
                         // bins
                         if (item.isBin)

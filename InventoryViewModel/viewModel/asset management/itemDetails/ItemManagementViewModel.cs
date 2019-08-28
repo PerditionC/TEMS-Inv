@@ -42,12 +42,12 @@ namespace TEMS_Inventory.views
                 else if (itemType.isModule)
                 {
                     // modules are top level or in a bin only
-                    _possibleParents = _AllBinsAndModules.Where(x => (x.unitType.unitCode == unitType.unitCode) && x.itemType.isBin).ToList();
+                    _possibleParents = _AllBinsAndModules.Where(x => ((unitType == null) || (x.unitType.unitCode == unitType.unitCode)) && x.itemType.isBin).ToList();
                 }
                 else /* !.isBin && !.isModule == .isItem */
                 {
                     // items can be top level or in a bin or module
-                    _possibleParents = _AllBinsAndModules.Where(x => (x.unitType.unitCode == unitType.unitCode)).ToList();
+                    _possibleParents = _AllBinsAndModules.Where(x => (unitType == null) || (x.unitType.unitCode == unitType.unitCode)).ToList();
                 }
 
                 return _possibleParents;
@@ -170,7 +170,7 @@ namespace TEMS_Inventory.views
 
                         // at this point since this VM reflects an Item that does not yet exist in DB - attempts to retrieve CurrentItem.entity will fail!
                     },
-                    param => { return CurrentItem.entityType != null; }  // simple flag, we set entityType to "Item" after saved, otherwise an unsaved potentially not fully valid Item so can't Add again yet
+                    param => { return CurrentItem?.entityType != null; }  // simple flag, we set entityType to "Item" after saved, otherwise an unsaved potentially not fully valid Item so can't Add again yet
                 );
             }
         }

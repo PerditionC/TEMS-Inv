@@ -45,11 +45,34 @@ namespace TEMS.InventoryModel.command.action
         {
             base.UpdateDetailsPane(selectedItem);
 
-            var db = DataRepository.GetDataRepository;
-            var item = db.Load(selectedItem.id, tableName);
-            if (detailsPaneVM is ItemTypeManagementViewModel viewModel)
+            if (selectedItem != null)
             {
-                Mapper.GetMapper().Map(item, viewModel);
+                object item;
+                try
+                {
+                    if (selectedItem.id != Guid.Empty)
+                    {
+                        var db = DataRepository.GetDataRepository;
+                        item = db.Load(selectedItem.id, tableName);
+                    }
+                    else
+                    {
+                        item = null;
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, $"Failed to load {selectedItem.id} from table {tableName}, details will be blank!");
+                    detailsPaneVM.StatusMessage = $"Failed to load ({selectedItem.id}) from database.";
+                    item = null;
+                }
+                if (item != null)
+                {
+                    //if (detailsPaneVM is ItemTypeManagementViewModel viewModel)
+                    {
+                        Mapper.GetMapper().Map(item, detailsPaneVM);
+                    }
+                }
             }
         }
     }

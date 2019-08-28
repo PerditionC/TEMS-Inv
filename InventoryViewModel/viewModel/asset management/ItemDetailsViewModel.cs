@@ -21,12 +21,19 @@ namespace TEMS_Inventory.views
         {
         }
 
+        /// <summary>
         // internal DB primary key, unique per item
         // Note: GUID used for replication purposes
+        /// </summary>
         public Guid guid { get { return _guid; } set { SetProperty(ref _guid, value, nameof(guid)); } }
         private Guid _guid = Guid.Empty;
 
 
+        /// <summary>
+        /// allow binding to reference items that are cached
+        /// </summary>
+        public ReferenceDataCache cache { get; private set; } = DataRepository.GetDataRepository.ReferenceData;
+        
         /// <summary>
         /// does active user have administrative privileges or just normal user privileges
         /// false if limited to user privileges

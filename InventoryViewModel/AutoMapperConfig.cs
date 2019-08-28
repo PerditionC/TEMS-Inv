@@ -15,6 +15,9 @@ namespace InventoryViewModel
     {
         private static MapperConfiguration config = new MapperConfiguration(cfg => {
             cfg.CreateMap<ItemType, ItemTypeManagementViewModel>();
+            cfg.CreateMap<Item, ItemManagementViewModel>();
+            cfg.CreateMap<ItemInstance, ItemInstanceManagementViewModel>();
+            cfg.CreateMap<ItemInstance, GeneralInventoryManagementViewModel>();
         });
 
         private static IMapper mapper = null;

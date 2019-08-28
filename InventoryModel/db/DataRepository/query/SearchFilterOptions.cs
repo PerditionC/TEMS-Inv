@@ -91,6 +91,9 @@ namespace TEMS.InventoryModel.entity.db.query
 
             SelectItemStatusValuesVisible = false;
             // don't include out of service items by default either
+
+            // activate
+            SearchFilterEnabled = true;
         }
 
 

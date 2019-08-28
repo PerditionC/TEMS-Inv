@@ -118,6 +118,9 @@ namespace TEMS_Inventory.views // InventoryViewModel.viewModel
         {
             switch (e.PropertyName)
             {
+                case "IsChanged":
+                    // do nothing
+                    break;
                 case "SearchText":
                     RaisePropertyChanged(nameof(SearchTextAvailable));
                     break;

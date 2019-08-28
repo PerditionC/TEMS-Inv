@@ -35,9 +35,9 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <DockPanel  Grid.Column="0" Grid.Row="0"  Margin="3,2,2,3" DataContext="{Binding SearchResult}">
-                <Grid MinWidth="50" VerticalAlignment="Stretch" Margin="5,0" DockPanel.Dock="Right">
-                    <Grid.ColumnDefinitions>
+            <DockPanel  Grid.Column="0" Grid.Row="0"  Margin="3,2,2,3" >
+                <Grid MinWidth="50" VerticalAlignment="Stretch" Margin="5,0" DockPanel.Dock="Right" DataContext="{Binding Details}" >
+                    <Grid.ColumnDefinitions> 
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -55,9 +55,12 @@
                     <Button Grid.Row="4" x:Name="DeleteButton" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding DeleteCommand}" Content="_Delete" />
                 </Grid>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom" >
-                    <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding ExpandCollapseCommand}" Visibility="{Binding SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
+                    <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding SearchResult.ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding SearchResult.ExpandCollapseCommand}" Visibility="{Binding SearchFilterOptions.SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding SearchFilterOptions.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
+                    <TextBlock x:Name="SelectionBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding SearchResult.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
+                    <TextBlock x:Name="DetailsBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding Details.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
                 </StackPanel>
+                <StackPanel DataContext="{Binding SearchResult}" >
                 <ContentPresenter Name="DisplayItemList" Content="{Binding}">
                     <ContentPresenter.ContentTemplate>
                         <DataTemplate>
@@ -210,7 +213,7 @@
                                 </Border>
                             </Grid>
                             <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding Path=items.Count}" Value="0">
+                                <DataTrigger Binding="{Binding Path=Items.Count}" Value="0">
                                     <Setter TargetName="ItemList" Property="Visibility" Value="Collapsed"/>
                                     <Setter TargetName="EmptyList" Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
@@ -218,6 +221,7 @@
                         </DataTemplate>
                     </ContentPresenter.ContentTemplate>
                 </ContentPresenter>
+                </StackPanel>
             </DockPanel>
 
             <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" />
@@ -249,11 +253,11 @@
                             <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
                                 <Label Content="{Binding itemType.name, Mode=OneWay, FallbackValue=Unknown Item}"/>
                                 <WPFToolkit:TitledItem Title="DB key:">
-                                    <TextBox Text="{Binding PrimaryKey}" IsEnabled="False" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
+                                    <TextBox Text="{Binding guid}" IsEnabled="False" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
                                 </WPFToolkit:TitledItem>
                                 <!--
                                 <WPFToolkit:TitledItem Title="Name:">
-                                    <TextBox x:Name="tbName" Text="{Binding CurrentItem.itemType.name, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding isDetailViewInActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DockPanel}}" ToolTip="Name of this item" />
+                                    <TextBox x:Name="tbName" Text="{Binding CurrentItem.itemType.name, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding isCurrentItemNotNull, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DockPanel}}" ToolTip="Name of this item" />
                                 </WPFToolkit:TitledItem>
                                 -->
                                 <WPFToolkit:TitledItem Title="Item Type:" Margin="0,0,0,13" IsEnabled="{Binding itemType, Converter={StaticResource NullToBooleanConverter}}">
@@ -265,7 +269,7 @@
                                         <!--
                                         <TextBox Text="{Binding CurrentItem.itemType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="Identifies what the item is" />
                                         -->
-                                        <ComboBox IsEnabled="{Binding isDetailViewInActive}" 
+                                        <ComboBox IsEnabled="{Binding IsCurrentItemNull}" 
                                                   IsEditable="False" 
                                                   IsTextSearchEnabled="True"
                                                   SelectedItem="{Binding CurrentItem.itemType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
@@ -297,6 +301,7 @@
                                                           AcceptUpDownOnNull="False" DefaultNumber="1"
                                                           Minimum="1" Step="1" />
                                 </WPFToolkit:TitledItem>
+                                <!--  moved to ItemType
                                 <WPFToolkit:TitledItem Title="Restock:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
                                     <StackPanel Orientation="Horizontal">
                                         <RadioButton IsChecked="{Binding expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
@@ -308,10 +313,14 @@
                                                  ConverterParameter={x:Static inventoryModel:ExpirationCategory.DateSpecificRestock}}" Content="By specific date" />
                                     </StackPanel>
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Expiration:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                    <!-- TODO enable if CurrentItem!=NULL and expirationRestockCategory!=None -->
-                                    <DatePicker SelectedDate="{Binding expirationDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
-                                </WPFToolkit:TitledItem>
+                                -->
+                                <WrapPanel>
+                                    <WPFToolkit:TitledItem Title="Expiration:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                        <!-- TODO enable if CurrentItem!=NULL and expirationRestockCategory!=None -->
+                                        <DatePicker SelectedDate="{Binding expirationDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
+                                    </WPFToolkit:TitledItem>
+                                    <Label Content="{Binding itemType.expirationRestockCategory}" />
+                                </WrapPanel>
                                 <WPFToolkit:TitledItem Title="Within:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
                                     <WPFToolkit:ComboBoxEx x:Name="ParentComboBox" DisplayMemberPath="itemNumber" ItemsSource="{Binding Path=PossibleParents}" SelectedItem="{Binding parent}" ToolTip="bin or module that contains this item" SelectionBoxNullValueText="Not in a bin or module" NullValueText="N/A"/>
                                     <!-- <ComboBox x:Name="ParentComboBox" DisplayMemberPath="itemNumber" ItemsSource="{Binding Path=PossibleParents}" SelectedItem="{Binding CurrentItem.parent}" ToolTip="bin or module that contains this item"  KeyDown="ParentComboBox_KeyDown" IsEditable="True" /> -->
