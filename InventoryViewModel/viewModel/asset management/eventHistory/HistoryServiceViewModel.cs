@@ -55,7 +55,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand ServiceItemCommand
         {
-            get { return InitializeCommand(ref _ServiceItemCommand, param => DoServiceItemCommand(), param => !IsCurrentItemNull); }
+            get { return InitializeCommand(ref _ServiceItemCommand, param => DoServiceItemCommand(), param => IsCurrentItemNotNull); }
         }
         private ICommand _ServiceItemCommand;
 

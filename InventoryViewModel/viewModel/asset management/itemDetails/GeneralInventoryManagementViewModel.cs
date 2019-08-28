@@ -37,7 +37,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand OpenEditItemWindowCommand
         {
-            get { return InitializeCommand(ref _OpenEditItemWindowCommand, param => DoOpenEditItemWindowCommand(), param => { return !IsCurrentItemNull && IsAdmin; }); }
+            get { return InitializeCommand(ref _OpenEditItemWindowCommand, param => DoOpenEditItemWindowCommand(), param => { return IsCurrentItemNotNull && IsAdmin; }); }
         }
         private ICommand _OpenEditItemWindowCommand;
 
@@ -59,7 +59,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand OpenPrintBarcodeWindowCommand
         {
-            get { return InitializeCommand(ref _OpenPrintBarcodeWindowCommand, param => DoOpenPrintBarcodeWindowCommand(), param => !IsCurrentItemNull); }
+            get { return InitializeCommand(ref _OpenPrintBarcodeWindowCommand, param => DoOpenPrintBarcodeWindowCommand(), param => IsCurrentItemNotNull); }
         }
         private ICommand _OpenPrintBarcodeWindowCommand;
 
@@ -83,7 +83,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand AddServiceDetailsCommand
         {
-            get { return InitializeCommand(ref _AddServiceDetailsCommand, param => DoAddServiceDetailsCommand(), param => !IsCurrentItemNull); }
+            get { return InitializeCommand(ref _AddServiceDetailsCommand, param => DoAddServiceDetailsCommand(), param => IsCurrentItemNotNull); }
         }
         private ICommand _AddServiceDetailsCommand;
 
@@ -103,7 +103,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand ViewServiceHistoryCommand
         {
-            get { return InitializeCommand(ref _ViewServiceHistoryCommand, param => DoViewServiceHistoryCommand(), param => !IsCurrentItemNull); }
+            get { return InitializeCommand(ref _ViewServiceHistoryCommand, param => DoViewServiceHistoryCommand(), param => IsCurrentItemNotNull); }
         }
         private ICommand _ViewServiceHistoryCommand;
 
@@ -120,7 +120,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand ViewDeployRecoverHistoryCommand
         {
-            get { return InitializeCommand(ref _ViewDeployRecoverHistoryCommand, param => DoViewDeployRecoverHistoryCommand(), param => !IsCurrentItemNull); }
+            get { return InitializeCommand(ref _ViewDeployRecoverHistoryCommand, param => DoViewDeployRecoverHistoryCommand(), param => IsCurrentItemNotNull); }
         }
         private ICommand _ViewDeployRecoverHistoryCommand;
 
@@ -139,7 +139,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand AddDamagedDetailsCommand
         {
-            get { return InitializeCommand(ref _AddDamagedDetailsCommand, param => DoAddDamagedDetailsCommand(), param => !IsCurrentItemNull); }
+            get { return InitializeCommand(ref _AddDamagedDetailsCommand, param => DoAddDamagedDetailsCommand(), param => IsCurrentItemNotNull); }
         }
         private ICommand _AddDamagedDetailsCommand;
 
@@ -160,7 +160,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand AddMissingDetailsCommand
         {
-            get { return InitializeCommand(ref _AddMissingDetailsCommand, param => DoAddMissingDetailsCommand(), param => !IsCurrentItemNull); }
+            get { return InitializeCommand(ref _AddMissingDetailsCommand, param => DoAddMissingDetailsCommand(), param => IsCurrentItemNotNull); }
         }
         private ICommand _AddMissingDetailsCommand;
 

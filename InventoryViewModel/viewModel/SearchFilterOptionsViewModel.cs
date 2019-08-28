@@ -23,8 +23,8 @@ namespace TEMS_Inventory.views // InventoryViewModel.viewModel
     {
         public SearchFilterOptionsViewModel(SearchFilterOptions searchFilterOptions, QueryResultEntitySelector resultEntitySelector, SearchResultViewModel searchResultViewModel) : base()
         {
-            this.SearchFilter = searchFilterOptions;
             SearchFilterCommand = new SearchItemsCommand(resultEntitySelector, searchResultViewModel);
+            this.SearchFilter = searchFilterOptions;
         }
 
         /// <summary>
@@ -38,15 +38,11 @@ namespace TEMS_Inventory.views // InventoryViewModel.viewModel
             {
                 if (_searchFilterOptions != null) UnRegisterHandlers();
                 SetProperty(ref _searchFilterOptions, value, nameof(SearchFilter));
-                if (value != null)
-                {
-                    RegisterHandlers();
-                    // notify any listeners that we have valid values now
-                    RaisePropertyChanged("User.availableSites");
-                    RaisePropertyChanged("EquipmentUnits");
-                    RaisePropertyChanged("ItemStatusValues");
-                    RaisePropertyChanged("ItemCategoryValues");
-                }
+                // update search results as search criteria is changed
+                RegisterHandlers();
+
+                // update site specific information
+                updateSite();
             }
         }
         private SearchFilterOptions _searchFilterOptions = null;
@@ -82,7 +78,11 @@ namespace TEMS_Inventory.views // InventoryViewModel.viewModel
             try
             {
                 // we need to know when any SearchFilter value changes so we can trigger updated search results
-                SearchFilter.PropertyChanged += SearchFilter_PropertyChanged;
+                if (SearchFilter != null)
+                {
+                    SearchFilter.PropertyChanged += SearchFilter_PropertyChanged;
+                    SearchFilter.User.PropertyChanged += User_PropertyChanged;
+                }
             }
             catch (Exception e)
             {
@@ -136,6 +136,7 @@ namespace TEMS_Inventory.views // InventoryViewModel.viewModel
                     // assume any other changes should trigger a new search
                     // limit if necessary
                     //if (e.PropertyName.Substring(1, 8) == "Selected")
+                    if (SearchFilter.SearchFilterEnabled)  // note setting SearchFilterEnabled to true also triggers initial search
                     {
                         SearchCriteriaChanged();
                     }
@@ -161,15 +162,16 @@ namespace TEMS_Inventory.views // InventoryViewModel.viewModel
             logger.Debug("Updating site specific information based on user's [new] site.");
 
             // get the user's current site (whatever it was changed/initialized to)
-            var site = SearchFilter?.User.currentSite;
+            var site = SearchFilter?.User?.currentSite;
             if (site != null)
             {
                 // temp disable SearchFilter so don't run search until we are done re-initializing available and selected trailers
+                var enabled = SearchFilter.SearchFilterEnabled;
                 SearchFilter.SearchFilterEnabled = false;
                 SearchFilter.EquipmentUnits = new ObservableCollection<Object>(site.equipmentUnitTypesAvailable);
                 SearchFilter.SelectedEquipmentUnits = new List<object>(SearchFilter.EquipmentUnits);
                 // Note: this will trigger normal criteria changed actions via SearchCriteriaChanged()
-                SearchFilter.SearchFilterEnabled = true;
+                SearchFilter.SearchFilterEnabled = enabled;
                 //SearchCriteriaChanged();
             }
         }
@@ -203,7 +205,7 @@ namespace TEMS_Inventory.views // InventoryViewModel.viewModel
             // if valid objects and enabled then
             if (SearchFilter?.SearchFilterEnabled ?? false)
             {
-                if (SearchFilterCommand.CanExecute(SearchFilter)) SearchFilterCommand.Execute(SearchFilter);
+                if (SearchFilterCommand?.CanExecute(SearchFilter) ?? false) SearchFilterCommand.Execute(SearchFilter);
             }
         }
 

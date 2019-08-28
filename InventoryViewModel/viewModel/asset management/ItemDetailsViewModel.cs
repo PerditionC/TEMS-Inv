@@ -43,6 +43,15 @@ namespace TEMS_Inventory.views
             get { return UserManager.GetUserManager.CurrentUser().isAdmin; }
         }
 
+        /// <summary>
+        /// Initialize to nothing selected to display details of
+        /// </summary>
+        public override void clear()
+        {
+            base.clear();
+            _guid = Guid.Empty;
+        }
+
 
         /// <summary>
         /// ICommand to persist information to our backing store pPerform the actual save to DB)
@@ -72,7 +81,7 @@ namespace TEMS_Inventory.views
                             StatusMessage = $"Failed to remove Item - {e.Message}";
                         }
                     },
-                    param => { return !IsCurrentItemNull && (guid != Guid.Empty); }
+                    param => { return IsCurrentItemNotNull && (guid != Guid.Empty); }
                 );
             }
         }
@@ -105,7 +114,7 @@ namespace TEMS_Inventory.views
                             StatusMessage = $"Failed to remove Item - {e.Message}";
                         }
                     },
-                    param => { return !IsCurrentItemNull && (guid != Guid.Empty); }
+                    param => { return IsCurrentItemNotNull && (guid != Guid.Empty); }
                 );
             }
         }

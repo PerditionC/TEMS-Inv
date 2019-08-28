@@ -23,6 +23,28 @@ namespace TEMS_Inventory.views
     {
         public ItemManagementViewModel() : base() { }
 
+        /// <summary>
+        /// Initialize to nothing selected to display details of
+        /// </summary>
+        public override void clear()
+        {
+            base.clear();
+
+            itemId = 0;
+            itemType = null;
+            vehicleLocation = null;
+            vehicleCompartment = null;
+            count = 1;
+            expirationDate = null;
+            parent = null;
+            notes = null;
+            unitType = null;
+        }
+
+
+        /// <summary>
+        /// returns a List of all possible Item's that could contain the currently selected item
+        /// </summary>
         public IList<Item> PossibleParents
         {
             get
@@ -64,7 +86,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand OpenEditItemTypeWindowCommand
         {
-            get { return InitializeCommand(ref _OpenEditItemTypeWindowCommand, param => DoOpenEditItemTypeWindowCommand(), param => !IsCurrentItemNull); }
+            get { return InitializeCommand(ref _OpenEditItemTypeWindowCommand, param => DoOpenEditItemTypeWindowCommand(), param => IsCurrentItemNotNull); }
         }
         private ICommand _OpenEditItemTypeWindowCommand;
 
@@ -89,7 +111,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand OpenSelectItemTypeWindowCommand
         {
-            get { return InitializeCommand(ref _OpenSelectItemTypeWindowCommand, param => DoOpenSelectItemTypeWindowCommand(), param => !IsCurrentItemNull); }
+            get { return InitializeCommand(ref _OpenSelectItemTypeWindowCommand, param => DoOpenSelectItemTypeWindowCommand(), param => IsCurrentItemNotNull); }
         }
         private ICommand _OpenSelectItemTypeWindowCommand;
 
@@ -183,14 +205,39 @@ namespace TEMS_Inventory.views
 
         // external id #, multiple items may have same itemId if represents the same item just for a different siteLocation
         // Note: identical itemId implies itemNumber differs only by locSuffix
-        public int itemId { get { return _itemId; } set { SetProperty(ref _itemId, value, nameof(itemId)); } }
+        public int itemId { get { return _itemId; } set { SetProperty(ref _itemId, value, nameof(itemId)); RaisePropertyChanged(nameof(itemNumber)); } }
         private int _itemId = 0;
 
         // partial external id, does not include site location
         // e.g. D236-19807
         public string itemNumber
         {
-            get { return unitType?.unitCode + string.Format("{0:D}-{1:D}", itemType?.itemTypeId, itemId /* oldItemId */); }
+            get
+            {
+                if (CurrentItem is null)
+                {
+                    return "No selection";
+                }
+                else if (CurrentItem is GenericItemResult)
+                {
+                    return unitType?.unitCode + string.Format("{0:D}-{1:D}", itemType?.itemTypeId, itemId /* oldItemId */);
+                }
+                else if (CurrentItem is GroupHeader)
+                {
+                    if (CurrentItem is BinGroupHeader)
+                        return "Bin";
+                    else if (CurrentItem is ModuleGroupHeader)
+                        return "Module";
+                    else if (CurrentItem is ItemGroupHeader)
+                        return "Item";
+                    else
+                        return "...";
+                }
+                else
+                {
+                    return "";
+                }
+            }
         }
 
         // general details about this item
@@ -200,12 +247,11 @@ namespace TEMS_Inventory.views
             set
             {
                 SetProperty(ref _itemType, value, nameof(itemType));
+                RaisePropertyChanged(nameof(itemNumber));
                 RaisePropertyChanged(nameof(PossibleParents));
             }
         }
         private ItemType _itemType;
-
-        #region item specific details
 
         // vehicle location, usually trailer
         public VehicleLocation vehicleLocation
@@ -274,11 +320,10 @@ namespace TEMS_Inventory.views
             set
             {
                 SetProperty(ref _unitType, value, nameof(unitType));
+                RaisePropertyChanged(nameof(itemNumber));
             }
         }
         private EquipmentUnitType _unitType = null;
-
-        #endregion item specific details
 
         #endregion // Item properties
     }

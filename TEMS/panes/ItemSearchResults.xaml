@@ -14,8 +14,6 @@
         <WPFConverter:DebugDummyConverter x:Key="DebugDummyConverter" />
         <WPFConverter:EnumToBooleanConverter x:Key="enumToBooleanConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
-        <sys:String x:Key="SiteLabel">Site :</sys:String>
     </UserControl.Resources>
 
     <DockPanel Margin="3,2,2,3" >
@@ -23,18 +21,14 @@
             <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}" />
         </StackPanel>
 
-        <DockPanel MinHeight="100" MinWidth="50">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
-                <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding ExpandCollapseCommand}"/>
-            </StackPanel>
-            <ContentPresenter Name="DisplayItemList" Content="{Binding}">
+        <WrapPanel MinHeight="100" MinWidth="50" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ContentPresenter Name="DisplayItemList" Content="{Binding}" >
                 <ContentPresenter.ContentTemplate>
                     <DataTemplate>
                         <Grid Background="White">
-                            <WPFToolkit:EnhancedTreeView Name="ItemList" ItemsSource="{Binding Items}" 
-                                                             SelectionMode="Single" SelectedElement="{Binding SelectedItem, Mode=TwoWay}"
+                            <WPFToolkit:EnhancedTreeView Name="ItemList" ItemsSource="{Binding Items, diag:PresentationTraceSources.TraceLevel=High}" 
+                                                             SelectionMode="Single" SelectedElement="{Binding SelectedItem, Mode=TwoWay, diag:PresentationTraceSources.TraceLevel=High}"
                                                              VirtualizingStackPanel.IsVirtualizing="True"
-                                                             Visibility="Visible"
                                                              >
                                 <WPFToolkit:EnhancedTreeView.ItemContainerStyle>
                                     <Style TargetType="{x:Type WPFToolkit:EnhancedTreeViewItem}">
@@ -44,12 +38,12 @@
                                 <WPFToolkit:EnhancedTreeView.Resources>
 
                                     <!--
-                                                <HierarchicalDataTemplate DataType="{x:Type dbQuery:SiteLocationResult}" ItemsSource="{Binding Children}" >
-                                                    <WrapPanel>
-                                                        <TextBlock Text="{Binding description}"  FontFamily="Courier New" FontWeight="DemiBold"/>
-                                                    </WrapPanel>
-                                                </HierarchicalDataTemplate>
-                                                -->
+                                        <HierarchicalDataTemplate DataType="{x:Type dbQuery:SiteLocationResult}" ItemsSource="{Binding children}" >
+                                            <WrapPanel>
+                                                <TextBlock Text="{Binding description}"  FontFamily="Courier New" FontWeight="DemiBold"/>
+                                            </WrapPanel>
+                                        </HierarchicalDataTemplate>
+                                        -->
 
                                     <HierarchicalDataTemplate DataType="{x:Type dbQuery:EquipmentUnitResult}" ItemsSource="{Binding children}">
                                         <WrapPanel>
@@ -65,8 +59,8 @@
                                             <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
                                                 <Image.Style>
                                                     <Style TargetType="{x:Type Image}">
-                                                        <Setter Property="Source" Value="{StaticResource SiteImage}" />
-                                                        <Setter Property="ToolTip" Value="item" />
+                                                        <Setter Property="Source" Value="{StaticResource ItemImage}" />
+                                                        <Setter Property="ToolTip" Value="group" />
                                                     </Style>
                                                 </Image.Style>
                                             </Image>
@@ -78,7 +72,6 @@
                                             </TextBlock>
                                         </WrapPanel>
                                     </HierarchicalDataTemplate>
-
 
                                     <HierarchicalDataTemplate DataType="{x:Type dbQuery:BinGroupHeader}" ItemsSource="{Binding children}">
                                         <WrapPanel>
@@ -137,7 +130,6 @@
                                         </WrapPanel>
                                     </HierarchicalDataTemplate>
 
-
                                     <HierarchicalDataTemplate DataType="{x:Type dbQuery:GenericItemResult}" ItemsSource="{Binding children}">
                                         <WrapPanel>
                                             <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
@@ -159,9 +151,7 @@
                                                 </Image.Style>
                                             </Image>
                                             <TextBlock VerticalAlignment="Center">
-                                                    <Run Text="{Binding type, StringFormat='{}{0,5:D}'}" FontFamily="Courier New" />
-                                                    <Run Text=" - " />
-                                                    <Run Text="{Binding itemId, StringFormat='{}{0,5:D}'}" FontFamily="Courier New" />
+                                                    <Run Text="{Binding itemNumber, StringFormat={}{0,10:D}}" FontFamily="Courier New" />
                                                     <Run Text=" : " />
                                                     <Run Text="{Binding description}" />
                                                     <Run Text=" (" />
@@ -171,7 +161,7 @@
                                         </WrapPanel>
                                     </HierarchicalDataTemplate>
 
-                                    <HierarchicalDataTemplate DataType="{x:Type dbQuery:SearchResult}" ItemsSource="{Binding Children}">
+                                    <HierarchicalDataTemplate DataType="{x:Type dbQuery:SearchResult}" ItemsSource="{Binding children}">
                                         <WrapPanel>
                                             <TextBlock VerticalAlignment="Center" Text="{Binding description}"  FontFamily="Courier New" FontWeight="DemiBold"/>
                                         </WrapPanel>
@@ -192,7 +182,7 @@
                     </DataTemplate>
                 </ContentPresenter.ContentTemplate>
             </ContentPresenter>
-        </DockPanel>
+        </WrapPanel>
     </DockPanel>
 
 </UserControl>

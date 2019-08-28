@@ -75,6 +75,7 @@
             <local:SimpleTreeItem image="images/database.bmp" tag="Replication" label="Replicate Database" />
             <local:SimpleTreeItem image="images/vendor.bmp" tag="ManageVendors" label="Manage Vendors" />
             <local:SimpleTreeItem image="images/edit_pencil.bmp" tag="SiteToEquipMapping" label="Mangage Site of Equipment" />
+            <local:SimpleTreeItem image="images/config_tools.bmp" tag="ManageItemInstances" label="Manage Item Instances" />
             <local:SimpleTreeItem image="images/config_tools.bmp" tag="ManageItems" label="Manage Items" />
             <local:SimpleTreeItem image="images/config_tools.bmp" tag="ManageItemTypes" label="Manage Item Types" />
             <local:SimpleTreeItem image="images/edit_pencil.bmp" tag="EditReferenceData" label="Edit Reference Data" />

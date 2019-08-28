@@ -32,7 +32,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand ReplaceExpiredItemCommand
         {
-            get { return InitializeCommand(ref _ServiceItemCommand, param => DoServiceItemCommand(), param => !IsCurrentItemNull); }
+            get { return InitializeCommand(ref _ServiceItemCommand, param => DoServiceItemCommand(), param => IsCurrentItemNotNull); }
         }
         private ICommand _ServiceItemCommand;
 

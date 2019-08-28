@@ -18,7 +18,7 @@
     </views:BasicWindowBase.InputBindings>
 
     <DockPanel Background="OldLace" x:Name="rootItem">
-        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" />
+        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" DataContext="{Binding SearchFilterOptions}" />
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -53,57 +53,7 @@
                     <!-- <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding ExpandCollapseCommand}"/> -->
                     <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}" Height="22" Opacity="0.9" />
                 </StackPanel>
-                <ContentPresenter Name="DisplayItemList" Content="{Binding}" DockPanel.Dock="Left" >
-                    <ContentPresenter.ContentTemplate>
-                        <DataTemplate>
-                            <Grid Background="White" >
-                                <ListView Name="ItemList" ItemsSource="{Binding Items}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" >
-                                    <ListView.ItemTemplate>
-                                        <DataTemplate>
-                                            <WrapPanel>
-                                                <Image x:Name="image" Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
-                                                    <Image.Style>
-                                                        <Style TargetType="{x:Type Image}">
-                                                            <Setter Property="Source" Value="{StaticResource ItemImage}" />
-                                                            <Setter Property="ToolTip" Value="item" />
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Path=isModule, Mode=OneWay}" Value="True">
-                                                                    <Setter Property="Image.Source" Value="{StaticResource ModuleImage}"/>
-                                                                    <Setter Property="ToolTip" Value="module" />
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Path=isBin, Mode=OneWay}" Value="true">
-                                                                    <Setter Property="Image.Source" Value="{StaticResource BinImage}" />
-                                                                    <Setter Property="ToolTip" Value="bin" />
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
-                                                <TextBlock VerticalAlignment="Center">
-                                                    <Run Text="{Binding itemNumber, StringFormat={}{0,5:D}}" FontFamily="Courier New" />
-                                                    <Run Text=" : " />
-                                                    <Run Text="{Binding description}" />
-                                                    <Run Text=" (" />
-                                                    <Run Text="{Binding quantity}" Foreground="Blue" />
-                                                    <Run Text=")" />
-                                                </TextBlock>
-                                            </WrapPanel>
-                                        </DataTemplate>
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                                <Border Name="EmptyList" Visibility="Collapsed" BorderThickness="1" BorderBrush="Black">
-                                    <TextBlock Text="No items." Margin="20,0,0,0" />
-                                </Border>
-                            </Grid>
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding Path=Items.Count}" Value="0">
-                                    <Setter TargetName="ItemList" Property="Visibility" Value="Collapsed"/>
-                                    <Setter TargetName="EmptyList" Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </ContentPresenter.ContentTemplate>
-                </ContentPresenter>
+                <uc:ItemSearchResults x:Name="DisplayItemList" DockPanel.Dock="Left" DataContext="{Binding SearchResult}" />
             </DockPanel>
 
             <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" />

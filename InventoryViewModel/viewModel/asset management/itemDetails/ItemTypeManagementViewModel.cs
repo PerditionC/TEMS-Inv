@@ -67,7 +67,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand OpenManageVendorsWindowCommand
         {
-            get { return InitializeCommand(ref _OpenManageVendorsWindowCommand, param => DoOpenManageVendorsWindowCommand(), param => IsCurrentItemNull); }
+            get { return InitializeCommand(ref _OpenManageVendorsWindowCommand, param => DoOpenManageVendorsWindowCommand(), param => IsCurrentItemNotNull); }
         }
         private ICommand _OpenManageVendorsWindowCommand;
 

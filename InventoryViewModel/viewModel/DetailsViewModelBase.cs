@@ -21,10 +21,22 @@ namespace TEMS_Inventory.views
         public SearchResult CurrentItem
         {
             get { return _CurrentItem; }
-            set { SetProperty(ref _CurrentItem, value, nameof(CurrentItem)); RaisePropertyChanged(nameof(IsCurrentItemNull)); }
+            set
+            {
+                SetProperty(ref _CurrentItem, value, nameof(CurrentItem));
+                RaisePropertyChanged(nameof(IsCurrentItemNotNull));
+            }
         }
         private SearchResult _CurrentItem = null;
 
-        public bool IsCurrentItemNull { get { return _CurrentItem == null; } }
+        public bool IsCurrentItemNotNull { get { return _CurrentItem != null; } }
+
+        /// <summary>
+        /// Initialize to nothing selected to display details of
+        /// </summary>
+        public virtual void clear()
+        {
+            StatusMessage = "";
+        }
     }
 }

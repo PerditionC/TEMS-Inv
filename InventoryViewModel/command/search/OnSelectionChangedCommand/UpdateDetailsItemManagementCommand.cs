@@ -47,10 +47,11 @@ namespace TEMS.InventoryModel.command.action
 
             if (selectedItem != null)
             {
+                // get full item data from DB
                 object item;
                 try
                 {
-                    if (selectedItem.id != Guid.Empty)
+                    if ((selectedItem.id != Guid.Empty) && !(selectedItem is GroupHeader))
                     {
                         var db = DataRepository.GetDataRepository;
                         item = db.Load(selectedItem.id, tableName);
@@ -66,12 +67,18 @@ namespace TEMS.InventoryModel.command.action
                     detailsPaneVM.StatusMessage = $"Failed to load ({selectedItem.id}) from database.";
                     item = null;
                 }
+
+                // update displayed data
                 if (item != null)
                 {
                     //if (detailsPaneVM is ItemTypeManagementViewModel viewModel)
                     {
                         Mapper.GetMapper().Map(item, detailsPaneVM);
                     }
+                }
+                else
+                {
+                    detailsPaneVM.clear();
                 }
             }
         }

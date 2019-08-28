@@ -46,8 +46,14 @@ namespace TEMS.InventoryModel.command.action
         {
             if (searchFilterOptions is SearchFilterOptions criteria)
             {
+                logger.Info($"QuerySearchCriteria - {criteria.ToString()}");
                 var db = DataRepository.GetDataRepository;
                 searchResultViewModel.Items = db.GetItemTree(resultEntitySelector, criteria, out GenericItemResult item);
+
+                if (item == null)
+                    logger.Info("No item auto-selected.");
+                else
+                    logger.Info($"Auto-selected {item.ToString()}");
                 searchResultViewModel.SelectedItem = item;
             }
         }

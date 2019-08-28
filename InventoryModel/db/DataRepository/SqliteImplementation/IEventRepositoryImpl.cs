@@ -95,10 +95,17 @@ namespace TEMS.InventoryModel.entity.db
         /// <returns></returns>
         public IList<DeployEvent> GetDeploymentEvents(SearchResult item)
         {
-            var pkList = new List<string>() { DatabaseHelper.GetPrimaryKey(item) };
-            if (item.childCount > 0) item.children.GetValues(DatabaseHelper.GetPrimaryKey, ref pkList);
+            if (item != null)
+            {
+                var pkList = new List<string>() { DatabaseHelper.GetPrimaryKey(item) };
+                if (item.childCount > 0) item.children.GetValues(DatabaseHelper.GetPrimaryKey, ref pkList);
 
-            return db.LoadRows<DeployEvent>($"WHERE itemInstanceId IN ({pkList.PrimaryKeysToCommaSeparatedList()})");
+                return db.LoadRows<DeployEvent>($"WHERE itemInstanceId IN ({pkList.PrimaryKeysToCommaSeparatedList()})");
+            }
+            else
+            {
+                return new List<DeployEvent>(0);
+            }
         }
 
         #endregion deployment
@@ -112,10 +119,17 @@ namespace TEMS.InventoryModel.entity.db
         /// <returns></returns>
         public IList<DamageMissingEvent> GetDamageMissingEvents(SearchResult item)
         {
-            var pkList = new List<string>() { DatabaseHelper.GetPrimaryKey(item) };
-            if (item.childCount > 0) item.children.GetValues(DatabaseHelper.GetPrimaryKey, ref pkList);
+            if (item != null)
+            {
+                var pkList = new List<string>() { DatabaseHelper.GetPrimaryKey(item) };
+                if (item.childCount > 0) item.children.GetValues(DatabaseHelper.GetPrimaryKey, ref pkList);
 
-            return db.LoadRows<DamageMissingEvent>($"WHERE itemInstanceId IN ({pkList.PrimaryKeysToCommaSeparatedList()})");
+                return db.LoadRows<DamageMissingEvent>($"WHERE itemInstanceId IN ({pkList.PrimaryKeysToCommaSeparatedList()})");
+            }
+            else
+            {
+                return new List<DamageMissingEvent>(0);
+            }
         }
 
         #endregion damageAndMissing
@@ -127,12 +141,19 @@ namespace TEMS.InventoryModel.entity.db
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        public IList<ItemServiceHistory> GetItemServiceEvents(SearchResult item)
+        public IList<ItemService> GetItemServiceEvents(SearchResult item)
         {
-            var pkList = new List<string>() { DatabaseHelper.GetPrimaryKey(item) };
-            if (item.childCount > 0) item.children.GetValues(DatabaseHelper.GetPrimaryKey, ref pkList);
+            if (item != null)
+            {
+                var pkList = new List<string>() { DatabaseHelper.GetPrimaryKey(item) };
+                if (item.childCount > 0) item.children.GetValues(DatabaseHelper.GetPrimaryKey, ref pkList);
 
-            return db.LoadRows<ItemServiceHistory>($"WHERE serviceId IN (SELECT id FROM ItemService WHERE itemInstanceId IN ({pkList.PrimaryKeysToCommaSeparatedList()}))");
+                return db.LoadRows<ItemService>($"WHERE serviceId IN (SELECT id FROM ItemService WHERE itemInstanceId IN ({pkList.PrimaryKeysToCommaSeparatedList()}))");
+            }
+            else
+            {
+                return new List<ItemService>(0);
+            }
         }
 
         #endregion service

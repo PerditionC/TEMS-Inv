@@ -37,7 +37,7 @@
 
             <DockPanel  Grid.Column="0" Grid.Row="0"  Margin="3,2,2,3" >
                 <Grid MinWidth="50" VerticalAlignment="Stretch" Margin="5,0" DockPanel.Dock="Right" DataContext="{Binding Details}" >
-                    <Grid.ColumnDefinitions> 
+                    <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
@@ -60,8 +60,7 @@
                     <TextBlock x:Name="SelectionBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding SearchResult.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
                     <TextBlock x:Name="DetailsBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding Details.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
                 </StackPanel>
-                <StackPanel DataContext="{Binding SearchResult}" >
-                <ContentPresenter Name="DisplayItemList" Content="{Binding}">
+                <ContentPresenter Name="DisplayItemList" Content="{Binding SearchResult}" >
                     <ContentPresenter.ContentTemplate>
                         <DataTemplate>
                             <Grid Background="White">
@@ -221,7 +220,6 @@
                         </DataTemplate>
                     </ContentPresenter.ContentTemplate>
                 </ContentPresenter>
-                </StackPanel>
             </DockPanel>
 
             <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" />
@@ -269,7 +267,7 @@
                                         <!--
                                         <TextBox Text="{Binding CurrentItem.itemType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="Identifies what the item is" />
                                         -->
-                                        <ComboBox IsEnabled="{Binding IsCurrentItemNull}" 
+                                        <ComboBox IsEnabled="{Binding IsCurrentItemNotNull}" 
                                                   IsEditable="False" 
                                                   IsTextSearchEnabled="True"
                                                   SelectedItem="{Binding CurrentItem.itemType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
@@ -281,7 +279,7 @@
                                     <!-- TextPath="name"
                                                   IsSynchronizedWithCurrentItem="True" -->
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Unit:" IsEnabled="{Binding IsCurrentItemNull}">
+                                <WPFToolkit:TitledItem Title="Unit:" IsEnabled="{Binding IsCurrentItemNotNull}">
                                     <ComboBox DisplayMemberPath="name" ItemsSource="{Binding cache[EquipmentUnitType]}" SelectedItem="{Binding unitType}" ToolTip="Select equipment unit (trailer) type" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Vehicle" Margin="0,0,0,10" IsEnabled="{Binding IsCurrentItemNull}">
