@@ -28,30 +28,9 @@ using TEMS.InventoryModel.userManager;
 
 namespace TEMS_Inventory.views
 {
-    public class GeneralInventoryManagementViewModel : ItemDetailsViewModel
+    public class GeneralInventoryManagementViewModel : ItemInstanceManagementViewModel
     {
         public GeneralInventoryManagementViewModel() : base() { }
-
-        /// <summary>
-        /// Command to open edit item window with this item selected so can be modified/viewed
-        /// </summary>
-        public ICommand OpenEditItemWindowCommand
-        {
-            get { return InitializeCommand(ref _OpenEditItemWindowCommand, param => DoOpenEditItemWindowCommand(), param => { return IsCurrentItemNotNull && IsAdmin; }); }
-        }
-        private ICommand _OpenEditItemWindowCommand;
-
-        private void DoOpenEditItemWindowCommand()
-        {
-            var viewModel = new ItemManagementViewModel();
-            /*
-            viewModel.SearchFilter.InitializeAs(SearchFilter);
-            viewModel.SearchFilter.SearchFilterVisible = false;
-            viewModel.SearchFilter.SearchText = (CurrentItem as ItemInstance)?.itemNumber?.ToString() ?? SearchFilter.SearchText;
-            viewModel.SearchFilter.ItemTypeMatching = SearchFilterItemMatching.OnlyExact;
-            */
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
-        }
 
 
         /// <summary>
@@ -65,16 +44,7 @@ namespace TEMS_Inventory.views
 
         private void DoOpenPrintBarcodeWindowCommand()
         {
-            var viewModel = new ViewPrintLabelsViewModel();
-            /*
-            var searchFilter = viewModel.SearchFilter;
-            searchFilter.SearchFilterVisible = false;
-            searchFilter.SiteLocationVisible = false;
-            searchFilter.SelectItemStatusValuesVisible = false;
-            searchFilter.SearchText = (currentItem as ItemInstance)?.itemNumber?.ToString() ?? "";
-            searchFilter.ItemTypeMatching = SearchFilterItemMatching.OnlyExact;
-            */
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "Labels", searchText = (CurrentItem == null) ? null : itemNumber?.ToString() });
         }
 
 
@@ -93,8 +63,7 @@ namespace TEMS_Inventory.views
             {
                 //itemInstance = CurrentItem as ItemInstance
             };
-            var viewModel = new DetailsServiceViewModel(serviceEvent);
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "ServiceDetails", args = serviceEvent });
         }
 
 
@@ -109,9 +78,7 @@ namespace TEMS_Inventory.views
 
         private void DoViewServiceHistoryCommand()
         {
-            var viewModel = new HistoryServiceViewModel();
-            //viewModel.Events = ???
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "Service", searchText = (CurrentItem == null) ? null : itemNumber?.ToString() });
         }
 
 
@@ -126,11 +93,7 @@ namespace TEMS_Inventory.views
 
         private void DoViewDeployRecoverHistoryCommand()
         {
-            var viewModel = new HistoryDeployRecoverViewModel
-            {
-                EventList = null // all events for  (CurrentItem as ItemInstance)?.itemNumber?.ToString() ?? "";
-            };
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "DeployRecover", searchText = (CurrentItem == null) ? null : itemNumber?.ToString() });
         }
 
 
@@ -145,13 +108,16 @@ namespace TEMS_Inventory.views
 
         private void DoAddDamagedDetailsCommand()
         {
-            var damageEvent = new DamageMissingEvent()
+            var currentUser = UserManager.GetUserManager.CurrentUser();
+            var damagedMissingEvent = new DamageMissingEvent()
             {
                 eventType = DamageMissingEventType.Damage,
-                //itemInstance = CurrentItem as ItemInstance
+                itemInstance = CurrentItem.entity as ItemInstance,
+                discoveryDate = DateTime.Now,
+                inputBy = currentUser.userId,
+                reportedBy = currentUser.displayName
             };
-            var viewModel = new DetailsDamagedMissingViewModel(damageEvent);
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "DamagedMissingDetails", args = damagedMissingEvent as DamageMissingEvent });
         }
 
 
@@ -166,14 +132,33 @@ namespace TEMS_Inventory.views
 
         private void DoAddMissingDetailsCommand()
         {
-            var missingEvent = new DamageMissingEvent()
+            var currentUser = UserManager.GetUserManager.CurrentUser();
+            var damagedMissingEvent = new DamageMissingEvent()
             {
                 eventType = DamageMissingEventType.Missing,
-                //itemInstance = CurrentItem as ItemInstance
+                itemInstance = CurrentItem.entity as ItemInstance,
+                discoveryDate = DateTime.Now,
+                inputBy = currentUser.userId,
+                reportedBy = currentUser.displayName
             };
-            var viewModel = new DetailsDamagedMissingViewModel(missingEvent);
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "DamagedMissingDetails", args = damagedMissingEvent as DamageMissingEvent });
         }
+
+        /// <summary>
+        /// Command to remove selected item from items collection and remove (delete or mark deleted) in back end DB
+        /// </summary>
+        public ICommand ViewDamagedMissingHistoryCommand
+        {
+            get { return InitializeCommand(ref _ViewDamagedMissingHistoryCommand, param => DoViewDamagedMissingHistoryCommand(), param => IsCurrentItemNotNull); }
+        }
+        private ICommand _ViewDamagedMissingHistoryCommand;
+
+        private void DoViewDamagedMissingHistoryCommand()
+        {
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "DamagedMissing", searchText = (CurrentItem == null) ? null : itemNumber?.ToString() });
+        }
+
+
 
 
         #region SaveCommand

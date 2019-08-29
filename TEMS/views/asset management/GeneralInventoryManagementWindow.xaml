@@ -64,252 +64,92 @@
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
                             <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding ExpandCollapseCommand}"/>
                         </StackPanel>
-                        <ContentPresenter Name="DisplayItemList" Content="{Binding}">
-                            <ContentPresenter.ContentTemplate>
-                                <DataTemplate>
-                                    <Grid Background="White">
-                                        <WPFToolkit:EnhancedTreeView Name="ItemList" ItemsSource="{Binding Items}" 
-                                                             SelectionMode="Single" SelectedElement="{Binding SelectedItem, Mode=TwoWay}"
-                                                             VirtualizingStackPanel.IsVirtualizing="True"
-                                                             >
-                                            <WPFToolkit:EnhancedTreeView.ItemContainerStyle>
-                                                <Style TargetType="{x:Type WPFToolkit:EnhancedTreeViewItem}">
-                                                    <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
-                                                </Style>
-                                            </WPFToolkit:EnhancedTreeView.ItemContainerStyle>
-                                            <WPFToolkit:EnhancedTreeView.Resources>
-
-                                                <!--
-                                                <HierarchicalDataTemplate DataType="{x:Type dbQuery:SiteLocationResult}" ItemsSource="{Binding Children}" >
-                                                    <WrapPanel>
-                                                        <TextBlock Text="{Binding description}"  FontFamily="Courier New" FontWeight="DemiBold"/>
-                                                    </WrapPanel>
-                                                </HierarchicalDataTemplate>
-                                                -->
-                                                <HierarchicalDataTemplate DataType="{x:Type dbQuery:EquipmentUnitResult}" ItemsSource="{Binding children}">
-                                                    <WrapPanel>
-                                                        <Image Height="24" Width="24" Margin="2" VerticalAlignment="Center"
-                                                    ToolTip="{Binding description}"
-                                                    Source="{StaticResource EquipImage}" />
-                                                        <TextBlock Text="{Binding name}"  FontFamily="Courier New" FontWeight="DemiBold"/>
-                                                    </WrapPanel>
-                                                </HierarchicalDataTemplate>
-
-                                                <HierarchicalDataTemplate DataType="{x:Type dbQuery:GroupHeader}" ItemsSource="{Binding children}">
-                                                    <WrapPanel>
-                                                        <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
-                                                            <Image.Style>
-                                                                <Style TargetType="{x:Type Image}">
-                                                                    <Setter Property="Source" Value="{StaticResource SiteImage}" />
-                                                                    <Setter Property="ToolTip" Value="item" />
-                                                                </Style>
-                                                            </Image.Style>
-                                                        </Image>
-                                                        <TextBlock VerticalAlignment="Center" >
-                                                    <Run Text="{Binding description}" FontFamily="Courier New" />
-                                                    <Run Text=" [" />
-                                                    <Run Text="{Binding childCount, Mode=OneWay}" Foreground="Blue" />
-                                                    <Run Text="]" />
-                                                        </TextBlock>
-                                                    </WrapPanel>
-                                                </HierarchicalDataTemplate>
-
-
-                                                <HierarchicalDataTemplate DataType="{x:Type dbQuery:BinGroupHeader}" ItemsSource="{Binding children}">
-                                                    <WrapPanel>
-                                                        <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
-                                                            <Image.Style>
-                                                                <Style TargetType="{x:Type Image}">
-                                                                    <Setter Property="Source" Value="{StaticResource BinImage}" />
-                                                                    <Setter Property="ToolTip" Value="bin" />
-                                                                </Style>
-                                                            </Image.Style>
-                                                        </Image>
-                                                        <TextBlock VerticalAlignment="Center" >
-                                                    <Run Text="{Binding description}" FontFamily="Courier New" />
-                                                    <Run Text=" [" />
-                                                    <Run Text="{Binding childCount, Mode=OneWay}" Foreground="Blue" />
-                                                    <Run Text="]" />
-                                                        </TextBlock>
-                                                    </WrapPanel>
-                                                </HierarchicalDataTemplate>
-
-                                                <HierarchicalDataTemplate DataType="{x:Type dbQuery:ModuleGroupHeader}" ItemsSource="{Binding children}">
-                                                    <WrapPanel>
-                                                        <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
-                                                            <Image.Style>
-                                                                <Style TargetType="{x:Type Image}">
-                                                                    <Setter Property="Source" Value="{StaticResource ModuleImage}" />
-                                                                    <Setter Property="ToolTip" Value="module" />
-                                                                </Style>
-                                                            </Image.Style>
-                                                        </Image>
-                                                        <TextBlock VerticalAlignment="Center" >
-                                                    <Run Text="{Binding description}" FontFamily="Courier New" />
-                                                    <Run Text=" [" />
-                                                    <Run Text="{Binding childCount, Mode=OneWay}" Foreground="Blue" />
-                                                    <Run Text="]" />
-                                                        </TextBlock>
-                                                    </WrapPanel>
-                                                </HierarchicalDataTemplate>
-
-                                                <HierarchicalDataTemplate DataType="{x:Type dbQuery:ItemGroupHeader}" ItemsSource="{Binding children}">
-                                                    <WrapPanel>
-                                                        <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
-                                                            <Image.Style>
-                                                                <Style TargetType="{x:Type Image}">
-                                                                    <Setter Property="Source" Value="{StaticResource ItemImage}" />
-                                                                    <Setter Property="ToolTip" Value="item" />
-                                                                </Style>
-                                                            </Image.Style>
-                                                        </Image>
-                                                        <TextBlock VerticalAlignment="Center" >
-                                                    <Run Text="{Binding description}" FontFamily="Courier New" />
-                                                    <Run Text=" [" />
-                                                    <Run Text="{Binding childCount, Mode=OneWay}" Foreground="Blue" />
-                                                    <Run Text="]" />
-                                                        </TextBlock>
-                                                    </WrapPanel>
-                                                </HierarchicalDataTemplate>
-
-
-                                                <HierarchicalDataTemplate DataType="{x:Type dbQuery:GenericItemResult}" ItemsSource="{Binding children}">
-                                                    <WrapPanel>
-                                                        <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
-                                                            <Image.Style>
-                                                                <Style TargetType="{x:Type Image}">
-                                                                    <Setter Property="Source" Value="{StaticResource ItemImage}" />
-                                                                    <Setter Property="ToolTip" Value="item" />
-                                                                    <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding Path=isModule, Mode=OneWay}" Value="True">
-                                                                            <Setter Property="Image.Source" Value="{StaticResource ModuleImage}"/>
-                                                                            <Setter Property="ToolTip" Value="module" />
-                                                                        </DataTrigger>
-                                                                        <DataTrigger Binding="{Binding Path=isBin, Mode=OneWay}" Value="true">
-                                                                            <Setter Property="Image.Source" Value="{StaticResource BinImage}" />
-                                                                            <Setter Property="ToolTip" Value="bin" />
-                                                                        </DataTrigger>
-                                                                    </Style.Triggers>
-                                                                </Style>
-                                                            </Image.Style>
-                                                        </Image>
-                                                        <TextBlock VerticalAlignment="Center">
-                                                    <Run Text="{Binding itemNumber, StringFormat='{}{0,10:D}'}" FontFamily="Courier New" />
-                                                    <Run Text=" : " />
-                                                    <Run Text="{Binding description}" />
-                                                    <Run Text=" (" />
-                                                    <Run Text="{Binding quantity}" Foreground="Blue" />
-                                                    <Run Text=")" />
-                                                        </TextBlock>
-                                                    </WrapPanel>
-                                                </HierarchicalDataTemplate>
-
-                                                <HierarchicalDataTemplate DataType="{x:Type dbQuery:SearchResult}" ItemsSource="{Binding Children}">
-                                                    <WrapPanel>
-                                                        <TextBlock VerticalAlignment="Center" Text="{Binding description}"  FontFamily="Courier New" FontWeight="DemiBold"/>
-                                                    </WrapPanel>
-                                                </HierarchicalDataTemplate>
-
-                                            </WPFToolkit:EnhancedTreeView.Resources>
-                                        </WPFToolkit:EnhancedTreeView>
-                                        <Border Name="EmptyList" Visibility="Collapsed" BorderThickness="1" BorderBrush="Black">
-                                            <TextBlock Text="No items." Margin="20,0,0,0" />
-                                        </Border>
-                                    </Grid>
-                                    <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Items.Count}" Value="0">
-                                            <Setter TargetName="ItemList" Property="Visibility" Value="Collapsed"/>
-                                            <Setter TargetName="EmptyList" Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </DataTemplate.Triggers>
-                                </DataTemplate>
-                            </ContentPresenter.ContentTemplate>
-                        </ContentPresenter>
+                        <uc:ItemSearchResults x:Name="DisplayItemList" DockPanel.Dock="Left" DataContext="{Binding SearchResult}" />
                     </DockPanel>
 
                     <!-- readonly view of item and itemtype -->
                     <Border Visibility=
                         "{Binding IsChecked, ElementName=SwitchViewDetails, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <GroupBox Header="Item:" Margin="3">
+                        <GroupBox Header="Item:" Margin="3" DataContext="{Binding Details.item}">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" >
                                 <WPFToolkit:TitledItemsControl Margin="2,10,2,2" >
-                                    <WPFToolkit:TitledItem Title="Type:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                        <TextBox Text="{Binding CurrentItem.item.itemType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="Identifies what the item is" />
+                                    <WPFToolkit:TitledItem Title="Type:" IsEnabled="False">
+                                        <TextBox Text="{Binding itemType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="Identifies what the item is" />
                                     </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}" Margin="0,5">
+                                    <WPFToolkit:TitledItem Title="" IsEnabled="False" Margin="0,5">
                                         <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding CurrentItem.item.itemType.isBin, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False" Content="Bin" IsEnabled="False" Margin="0,0,20,0" />
-                                            <CheckBox IsChecked="{Binding CurrentItem.item.itemType.isModule, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False" Content="Module" IsEnabled="False" Margin="0,0,20,0" />
+                                            <CheckBox IsChecked="{Binding itemType.isBin, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False" Content="Bin" IsEnabled="False" Margin="0,0,20,0" />
+                                            <CheckBox IsChecked="{Binding itemType.isModule, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsThreeState="False" Content="Module" IsEnabled="False" Margin="0,0,20,0" />
                                         </StackPanel>
                                     </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="Make:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                        <TextBox Text="{Binding CurrentItem.item.itemType.make, Mode=OneWay}" IsReadOnly="True" ToolTip="Make of this item, leave blank if not applicable" />
+                                    <WPFToolkit:TitledItem Title="Make:" IsEnabled="False">
+                                        <TextBox Text="{Binding itemType.make, Mode=OneWay}" IsReadOnly="True" ToolTip="Make of this item, leave blank if not applicable" />
                                     </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="Model:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                        <TextBox Text="{Binding CurrentItem.item.itemType.model, Mode=OneWay}" IsReadOnly="True" ToolTip="Model of this item, leave blank if not applicable" />
+                                    <WPFToolkit:TitledItem Title="Model:" IsEnabled="False">
+                                        <TextBox Text="{Binding itemType.model, Mode=OneWay}" IsReadOnly="True" ToolTip="Model of this item, leave blank if not applicable" />
                                     </WPFToolkit:TitledItem>
 
                                     <WPFToolkit:TitledItem Title="Within:" Margin="0,13,0,0" >
-                                        <TextBox Text="{Binding CurrentItem.item.parent.itemType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="bin or module that contains this item" />
+                                        <TextBox Text="{Binding parent.itemType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="bin or module that contains this item" />
                                     </WPFToolkit:TitledItem>
                                     <WPFToolkit:TitledItem Title="Unit:" Margin="0,13,0,0" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                        <TextBox Text="{Binding CurrentItem.item.unitType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="equipment unit (trailer) type" />
+                                        <TextBox Text="{Binding unitType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="equipment unit (trailer) type" />
                                     </WPFToolkit:TitledItem>
                                     <WPFToolkit:TitledItem Title="Vehicle" Margin="0,0,0,10" >
                                         <StackPanel>
                                             <WPFToolkit:TitledItem Title="Location:" >
-                                                <TextBox Text="{Binding CurrentItem.item.vehicleLocation.name, Mode=OneWay}" IsReadOnly="True" ToolTip="vehicle location" />
+                                                <TextBox Text="{Binding vehicleLocation.name, Mode=OneWay}" IsReadOnly="True" ToolTip="vehicle location" />
                                             </WPFToolkit:TitledItem>
                                             <WPFToolkit:TitledItem Title="Compartment:" >
                                                 <!-- only valid if Location != trailer -->
-                                                <TextBox Text="{Binding CurrentItem.item.vehicleCompartment, Mode=OneWay}" IsReadOnly="True" />
+                                                <TextBox Text="{Binding vehicleCompartment, Mode=OneWay}" IsReadOnly="True" />
                                             </WPFToolkit:TitledItem>
                                         </StackPanel>
                                     </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="Count:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                        <WPFToolkit:NumberBox Number="{Binding CurrentItem.item.count}" IsReadOnly="True" />
+                                    <WPFToolkit:TitledItem Title="Count:" IsEnabled="False">
+                                        <WPFToolkit:NumberBox Number="{Binding count}" IsReadOnly="True" />
                                     </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="Restock:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <WPFToolkit:TitledItem Title="Restock:" IsEnabled="False">
                                         <StackPanel Orientation="Horizontal" IsEnabled="False">
-                                            <RadioButton IsChecked="{Binding CurrentItem.item.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                            <RadioButton IsChecked="{Binding itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
                                                  ConverterParameter={x:Static inventoryModel:ExpirationCategory.None}}" Content="None - no expiration" />
-                                            <RadioButton IsChecked="{Binding CurrentItem.item.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                            <RadioButton IsChecked="{Binding itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
                                                  ConverterParameter={x:Static inventoryModel:ExpirationCategory.AnnualRestock}}" Content="Annual" 
                                                  Margin="20,0" />
-                                            <RadioButton IsChecked="{Binding CurrentItem.item.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                            <RadioButton IsChecked="{Binding itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
                                                  ConverterParameter={x:Static inventoryModel:ExpirationCategory.DateSpecificRestock}}" Content="By specific date" />
                                         </StackPanel>
                                     </WPFToolkit:TitledItem>
                                     <WPFToolkit:TitledItem Title="Expiration:" >
-                                        <DatePicker SelectedDate="{Binding CurrentItem.item.expirationDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Long" IsEnabled="False" />
+                                        <DatePicker SelectedDate="{Binding expirationDate, Mode=OneWay}" IsTodayHighlighted="True" SelectedDateFormat="Long" IsEnabled="False" />
                                     </WPFToolkit:TitledItem>
 
-                                    <WPFToolkit:TitledItem Title="Weight:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <WPFToolkit:TitledItem Title="Weight:" IsEnabled="False">
                                         <DockPanel>
-                                            <TextBox DockPanel.Dock="Right" Text="{Binding CurrentItem.item.itemType.unitOfMeasure.name, Mode=OneWay}" IsReadOnly="True" ToolTip="unit of measure for weight" />
-                                            <WPFToolkit:NumberBox Number="{Binding CurrentItem.item.itemType.weight}" ToolTip="Weight of item per unit of measure" IsReadOnly="True"/>
+                                            <TextBox DockPanel.Dock="Right" Text="{Binding itemType.unitOfMeasure.name, Mode=OneWay}" IsReadOnly="True" ToolTip="unit of measure for weight" />
+                                            <WPFToolkit:NumberBox Number="{Binding itemType.weight}" ToolTip="Weight of item per unit of measure" IsReadOnly="True"/>
                                         </DockPanel>
                                     </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="Category:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                        <TextBox Text="{Binding CurrentItem.item.itemType.category.name, Mode=OneWay}" IsReadOnly="True" ToolTip="item category, purpose of item" />
+                                    <WPFToolkit:TitledItem Title="Category:" IsEnabled="False">
+                                        <TextBox Text="{Binding itemType.category.name, Mode=OneWay}" IsReadOnly="True" ToolTip="item category, purpose of item" />
                                     </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="Batteries:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <WPFToolkit:TitledItem Title="Batteries:" IsEnabled="False">
                                         <DockPanel>
-                                            <TextBox DockPanel.Dock="Right" Text="{Binding CurrentItem.item.itemType.batteryType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="unit of measure for weight" />
+                                            <TextBox DockPanel.Dock="Right" Text="{Binding itemType.batteryType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="unit of measure for weight" />
                                             <!-- disabled if batteryType is None -->
-                                            <WPFToolkit:NumberBox Number="{Binding CurrentItem.item.itemType.batteryCount, Mode=OneWay}" IsReadOnly="True"
+                                            <WPFToolkit:NumberBox Number="{Binding itemType.batteryCount, Mode=OneWay}" IsReadOnly="True"
                                                               ToolTip="Count of batteries required, not used if battery type is None" NumberType="Int" />
                                         </DockPanel>
                                     </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="Addons:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}" ToolTip="additional items (not tracked separately) associated with this one">
-                                        <TextBox Text="{Binding CurrentItem.item.itemType.associatedItems, Mode=OneWay}" AcceptsReturn="True" AcceptsTab="True" MinLines="1" MaxLines="3" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" />
+                                    <WPFToolkit:TitledItem Title="Addons:" IsEnabled="False" ToolTip="additional items (not tracked separately) associated with this one">
+                                        <TextBox Text="{Binding itemType.associatedItems, Mode=OneWay}" AcceptsReturn="True" AcceptsTab="True" MinLines="1" MaxLines="3" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" />
                                     </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="Vendor:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                        <TextBox Text="{Binding CurrentItem.item.itemType.vendor.name, Mode=OneWay}" IsReadOnly="True" ToolTip="Vendor of this item, i.e. who purchased from" />
+                                    <WPFToolkit:TitledItem Title="Vendor:" IsEnabled="False">
+                                        <TextBox Text="{Binding itemType.vendor.name, Mode=OneWay}" IsReadOnly="True" ToolTip="Vendor of this item, i.e. who purchased from" />
                                     </WPFToolkit:TitledItem>
 
                                     <WPFToolkit:TitledItem Title="Notes:" >
-                                        <TextBox Text="{Binding CurrentItem.item.notes, Mode=OneWay}" AcceptsReturn="True" AcceptsTab="True" MinLines="3" MaxLines="5" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" />
+                                        <TextBox Text="{Binding notes, Mode=OneWay}" AcceptsReturn="True" AcceptsTab="True" MinLines="3" MaxLines="5" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" />
                                     </WPFToolkit:TitledItem>
                                 </WPFToolkit:TitledItemsControl>
                             </ScrollViewer>
@@ -320,7 +160,7 @@
 
             <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" />
 
-            <DockPanel Grid.Column="2" Grid.Row="0" Margin="5,2,2,3" >
+            <DockPanel Grid.Column="2" Grid.Row="0" Margin="5,2,2,3" DataContext="{Binding Details}" >
                 <DockPanel DockPanel.Dock="Bottom" Margin="3">
                     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="0,7,0,5">
                         <WPFToolkit:SplitButton Content="Ser_vice"  Command="{Binding AddServiceDetailsCommand}" Width="80" Margin="10,0" >
@@ -363,15 +203,12 @@
                     </GroupBox.Header>
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <DockPanel DockPanel.Dock="Bottom" Margin="3">
-                            <!--
                             <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
-                            -->
                             <!--
                                 <WPFToolkit:TitledItem Title="DB key:">
                                     <TextBox Text="{Binding CurrentItem.PrimaryKey}" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
                                 </WPFToolkit:TitledItem>
                                 -->
-                            <!--
                                 <WPFToolkit:TitledItem Title="Item:">
                                     <DockPanel>
                                         <Button DockPanel.Dock="Right" Content="_Edit Item" ToolTip="Shortcut to open Item Management window" Command="{Binding OpenEditItemWindowCommand}" Visibility="{Binding SearchFilter.User.isAdmin, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -413,12 +250,9 @@
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Notes:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
                                     <TextBox Text="{Binding CurrentItem.notes}" AcceptsReturn="True" AcceptsTab="True" MinLines="3" MaxLines="5" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
-                            -->
                             <!-- xml:lang="en-US" SpellCheck.IsEnabled="True" Note:MS implementation throws Exceptions but works with Win7/Net4 and possibly others -->
-                            <!--
                                 </WPFToolkit:TitledItem>
                             </WPFToolkit:TitledItemsControl>
-                            -->
                         </DockPanel>
                     </ScrollViewer>
                 </GroupBox>

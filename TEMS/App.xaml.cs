@@ -13,6 +13,8 @@ using SharpRaven.Data;
 using LibZ.Bootstrap;
 using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.userManager;
+using TEMS.InventoryModel.util;
+using TEMS_Inventory.views;
 
 namespace TEMS_Inventory
 {
@@ -143,16 +145,29 @@ namespace TEMS_Inventory
         {
             var cache = DataRepository.GetDataRepository.ReferenceData;
 
-            Task t = new Task(() =>
+            var t = new Task<bool>(() =>
             {
-                foreach (var item in ReferenceDataCache.ReferenceDataTypes)
+                try
                 {
-                    var dummy = cache[item.TypeName];
+                    foreach (var item in ReferenceDataCache.ReferenceDataTypes)
+                    {
+                        var dummy = cache[item.TypeName];
+                    }
+                    // if we didn't complete before user logged in and MainWindow created, then notify MainWindow we are done
+                    Mediator.InvokeCallback(nameof(LoadingCompletedMessage), null);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    errorTracking?.logger?.Fatal(e, "Failed to load cached reference data!");
+                    return false;
                 }
             });
             t.ConfigureAwait(false);
             t.Start();
+            LoadingCacheCompletion = new NotifyTaskCompletion<bool>(t);
         }
+        public static NotifyTaskCompletion<bool> LoadingCacheCompletion = null;
 
 
 

@@ -1,15 +1,14 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
-using System.Collections;
-using System.Collections.ObjectModel;
-using System.Linq;
-
 using System;
+
 #if NET40
 using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, while in .Net4.5+ it moved to System.dll
 #endif
 
+using TEMS.InventoryModel.userManager;
+using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.entity.db.query;
 
 namespace TEMS_Inventory.views
@@ -23,7 +22,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         protected override void DoUpdateCommand()
         {
-            throw new NotImplementedException();
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "ExpirationDetails", args = SelectedEvent });
         }
 
 
@@ -32,16 +31,13 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand ReplaceExpiredItemCommand
         {
-            get { return InitializeCommand(ref _ServiceItemCommand, param => DoServiceItemCommand(), param => IsCurrentItemNotNull); }
+            get { return InitializeCommand(ref _ReplaceExpiredItemCommand, param => DoReplaceExpiredItemCommand(), param => IsCurrentItemNotNull); }
         }
-        private ICommand _ServiceItemCommand;
+        private ICommand _ReplaceExpiredItemCommand;
 
-        private void DoServiceItemCommand()
+        private void DoReplaceExpiredItemCommand()
         {
-            /*
-            var newWin = new DetailsExpirationViewModel((currentItem as ItemInstance));
-            ShowChildWindow(newWin);
-            */
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "ExpirationDetails" });
         }
     }
 }

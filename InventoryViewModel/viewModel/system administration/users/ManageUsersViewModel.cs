@@ -339,8 +339,7 @@ namespace TEMS_Inventory.views
         {
             if (currentItem is UserDetail currentUser)
             {
-                var viewModel = new ChangePasswordViewModel(currentUser);
-                ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+                ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName="changePassword", args=currentUser });
                 RaisePropertyChanged(nameof(passwordStatus));
             }
         }

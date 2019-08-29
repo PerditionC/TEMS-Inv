@@ -41,6 +41,29 @@ namespace TEMS.InventoryModel.entity.db
         }
 
         /// <summary>
+        /// Returns true if entity exists.
+        /// Note: For db this merely indicates that primary key already exists
+        /// in corresponding entity table, it does not imply any other information exists or matches.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        public bool Exists(string tableName, string pkName, Guid primaryKey)
+        {
+            logger.Trace($"Exists({tableName},{primaryKey}");
+            try
+            {
+                var entityCount = db.ExecuteScalar<int>($"SELECT COUNT(*) FROM `{tableName}` WHERE `{pkName}`=?;", primaryKey);
+                return entityCount > 0;
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, $"Error occurred when updating database - {e.Message}");
+                throw new SavedFailedException("Error occurred when updating database.", e);
+            }
+        }
+
+        /// <summary>
         /// Persist entity of type T to database.
         /// Will ensure any [changed] contained items are saved first to ensure
         /// foreign key constraints are met

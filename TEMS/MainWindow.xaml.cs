@@ -53,27 +53,51 @@ namespace TEMS_Inventory.views
 
 
         /// <summary>
+        /// we preload our cache, but until it is complete don't allow advancing further to avoid weird errors
+        /// </summary>
+        //public Boolean LoadingCompleted => App.LoadingCacheCompletion?.IsCompleted ?? false;
+        public bool LoadingCompleted
+        {
+            get { return (bool)GetValue(LoadingCompletedProperty); }
+            set { SetValue(LoadingCompletedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for LoadingCompleted.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty LoadingCompletedProperty =
+            DependencyProperty.Register("LoadingCompleted", typeof(bool), typeof(MainWindow), new PropertyMetadata(App.LoadingCacheCompletion?.IsCompleted ?? false));
+
+
+
+
+        /// <summary>
         /// Register our handling of the Mediator callbacks to open new windows and dialogs
         /// </summary>
         private void RegisterCallbacks()
         {
             Mediator.Register(nameof(ShowWindowMessage), (args) => ShowDialogWindow(args));
             Mediator.Register(nameof(YesNoDialogMessage), (args) => YesNowDialog(args));
+            if (!LoadingCompleted) Mediator.Register(nameof(LoadingCompletedMessage), (args) => Dispatcher.BeginInvoke((Action)(() => {LoadingCompleted = true;})));
+        }
+
+        private void UpdateLoadingCompleted(object args)
+        {
+            LoadingCompleted = true;
         }
 
         public void ShowDialogWindow(object args)
         {
             if (args is ShowWindowMessage msg)
             {
-                if (msg.viewModel is ChangePasswordViewModel)
+                if (msg.windowName is "ChangePassword")
                 {
-                    ShowChangePasswordDialog(msg.viewModel as ChangePasswordViewModel);
+                    var viewModel = new ChangePasswordViewModel(msg.args as UserDetail);
+                    ShowChangePasswordDialog(viewModel);
                 }
                 else
                 {
-                    logger.Trace("Showing " + msg.WindowName);
-                    Window window = ViewModelToWindowMapper.GetWindow(msg.WindowName);
-                    // TODO update ViewModel with any other msg parameters, e.g. SearchText
+                    logger.Trace("Showing " + msg.windowName);
+                    // retrieve window with possibly updated ViewModel with any other msg parameters, e.g. SearchText
+                    Window window = ViewModelToWindowMapper.GetWindow(msg.windowName, msg.searchText);
                     if (window != null)
                     {
                         window.Owner = App.Current.MainWindow; /* this */

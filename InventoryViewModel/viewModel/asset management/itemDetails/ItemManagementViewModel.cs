@@ -7,10 +7,8 @@ using System.Linq;
 
 #if NET40
 using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, while in .Net4.5+ it moved to System.dll
-using InventoryViewModel;
 #endif
 
-using TEMS.InventoryModel.command.action;
 using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.entity.db.query;
 
@@ -92,13 +90,7 @@ namespace TEMS_Inventory.views
 
         private void DoOpenEditItemTypeWindowCommand()
         {
-            /*
-            var viewModel = new ItemTypeManagementViewModel();
-            var searchFilter = viewModel.SearchFilter;
-            searchFilter.SearchFilterVisible = false;
-            searchFilter.SearchText = (CurrentItem as Item)?.itemNumber?.ToString() ?? "";
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
-            */
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "ManageItemTypes", searchText = (CurrentItem == null) ? null : itemNumber?.ToString() });
         }
 
         #endregion // Open item edit Window
@@ -117,8 +109,7 @@ namespace TEMS_Inventory.views
 
         private void DoOpenSelectItemTypeWindowCommand()
         {
-            var viewModel = new ItemTypeManagementViewModel();
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "SelectItemType", callback = (x) => { if (x != null) if (x is ItemType newItemType) itemType = newItemType; } });
         }
 
         #endregion // Open item edit Window

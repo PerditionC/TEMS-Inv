@@ -27,13 +27,50 @@ namespace TEMS.InventoryModel.command.action
         {
             base.UpdateDetailsPane(selectedItem);
 
-            var db = DataRepository.GetDataRepository;
-            var item = db.Load<ItemInstance>(selectedItem.id);
-            if (detailsPaneVM is GeneralInventoryManagementViewModel detailsPane)
+            if (selectedItem != null)
             {
-                Mapper.GetMapper().Map(item.item.itemType, detailsPane);
-                Mapper.GetMapper().Map(item.item, detailsPane);
-                Mapper.GetMapper().Map(item, detailsPane);
+                // get full item data from DB
+                object item;
+                try
+                {
+                    if ((selectedItem.id != Guid.Empty) && !(selectedItem is GroupHeader))
+                    {
+                        var db = DataRepository.GetDataRepository;
+                        item = db.Load(selectedItem.id, "ItemInstance");
+                    }
+                    else
+                    {
+                        item = null;
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.Error(e, $"Failed to load {selectedItem.id} from table {"ItemInstance"}, details will be blank!");
+                    detailsPaneVM.StatusMessage = $"Failed to load ({selectedItem.id}) from database.";
+                    item = null;
+                }
+
+                // update displayed data
+                if (item != null)
+                {
+                    //if (detailsPaneVM is ItemTypeManagementViewModel viewModel)
+                    {
+                        if (detailsPaneVM is GeneralInventoryManagementViewModel detailsPane)
+                        {
+                            if (item is ItemInstance itemInstance)
+                            {
+                                // note: order here matters, to ensure id of Instance is one shown
+                                Mapper.GetMapper().Map(itemInstance.item.itemType, detailsPane);
+                                Mapper.GetMapper().Map(itemInstance.item, detailsPane);
+                                Mapper.GetMapper().Map(itemInstance, detailsPane);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    detailsPaneVM.clear();
+                }
             }
         }
     }

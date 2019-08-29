@@ -14,10 +14,13 @@ namespace InventoryViewModel
     public static class Mapper
     {
         private static MapperConfiguration config = new MapperConfiguration(cfg => {
-            cfg.CreateMap<ItemType, ItemTypeManagementViewModel>();
-            cfg.CreateMap<Item, ItemManagementViewModel>();
-            cfg.CreateMap<ItemInstance, ItemInstanceManagementViewModel>();
-            cfg.CreateMap<ItemInstance, GeneralInventoryManagementViewModel>();
+            cfg.CreateMap<ItemType, ItemTypeManagementViewModel>().ForMember(dest => dest.guid, opt => opt.MapFrom(src => src.id));
+            cfg.CreateMap<Item, ItemManagementViewModel>().ForMember(dest => dest.guid, opt => opt.MapFrom(src => src.id));
+            cfg.CreateMap<ItemInstance, ItemInstanceManagementViewModel>().ForMember(dest => dest.guid, opt => opt.MapFrom(src => src.id));
+
+            cfg.CreateMap<ItemType, GeneralInventoryManagementViewModel>();
+            cfg.CreateMap<Item, GeneralInventoryManagementViewModel>();
+            cfg.CreateMap<ItemInstance, GeneralInventoryManagementViewModel>().ForMember(dest => dest.guid, opt => opt.MapFrom(src => src.id));
         });
 
         private static IMapper mapper = null;

@@ -104,6 +104,7 @@
     <Compile Include="command\search\SearchItemsCommand.cs" />
     <Compile Include="messages\CurrentUserChangedMessage.cs" />
     <Compile Include="messages\CurrentItemChangedMessage.cs" />
+    <Compile Include="messages\LoadingCompletedMessage.cs" />
     <Compile Include="messages\MessageDialogMessage.cs" />
     <Compile Include="messages\OpenFileDialogMessage.cs" />
     <Compile Include="messages\ShowWindowMessage.cs" />

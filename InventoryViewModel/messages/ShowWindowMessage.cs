@@ -10,10 +10,11 @@ namespace TEMS_Inventory.views
     /// </summary>
     public class ShowWindowMessage
     {
+        public string windowName;        // which window to open
         public bool modal;               // true = dialog or false = non-modal window
         public bool childWindow;         // true to set as child of current window
         public Action<object> callback;  // callback to invoke with window result (may be null if unused)
-        public string WindowName;        // which window to open
-        public ViewModelBase viewModel;  // which window to open
+        public object args;              // optional arguments to pass to new window (may be null if unused)
+        public string searchText;        // usually null, set to specific value to open a search window & preset Search Filter SearchText to this value & invoke search
     }
 }

@@ -38,23 +38,39 @@ namespace TEMS.InventoryModel.entity.db
                 //RaisePropertyChanged(nameof(PrimaryKey));
             }
         }
-
         private Guid _id;
 
         // external id #, multiple items may have same itemId if represents the same item just for a different siteLocation
         // Note: identical itemId implies itemNumber differs only by locSuffix
         [NotNull]
-        public int itemId { get { return _itemId; } set { SetProperty(ref _itemId, value, nameof(itemId)); } }
-
+        public int itemId
+        {
+            get { return _itemId; }
+            set
+            {
+                SetProperty(ref _itemId, value, nameof(itemId));
+                RaisePropertyChanged(nameof(itemNumber));
+                RaisePropertyChanged(nameof(itemDescription));
+            }
+        }
         private int _itemId = 0;
 
         // partial external id, does not include site location
         // e.g. D236-19807
         [SQLite.Ignore]
-        [DisplayNameProperty]
+        //[DisplayNameProperty]
         public string itemNumber
         {
             get { return unitType?.unitCode + string.Format("{0:D}-{1:D}", itemType?.itemTypeId, itemId /* oldItemId */); }
+        }
+
+        // partial external id, does not include site location
+        // e.g. D236-19807
+        [SQLite.Ignore]
+        [DisplayNameProperty]
+        public string itemDescription
+        {
+            get { return $"{itemNumber} : {itemType?.name}"; }
         }
 
         // general details about this item
@@ -66,17 +82,16 @@ namespace TEMS.InventoryModel.entity.db
             {
                 SetProperty(ref _itemType, value, nameof(itemType));
                 itemTypeId = _itemType?.id ?? Guid.Empty;
+                RaisePropertyChanged(nameof(itemNumber));
+                RaisePropertyChanged(nameof(itemDescription));
             }
         }
-
         private ItemType _itemType;
 
         [NotNull, ForeignKey(nameof(itemType))]
         public Guid itemTypeId { get { return _itemTypeId; } set { SetProperty(ref _itemTypeId, value, nameof(itemTypeId)); } }
-
         private Guid _itemTypeId = Guid.Empty;
 
-        #region item specific details
 
         // vehicle location, usually trailer
         [ManyToOne(nameof(vehicleLocationId))] // in DB as foreign key for VehicleLocation table
@@ -89,18 +104,15 @@ namespace TEMS.InventoryModel.entity.db
                 vehicleLocationId = _vehicleLocation?.id ?? Guid.Empty;
             }
         }
-
         private VehicleLocation _vehicleLocation;
 
         [NotNull, ForeignKey(nameof(vehicleLocation))]
         public Guid vehicleLocationId { get { return _vehicleLocationId; } set { SetProperty(ref _vehicleLocationId, value, nameof(vehicleLocationId)); } }
-
         private Guid _vehicleLocationId = Guid.Empty;
 
         // vehicle compartment, if not trailer then description of where in vehicle
         [MaxLength(32)]
         public string vehicleCompartment { get { return _vehicleCompartment; } set { SetProperty(ref _vehicleCompartment, value, nameof(vehicleCompartment)); } }
-
         private string _vehicleCompartment = null;
 
         // for non-serialized items, how many of this specific item (same type, location, bin, etc)
@@ -118,7 +130,6 @@ namespace TEMS.InventoryModel.entity.db
                 SetProperty(ref _count, value, nameof(count));
             }
         }
-
         private int _count = 1;
 
         // for items that expire, when expires; null if does not expire
@@ -128,7 +139,6 @@ namespace TEMS.InventoryModel.entity.db
         // same time, but widgets in DMSU may be done at a different time.  Move to ItemInstance if expiration becomes site controlled.
         // see ItemType.expirationRestockCategory to determine if expirationDate required and if annual date or date specific
         public DateTime? expirationDate { get { return _expirationDate; } set { SetProperty(ref _expirationDate, value, nameof(expirationDate)); } }
-
         private DateTime? _expirationDate = null;
 
         // bin or module assigned to, null if not in a bin or module; in DB as foreign key for bin/module in Item (this) table
@@ -143,18 +153,15 @@ namespace TEMS.InventoryModel.entity.db
                 parentId = _parent?.id;
             }
         }
-
         private Item _parent = null;
 
         [ForeignKey(nameof(parent))]
         public Guid? parentId { get { return _parentId; } set { SetProperty(ref _parentId, value, nameof(parentId)); } }
-
         private Guid? _parentId = null;
 
         // additional remarks about item
         [MaxLength(255)]
         public string notes { get { return _notes; } set { SetProperty(ref _notes, value, nameof(notes)); } }
-
         private string _notes = null;
 
         // below items are set when item is created or cloned
@@ -171,14 +178,10 @@ namespace TEMS.InventoryModel.entity.db
                 unitTypeName = _unitType.name;
             }
         }
-
         private EquipmentUnitType _unitType = null;
 
         [ForeignKey(nameof(unitType)), MaxLength(6)]
         public string unitTypeName { get { return _unitName; } set { SetProperty(ref _unitName, value, nameof(unitTypeName)); } }
-
         private string _unitName = null;
-
-        #endregion item specific details
     }
 }

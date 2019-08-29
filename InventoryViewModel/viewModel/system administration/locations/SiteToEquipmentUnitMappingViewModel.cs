@@ -36,8 +36,7 @@ namespace TEMS_Inventory.views
 
         private void DoOpenManageVendorsWindowCommand()
         {
-            var viewModel = new ManageVendorsViewModel();
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName="ManageVendors" });
         }
 
         #endregion // ICommand Actions

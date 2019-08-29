@@ -19,6 +19,21 @@ namespace TEMS_Inventory.views
     {
         public ItemInstanceManagementViewModel() : base() { }
 
+        /// <summary>
+        /// Command to open edit item window with this item selected so can be modified/viewed
+        /// </summary>
+        public ICommand OpenEditItemWindowCommand
+        {
+            get { return InitializeCommand(ref _OpenEditItemWindowCommand, param => DoOpenEditItemWindowCommand(), param => { return IsCurrentItemNotNull && IsAdmin; }); }
+        }
+        private ICommand _OpenEditItemWindowCommand;
+
+        private void DoOpenEditItemWindowCommand()
+        {
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "ManageItem", searchText = (CurrentItem == null) ? null : itemNumber?.ToString() });
+        }
+
+        
         // primary external id; as used in barcode, e.g. D236-19807-NFR
         [DisplayNameProperty]
         public string itemNumber
@@ -33,6 +48,8 @@ namespace TEMS_Inventory.views
             set
             {
                 SetProperty(ref _item, value, nameof(item));
+                RaisePropertyChanged(nameof(itemNumber));
+                RaisePropertyChanged(nameof(item.itemType));
             }
         }
         private Item _item;
@@ -44,6 +61,7 @@ namespace TEMS_Inventory.views
             set
             {
                 SetProperty(ref _siteLocation, value, nameof(siteLocation));
+                RaisePropertyChanged(nameof(itemNumber));
             }
         }
         private SiteLocation _siteLocation;

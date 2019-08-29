@@ -64,8 +64,14 @@ namespace TEMS.InventoryModel.entity.db.query
                     {
                         if (id == Guid.Empty) throw new ArgumentOutOfRangeException("Unknown entity id!");
                         if (string.IsNullOrEmpty(entityType)) throw new ArgumentOutOfRangeException("Unknown entity type!");
-
-                        _entity = new WeakReference(DataRepository.GetDataRepository.Load(id, entityType) as ItemBase);
+                        if (DataRepository.GetDataRepository.Exists(entityType, "id", id))
+                        {
+                            _entity = new WeakReference(DataRepository.GetDataRepository.Load(id, entityType) as ItemBase);
+                        }
+                        else
+                        {
+                            _entity = new WeakReference(null);
+                        }
                     }
                     catch (Exception e)
                     {

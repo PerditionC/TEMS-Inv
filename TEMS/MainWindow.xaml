@@ -125,8 +125,8 @@
                 <SolidColorBrush Color="#FF0066CC"/>
             </Label.Foreground>
         </Label>
-        
-        <TabControl TabStripPlacement="Left" Margin="1,2" BorderThickness="1" BorderBrush="Gray" Background="WhiteSmoke" SnapsToDevicePixels="True">
+
+        <TabControl TabStripPlacement="Left" Margin="1,2" BorderThickness="1" BorderBrush="Gray" Background="WhiteSmoke" SnapsToDevicePixels="True" IsEnabled="{Binding LoadingCompleted}">
                 <TabControl.BitmapEffect>
                     <DropShadowBitmapEffect Color="Black" Direction="270"/>
                 </TabControl.BitmapEffect>

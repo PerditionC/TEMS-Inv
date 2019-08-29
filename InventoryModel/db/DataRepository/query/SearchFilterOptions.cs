@@ -70,7 +70,7 @@ namespace TEMS.InventoryModel.entity.db.query
         /// <summary>
         /// initialize to default settings
         /// </summary>
-        public void Initialize()
+        public void Initialize(string SearchText = null)
         {
             // initialize SearchFilter, 
             // Note: search is not triggered until SearchFilterEnabled == true, so can set values in any order
@@ -91,6 +91,9 @@ namespace TEMS.InventoryModel.entity.db.query
 
             SelectItemStatusValuesVisible = false;
             // don't include out of service items by default either
+
+            // do we want to initialize with search for specific item or general (null)
+            this.SearchText = SearchText;
 
             // activate
             SearchFilterEnabled = true;

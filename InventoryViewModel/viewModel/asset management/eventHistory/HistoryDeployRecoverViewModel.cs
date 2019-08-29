@@ -16,8 +16,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         protected override void DoUpdateCommand()
         {
-            var viewModel = new DetailsDeployRecoverViewModel(SelectedEvent as DeployEvent);
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "DeployRecoverDetails", args = SelectedEvent as DeployEvent });
         }
     }
 }

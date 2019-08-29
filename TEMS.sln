@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{3BE9A047-8
 		docs\CONTRIBUTING.md = docs\CONTRIBUTING.md
 		docs\CREDITS.md = docs\CREDITS.md
 		docs\DB.md = docs\DB.md
+		docs\Items.xls = docs\Items.xls
 		docs\Model.md = docs\Model.md
 		docs\README.md = docs\README.md
 		docs\Usage.md = docs\Usage.md
@@ -53,6 +54,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEMS", "TEMS\TEMS.csproj", 
 	ProjectSection(ProjectDependencies) = postProject
 		{90D08C68-5D3A-4DBF-9EBC-673B5BC91A66} = {90D08C68-5D3A-4DBF-9EBC-673B5BC91A66}
 		{4A4D8AC9-5AA0-4642-B2B4-07C8DC77223C} = {4A4D8AC9-5AA0-4642-B2B4-07C8DC77223C}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{CFA1B677-8413-4260-B6DB-8FA05D886B57}"
+	ProjectSection(SolutionItems) = preProject
+		docs\images\DamagedMissingHistory.png = docs\images\DamagedMissingHistory.png
+		docs\images\DeployRecoverHistory.png = docs\images\DeployRecoverHistory.png
+		docs\images\GIM.png = docs\images\GIM.png
+		docs\images\Login.png = docs\images\Login.png
+		docs\images\MainMenu.png = docs\images\MainMenu.png
+		docs\images\MainMenuLoading.png = docs\images\MainMenuLoading.png
+		docs\images\ManageItems.png = docs\images\ManageItems.png
+		docs\images\ManageItemTypes.png = docs\images\ManageItemTypes.png
+		docs\images\ManageUsers.png = docs\images\ManageUsers.png
+		docs\images\ManageVendors.png = docs\images\ManageVendors.png
+		docs\images\PrintLabels.png = docs\images\PrintLabels.png
+		docs\images\ReferenceData.png = docs\images\ReferenceData.png
+		docs\images\Replication.png = docs\images\Replication.png
+		docs\images\Reports.png = docs\images\Reports.png
+		docs\images\ServiceHistory.png = docs\images\ServiceHistory.png
 	EndProjectSection
 EndProject
 Global
@@ -167,6 +187,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3BE9A047-83A9-45DD-8317-D3A738BCC58A} = {F9CC721F-471C-429F-9AC2-F3983DBC3573}
+		{CFA1B677-8413-4260-B6DB-8FA05D886B57} = {3BE9A047-83A9-45DD-8317-D3A738BCC58A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0C1D8642-228B-47A1-BDA3-B2F603AF537B}

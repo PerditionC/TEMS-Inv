@@ -8,9 +8,9 @@ using System.IO;
 
 #if NET40
 using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, while in .Net4.5+ it moved to System.dll
-using InventoryViewModel;
-#endif
+#endif 
 
+using InventoryViewModel;
 using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.util;
 
@@ -78,8 +78,7 @@ namespace TEMS_Inventory.views
         {
             try
             {
-                var viewModel = new ManageVendorsViewModel();
-                ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+                ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "ManageVendors", searchText=vendor?.name });
             }
             catch (Exception e)
             {

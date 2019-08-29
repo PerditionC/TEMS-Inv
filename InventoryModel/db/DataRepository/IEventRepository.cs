@@ -57,7 +57,7 @@ namespace TEMS.InventoryModel.entity.db
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        IList<ItemServiceHistory> GetItemServiceEvents(SearchResult item);
+        IList<ItemService> GetItemServiceEvents(SearchResult item);
 
         #endregion service
     }

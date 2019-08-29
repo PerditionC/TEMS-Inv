@@ -1,6 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
+using System;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, 
 
 using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.entity.db.query;
+using TEMS.InventoryModel.userManager;
 
 namespace TEMS_Inventory.views
 {
@@ -23,8 +25,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         protected override void DoUpdateCommand()
         {
-            var viewModel = new DetailsDamagedMissingViewModel(SelectedEvent as DamageMissingEvent);
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, viewModel = viewModel });
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "DamagedMissingDetails", args = SelectedEvent as DamageMissingEvent });
         }
 
 
@@ -39,11 +40,17 @@ namespace TEMS_Inventory.views
 
         private void DoDamagedCommand()
         {
-            /*
-            var newWin = new DamagedMissingDetailsWindow();
-            //searchFilter.SearchText = (currentItem as ItemInstance)?.itemNumber?.ToString() ?? "";
-            ShowChildWindow(newWin);
-            */
+            var currentUser = UserManager.GetUserManager.CurrentUser();
+            var damagedMissingEvent = new DamageMissingEvent()
+            {
+                eventType = DamageMissingEventType.Damage,
+                itemInstance = CurrentItem.entity as ItemInstance,
+                discoveryDate = DateTime.Now,
+                inputBy = currentUser.userId,
+                reportedBy = currentUser.displayName
+            };
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "DamagedMissingDetails", args = damagedMissingEvent as DamageMissingEvent });
+            SelectedEvent = damagedMissingEvent;
         }
 
 
@@ -58,10 +65,17 @@ namespace TEMS_Inventory.views
 
         private void DoMissingCommand()
         {
-            /*
-            var newWin = new DamagedMissingDetailsWindow();
-            ShowChildWindow(newWin);
-            */
+            var currentUser = UserManager.GetUserManager.CurrentUser();
+            var damagedMissingEvent = new DamageMissingEvent()
+            {
+                eventType = DamageMissingEventType.Missing,
+                itemInstance = CurrentItem.entity as ItemInstance,
+                discoveryDate = DateTime.Now,
+                inputBy = currentUser.userId,
+                reportedBy = currentUser.displayName
+            };
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "DamagedMissingDetails", args = damagedMissingEvent as DamageMissingEvent });
+            SelectedEvent = damagedMissingEvent;
         }
 
     }

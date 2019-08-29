@@ -9,19 +9,20 @@
              xmlns:WPFToolkit="clr-namespace:DW.WPFToolkit.Controls;assembly=WPFToolkit"
              xmlns:WPFConverter="clr-namespace:DW.WPFToolkit.Converters;assembly=WPFToolkit"
              mc:Ignorable="d" 
-             d:DesignHeight="480" d:DesignWidth="320">
+             d:DesignHeight="480" d:DesignWidth="320"
+             MinWidth="300" MinHeight="400" >
     <UserControl.Resources>
         <WPFConverter:DebugDummyConverter x:Key="DebugDummyConverter" />
         <WPFConverter:EnumToBooleanConverter x:Key="enumToBooleanConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
 
-    <DockPanel Margin="3,2,2,3" >
+    <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="3,2,2,3" MinHeight="100" MinWidth="50" >
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
             <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}" />
         </StackPanel>
 
-        <WrapPanel MinHeight="100" MinWidth="50" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid MinHeight="100" MinWidth="50" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <ContentPresenter Name="DisplayItemList" Content="{Binding}" >
                 <ContentPresenter.ContentTemplate>
                     <DataTemplate>
@@ -182,7 +183,7 @@
                     </DataTemplate>
                 </ContentPresenter.ContentTemplate>
             </ContentPresenter>
-        </WrapPanel>
+        </Grid>
     </DockPanel>
 
 </UserControl>

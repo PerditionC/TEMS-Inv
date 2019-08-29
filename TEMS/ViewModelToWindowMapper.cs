@@ -17,7 +17,13 @@ namespace TEMS_Inventory
 
         private static Dictionary<string, Window> views;
 
-        public static Window GetWindow(string view)
+        /// <summary>
+        /// returns a Window derived instance to show
+        /// </summary>
+        /// <param name="view">which window to return</param>
+        /// <param name="searchText">optional, usually null, for windows with a SearchFilter, sets the initial searchText</param>
+        /// <returns></returns>
+        public static Window GetWindow(string view, string searchText = null)
         {
             // needed view models for Search Detail Windows, i.e. windows with search pane, results tree pane, and details pane
             DetailsViewModelBase detailsPaneVM;
@@ -33,7 +39,7 @@ namespace TEMS_Inventory
                 // asset management
                 case "GenInvMngt":
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize();
+                    searchFilter.Initialize(searchText);
 
                     detailsPaneVM = new GeneralInventoryManagementViewModel();
                     onSelectionChangedCommand = new UpdateDetailsGeneralInventoryManagementCommand(detailsPaneVM);
@@ -48,7 +54,7 @@ namespace TEMS_Inventory
                     break;
                 case "DeployRecover":
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize();
+                    searchFilter.Initialize(searchText);
 
                     detailsPaneVM = new HistoryDeployRecoverViewModel();
                     onSelectionChangedCommand = new UpdateDetailsHistoryDeployRecoverCommand(detailsPaneVM);
@@ -63,7 +69,7 @@ namespace TEMS_Inventory
                     break;
                 case "DamagedMissing":
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize();
+                    searchFilter.Initialize(searchText);
 
                     detailsPaneVM = new HistoryDamagedMissingViewModel();
                     onSelectionChangedCommand = new UpdateDetailsHistoryDamagedMissingCommand(detailsPaneVM);
@@ -78,7 +84,7 @@ namespace TEMS_Inventory
                     break;
                 case "Service":
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize();
+                    searchFilter.Initialize(searchText);
 
                     detailsPaneVM = new HistoryServiceViewModel();
                     onSelectionChangedCommand = new UpdateDetailsHistoryServiceCommand(detailsPaneVM);
@@ -93,7 +99,7 @@ namespace TEMS_Inventory
                     break;
                 case "Expiration":
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize();
+                    searchFilter.Initialize(searchText);
 
                     detailsPaneVM = new HistoryExpirationReplaceViewModel();
                     onSelectionChangedCommand = new UpdateDetailsHistoryExpirationReplaceCommand(detailsPaneVM);
@@ -112,14 +118,16 @@ namespace TEMS_Inventory
                     win = new ReplicationWindow();
                     break;
                 case "ManageVendors":
-                    win = new ManageVendorsWindow(null as ManageVendorsViewModel);
+                    var manageVendorVM = new ManageVendorsViewModel();
+                    if (searchText != null) manageVendorVM.SearchVendorText = searchText;
+                    win = new ManageVendorsWindow(manageVendorVM);
                     break;
                 case "SiteToEquipMapping":
                     win = new SiteToEquipmentUnitMappingWindow();
                     break;
                 case "ManageItemInstances":
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize();
+                    searchFilter.Initialize(searchText);
 
                     detailsPaneVM = new ItemInstanceManagementViewModel();
                     onSelectionChangedCommand = new UpdateDetailsItemManagementCommand(detailsPaneVM, typeof(ItemInstance));
@@ -131,7 +139,7 @@ namespace TEMS_Inventory
                     break;
                 case "ManageItems":
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize();
+                    searchFilter.Initialize(searchText);
 
                     detailsPaneVM = new ItemManagementViewModel();
                     onSelectionChangedCommand = new UpdateDetailsItemManagementCommand(detailsPaneVM, typeof(Item));
@@ -143,7 +151,20 @@ namespace TEMS_Inventory
                     break;
                 case "ManageItemTypes":
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize();
+                    searchFilter.Initialize(searchText);
+
+                    detailsPaneVM = new ItemTypeManagementViewModel();
+                    onSelectionChangedCommand = new UpdateDetailsItemManagementCommand(detailsPaneVM, typeof(ItemType));
+                    searchResultViewModel = new SearchResultViewModel(onSelectionChangedCommand);
+                    searchFilterOptionsViewModel = new SearchFilterOptionsViewModel(searchFilter, QueryResultEntitySelector.ItemType, searchResultViewModel);
+                    winVM = new SearchDetailWindowViewModel(searchFilterOptionsViewModel, searchResultViewModel, detailsPaneVM);
+
+                    win = new ItemTypeManagementWindow(winVM);
+                    break;
+                case "SelectItemType":
+                    // TODO this should just be a selection window!!!
+                    searchFilter = new SearchFilterOptions();
+                    searchFilter.Initialize(searchText);
 
                     detailsPaneVM = new ItemTypeManagementViewModel();
                     onSelectionChangedCommand = new UpdateDetailsItemManagementCommand(detailsPaneVM, typeof(ItemType));

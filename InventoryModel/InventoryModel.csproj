@@ -66,7 +66,7 @@
     <Compile Include="db\DatabaseHelper.cs" />
     <Compile Include="db\entity\events\DamageMissingEvent.cs" />
     <Compile Include="db\entity\events\DeployEvent.cs" />
-    <Compile Include="db\entity\events\Service.cs" />
+    <Compile Include="db\entity\events\ItemService.cs" />
     <Compile Include="db\ItemBase.cs" />
     <Compile Include="db\entity\item\Item.cs" />
     <Compile Include="db\entity\item\ItemInstance.cs" />

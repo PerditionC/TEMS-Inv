@@ -55,171 +55,10 @@
                     <Button Grid.Row="4" x:Name="DeleteButton" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding DeleteCommand}" Content="_Delete" />
                 </Grid>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom" >
-                    <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding SearchResult.ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding SearchResult.ExpandCollapseCommand}" Visibility="{Binding SearchFilterOptions.SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                    <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding SearchFilterOptions.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
-                    <TextBlock x:Name="SelectionBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding SearchResult.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
-                    <TextBlock x:Name="DetailsBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding Details.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
+                    <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding SearchResult.ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding SearchResult.ExpandCollapseCommand}" Visibility="{Binding SearchResult.SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding Details.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
                 </StackPanel>
-                <ContentPresenter Name="DisplayItemList" Content="{Binding SearchResult}" >
-                    <ContentPresenter.ContentTemplate>
-                        <DataTemplate>
-                            <Grid Background="White">
-                                <WPFToolkit:EnhancedTreeView Name="ItemList" ItemsSource="{Binding Items, diag:PresentationTraceSources.TraceLevel=High}" 
-                                                             SelectionMode="Single" SelectedElement="{Binding SelectedItem, Mode=TwoWay, diag:PresentationTraceSources.TraceLevel=High}"
-                                                             VirtualizingStackPanel.IsVirtualizing="True"
-                                                             >
-                                    <WPFToolkit:EnhancedTreeView.ItemContainerStyle>
-                                        <Style TargetType="{x:Type WPFToolkit:EnhancedTreeViewItem}">
-                                            <Setter Property="IsExpanded" Value="{Binding IsExpanded}" />
-                                        </Style>
-                                    </WPFToolkit:EnhancedTreeView.ItemContainerStyle>
-                                    <WPFToolkit:EnhancedTreeView.Resources>
-
-                                        <!--
-                                        <HierarchicalDataTemplate DataType="{x:Type dbQuery:SiteLocationResult}" ItemsSource="{Binding children}" >
-                                            <WrapPanel>
-                                                <TextBlock Text="{Binding description}"  FontFamily="Courier New" FontWeight="DemiBold"/>
-                                            </WrapPanel>
-                                        </HierarchicalDataTemplate>
-                                        -->
-
-                                        <HierarchicalDataTemplate DataType="{x:Type dbQuery:EquipmentUnitResult}" ItemsSource="{Binding children}">
-                                            <WrapPanel>
-                                                <Image Height="24" Width="24" Margin="2" VerticalAlignment="Center"
-                                                    ToolTip="{Binding description}"
-                                                    Source="{StaticResource EquipImage}" />
-                                                <TextBlock Text="{Binding name}"  FontFamily="Courier New" FontWeight="DemiBold"/>
-                                            </WrapPanel>
-                                        </HierarchicalDataTemplate>
-
-                                        <HierarchicalDataTemplate DataType="{x:Type dbQuery:GroupHeader}" ItemsSource="{Binding children}">
-                                            <WrapPanel>
-                                                <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
-                                                    <Image.Style>
-                                                        <Style TargetType="{x:Type Image}">
-                                                            <Setter Property="Source" Value="{StaticResource ItemImage}" />
-                                                            <Setter Property="ToolTip" Value="group" />
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
-                                                <TextBlock VerticalAlignment="Center" >
-                                                    <Run Text="{Binding description}" FontFamily="Courier New" />
-                                                    <Run Text=" [" />
-                                                    <Run Text="{Binding childCount, Mode=OneWay}" Foreground="Blue" />
-                                                    <Run Text="]" />
-                                                </TextBlock>
-                                            </WrapPanel>
-                                        </HierarchicalDataTemplate>
-
-                                        <HierarchicalDataTemplate DataType="{x:Type dbQuery:BinGroupHeader}" ItemsSource="{Binding children}">
-                                            <WrapPanel>
-                                                <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
-                                                    <Image.Style>
-                                                        <Style TargetType="{x:Type Image}">
-                                                            <Setter Property="Source" Value="{StaticResource BinImage}" />
-                                                            <Setter Property="ToolTip" Value="bin" />
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
-                                                <TextBlock VerticalAlignment="Center" >
-                                                    <Run Text="{Binding description}" FontFamily="Courier New" />
-                                                    <Run Text=" [" />
-                                                    <Run Text="{Binding childCount, Mode=OneWay}" Foreground="Blue" />
-                                                    <Run Text="]" />
-                                                </TextBlock>
-                                            </WrapPanel>
-                                        </HierarchicalDataTemplate>
-
-                                        <HierarchicalDataTemplate DataType="{x:Type dbQuery:ModuleGroupHeader}" ItemsSource="{Binding children}">
-                                            <WrapPanel>
-                                                <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
-                                                    <Image.Style>
-                                                        <Style TargetType="{x:Type Image}">
-                                                            <Setter Property="Source" Value="{StaticResource ModuleImage}" />
-                                                            <Setter Property="ToolTip" Value="module" />
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
-                                                <TextBlock VerticalAlignment="Center" >
-                                                    <Run Text="{Binding description}" FontFamily="Courier New" />
-                                                    <Run Text=" [" />
-                                                    <Run Text="{Binding childCount, Mode=OneWay}" Foreground="Blue" />
-                                                    <Run Text="]" />
-                                                </TextBlock>
-                                            </WrapPanel>
-                                        </HierarchicalDataTemplate>
-
-                                        <HierarchicalDataTemplate DataType="{x:Type dbQuery:ItemGroupHeader}" ItemsSource="{Binding children}">
-                                            <WrapPanel>
-                                                <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
-                                                    <Image.Style>
-                                                        <Style TargetType="{x:Type Image}">
-                                                            <Setter Property="Source" Value="{StaticResource ItemImage}" />
-                                                            <Setter Property="ToolTip" Value="item" />
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
-                                                <TextBlock VerticalAlignment="Center" >
-                                                    <Run Text="{Binding description}" FontFamily="Courier New" />
-                                                    <Run Text=" [" />
-                                                    <Run Text="{Binding childCount, Mode=OneWay}" Foreground="Blue" />
-                                                    <Run Text="]" />
-                                                </TextBlock>
-                                            </WrapPanel>
-                                        </HierarchicalDataTemplate>
-
-                                        <HierarchicalDataTemplate DataType="{x:Type dbQuery:GenericItemResult}" ItemsSource="{Binding children}">
-                                            <WrapPanel>
-                                                <Image Height="16" Width="16" Margin="2" VerticalAlignment="Center" >
-                                                    <Image.Style>
-                                                        <Style TargetType="{x:Type Image}">
-                                                            <Setter Property="Source" Value="{StaticResource ItemImage}" />
-                                                            <Setter Property="ToolTip" Value="item" />
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Path=isModule, Mode=OneWay}" Value="True">
-                                                                    <Setter Property="Image.Source" Value="{StaticResource ModuleImage}"/>
-                                                                    <Setter Property="ToolTip" Value="module" />
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding Path=isBin, Mode=OneWay}" Value="true">
-                                                                    <Setter Property="Image.Source" Value="{StaticResource BinImage}" />
-                                                                    <Setter Property="ToolTip" Value="bin" />
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Image.Style>
-                                                </Image>
-                                                <TextBlock VerticalAlignment="Center">
-                                                    <Run Text="{Binding itemNumber, StringFormat={}{0,10:D}}" FontFamily="Courier New" />
-                                                    <Run Text=" : " />
-                                                    <Run Text="{Binding description}" />
-                                                    <Run Text=" (" />
-                                                    <Run Text="{Binding quantity}" Foreground="Blue" />
-                                                    <Run Text=")" />
-                                                </TextBlock>
-                                            </WrapPanel>
-                                        </HierarchicalDataTemplate>
-
-                                        <HierarchicalDataTemplate DataType="{x:Type dbQuery:SearchResult}" ItemsSource="{Binding children}">
-                                            <WrapPanel>
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding description}"  FontFamily="Courier New" FontWeight="DemiBold"/>
-                                            </WrapPanel>
-                                        </HierarchicalDataTemplate>
-
-                                    </WPFToolkit:EnhancedTreeView.Resources>
-                                </WPFToolkit:EnhancedTreeView>
-                                <Border Name="EmptyList" Visibility="Collapsed" BorderThickness="1" BorderBrush="Black">
-                                    <TextBlock Text="No items." Margin="20,0,0,0" />
-                                </Border>
-                            </Grid>
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding Path=Items.Count}" Value="0">
-                                    <Setter TargetName="ItemList" Property="Visibility" Value="Collapsed"/>
-                                    <Setter TargetName="EmptyList" Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </ContentPresenter.ContentTemplate>
-                </ContentPresenter>
+                <uc:ItemSearchResults x:Name="DisplayItemList" DataContext="{Binding SearchResult}" />
             </DockPanel>
 
             <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" />
@@ -249,15 +88,10 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <DockPanel DockPanel.Dock="Bottom" Margin="3">
                             <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
-                                <Label Content="{Binding itemType.name, Mode=OneWay, FallbackValue=Unknown Item}"/>
+                                <!-- <Label Content="{Binding itemType.name, Mode=OneWay, FallbackValue=Unknown Item}"/> -->
                                 <WPFToolkit:TitledItem Title="DB key:">
                                     <TextBox Text="{Binding guid}" IsEnabled="False" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
                                 </WPFToolkit:TitledItem>
-                                <!--
-                                <WPFToolkit:TitledItem Title="Name:">
-                                    <TextBox x:Name="tbName" Text="{Binding CurrentItem.itemType.name, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding isCurrentItemNotNull, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DockPanel}}" ToolTip="Name of this item" />
-                                </WPFToolkit:TitledItem>
-                                -->
                                 <WPFToolkit:TitledItem Title="Item Type:" Margin="0,0,0,13" IsEnabled="{Binding itemType, Converter={StaticResource NullToBooleanConverter}}">
                                     <DockPanel>
                                         <WrapPanel Orientation="Horizontal" DockPanel.Dock="Right" >
@@ -270,7 +104,7 @@
                                         <ComboBox IsEnabled="{Binding IsCurrentItemNotNull}" 
                                                   IsEditable="False" 
                                                   IsTextSearchEnabled="True"
-                                                  SelectedItem="{Binding CurrentItem.itemType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                  SelectedItem="{Binding itemType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                   DisplayMemberPath="name"
                                                   ToolTip="Identifies what the item is" 
                                                   ItemsSource="{Binding cache[ItemType]}"
@@ -320,7 +154,7 @@
                                     <Label Content="{Binding itemType.expirationRestockCategory}" />
                                 </WrapPanel>
                                 <WPFToolkit:TitledItem Title="Within:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                    <WPFToolkit:ComboBoxEx x:Name="ParentComboBox" DisplayMemberPath="itemNumber" ItemsSource="{Binding Path=PossibleParents}" SelectedItem="{Binding parent}" ToolTip="bin or module that contains this item" SelectionBoxNullValueText="Not in a bin or module" NullValueText="N/A"/>
+                                    <WPFToolkit:ComboBoxEx x:Name="ParentComboBox" DisplayMemberPath="itemDescription" ItemsSource="{Binding Path=PossibleParents}" SelectedItem="{Binding parent}" ToolTip="bin or module that contains this item" SelectionBoxNullValueText="Not in a bin or module" NullValueText="N/A"/>
                                     <!-- <ComboBox x:Name="ParentComboBox" DisplayMemberPath="itemNumber" ItemsSource="{Binding Path=PossibleParents}" SelectedItem="{Binding CurrentItem.parent}" ToolTip="bin or module that contains this item"  KeyDown="ParentComboBox_KeyDown" IsEditable="True" /> -->
                                     <!--<TextBox Text="{Binding CurrentItem.parent.name}" /> -->
                                 </WPFToolkit:TitledItem>

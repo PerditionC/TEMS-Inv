@@ -58,6 +58,16 @@ namespace TEMS.InventoryModel.entity
         bool Exists<T>(T entity) where T : ItemBase;
 
         /// <summary>
+        /// Returns true if entity exists.
+        /// Note: For db this merely indicates that primary key already exists
+        /// in corresponding entity table, it does not imply any other information exists or matches.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        bool Exists(string tableName, string pkName, Guid primaryKey);
+
+            /// <summary>
         /// Persist entity of type T to somewhere,
         /// Only stores contents of entity, any nested items must be
         /// Save'd prior to calling to ensure foreign key constraints met

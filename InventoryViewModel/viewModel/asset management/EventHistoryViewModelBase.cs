@@ -25,7 +25,12 @@ namespace TEMS_Inventory.views
         public ObservableCollection<ItemBase> EventList
         {
             get { return _EventList; }
-            set { SetProperty(ref _EventList, value, nameof(EventList)); SelectedEvent = EventList.FirstOrDefault(); }
+            set
+            {
+                if (value == null) value = new ObservableCollection<ItemBase>();
+                SetProperty(ref _EventList, value, nameof(EventList));
+                SelectedEvent = EventList.FirstOrDefault();
+            }
         }
         private ObservableCollection<ItemBase> _EventList = new ObservableCollection<ItemBase>();
 
