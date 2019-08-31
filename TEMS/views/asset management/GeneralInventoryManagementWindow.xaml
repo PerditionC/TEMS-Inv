@@ -28,7 +28,7 @@
     </Window.Resources>
 
     <DockPanel Background="OldLace" x:Name="rootItem">
-        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" DataContext="{Binding SearchFilter}" />
+        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" DataContext="{Binding SearchFilterOptions}" />
 
         <!--  change so left is treeview, on select item open in right side for details
         Note: no add or delete as that is done on Item view (since effects all sites)
@@ -72,7 +72,7 @@
                             <Button Grid.Row="3" x:Name="DeleteButton" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding DeleteCommand}" Content="_Delete" />
                         </Grid>
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
-                            <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding ExpandCollapseCommand}"/>
+                            <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding SearchResult.ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding SearchResult.ExpandCollapseCommand}" Visibility="{Binding ItemSearchFilter.SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         </StackPanel>
                         <uc:ItemSearchResults x:Name="DisplayItemList" DockPanel.Dock="Left" DataContext="{Binding SearchResult}" />
                     </DockPanel>
@@ -196,7 +196,7 @@
                 <GroupBox BorderThickness="1" BorderBrush="Gray" Background="AliceBlue" MinWidth="50">
                     <GroupBox.Header>
                         <Border Padding="3" CornerRadius="5" BorderThickness="1" BorderBrush="LightGray" SnapsToDevicePixels="True" Background="White">
-                            <TextBox Background="Transparent" BorderThickness="0" ToolTip="Identifies this unique item instance" >
+                            <TextBox Background="Transparent" BorderThickness="0" ToolTip="Identifies this unique item instance" IsReadOnly="True">
                                 <TextBox.Style>
                                     <Style TargetType="{x:Type TextBox}">
                                         <Setter Property="Text" Value="{Binding CurrentItem.itemNumber, Mode=OneWay}"/>
@@ -214,53 +214,50 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <DockPanel DockPanel.Dock="Bottom" Margin="3">
                             <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
-                            <!--
-                                <WPFToolkit:TitledItem Title="DB key:">
-                                    <TextBox Text="{Binding CurrentItem.PrimaryKey}" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
+                                <!--
+                                <WPFToolkit:TitledItem Title="DB key:" Visibility="{Binding IsDebugMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                                    <TextBox Text="{Binding guid}" IsReadOnly="True" IsEnabled="{Binding IsCurrentItemEditable}" ToolTip="Globally Unique Identifier, primary key for database (read-only)" Visibility="Visible" />
                                 </WPFToolkit:TitledItem>
                                 -->
                                 <WPFToolkit:TitledItem Title="Item:">
                                     <DockPanel>
                                         <Button DockPanel.Dock="Right" Content="_Edit Item" ToolTip="Shortcut to open Item Management window" Command="{Binding OpenEditItemWindowCommand}" Visibility="{Binding SearchFilter.User.isAdmin, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                        <TextBox x:Name="tbName" Text="{Binding CurrentItem.item.itemType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="Identifies what the item is" />
+                                        <TextBox x:Name="tbName" Text="{Binding item.itemType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="Identifies what the item is" />
                                     </DockPanel>
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Site:">
-                                    <TextBox Text="{Binding CurrentItem.siteLocation.name}" IsReadOnly="True"  ToolTip="Where this item is (the site of the equipment)" />
+                                    <TextBox Text="{Binding siteLocation.name}" IsReadOnly="True"  ToolTip="Where this item is (the site of the equipment)" />
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Serial #:">
-                                    <WPFToolkit:TitledItem.IsEnabled>
-                                        <MultiBinding Converter="{StaticResource AndMultiValueConverter}">
-                                            <Binding Path="CurrentItem" Converter="{StaticResource NullToBooleanConverter}" />
-                                            <Binding Path="CurrentItem.item.count" Converter="{WPFConverters:IntToBooleanConverter CompareOp=Equal}" ConverterParameter="1" />
-                                        </MultiBinding>
-                                    </WPFToolkit:TitledItem.IsEnabled>
-                                    <TextBox Text="{Binding CurrentItem.serialNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Serial # or other unique identifier for this item (usually blank)" />
+                                <WPFToolkit:TitledItem Title="Status:" IsEnabled="{Binding IsCurrentItemEditable}" Margin="0 0 0 20">
+                                    <TextBox Text="{Binding status.name,Mode=OneWay}" ToolTip="Select status" IsReadOnly="True" />
+                                    <!-- 
+                                    <ComboBox x:Name="StatusFilter" DisplayMemberPath="name" ItemsSource="{Binding Path=DataContext.SearchFilterOptions.SearchFilter.ItemStatusValues, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" SelectedItem="{Binding status}" ToolTip="Select status" />
+                                    -->
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Grant #:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                    <TextBox Text="{Binding CurrentItem.grantNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Information to match item with a grant associated with this item" />
+                                <WPFToolkit:TitledItem Title="Serial #:" IsEnabled="{Binding CanHaveSerialNumber}">
+                                    <TextBox Text="{Binding serialNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Serial # or other unique identifier for this item (usually blank)" />
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Status:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                    <ComboBox x:Name="StatusFilter" DisplayMemberPath="name" ItemsSource="{Binding SearchFilter.ItemStatusValues}" SelectedItem="{Binding CurrentItem.status}" ToolTip="Select status" />
+                                <WPFToolkit:TitledItem Title="Grant #:" IsEnabled="{Binding IsCurrentItemEditable}">
+                                    <TextBox Text="{Binding grantNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Information to match item with a grant associated with this item" />
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="In Service:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                    <DatePicker SelectedDate="{Binding CurrentItem.inServiceDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
+                                <WPFToolkit:TitledItem Title="In Service:" IsEnabled="{Binding IsCurrentItemEditable}">
+                                    <DatePicker SelectedDate="{Binding inServiceDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Removed:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}" ToolTip="The date item was removed from service, should be left blank if still in service">
-                                    <DatePicker Text="{Binding CurrentItem.removedServiceDate, Mode=TwoWay, Converter={StaticResource NullableToEmptyStringConverter}}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
+                                <WPFToolkit:TitledItem Title="Removed:" IsEnabled="{Binding HasRemovedFromServiceDate}" ToolTip="The date item was removed from service, should be left blank if still in service">
+                                    <DatePicker Text="{Binding removedServiceDate, Mode=TwoWay, Converter={StaticResource NullableToEmptyStringConverter}}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Seal Broken:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                    <CheckBox VerticalAlignment="Center" />
+                                <WPFToolkit:TitledItem Title="Seal Broken:" IsEnabled="{Binding IsCurrentItemEditable}">
+                                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding isSealbroken}" />
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Has Barcode:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}" ToolTip="Barcode has been printed / barcode is affixed to item">
+                                <WPFToolkit:TitledItem Title="Has Barcode:" IsEnabled="{Binding IsCurrentItemEditable}" ToolTip="Barcode has been printed / barcode is affixed to item">
                                     <DockPanel>
                                         <Button DockPanel.Dock="Right" Content="Print Barcode Label" ToolTip="Shortcut to open View Print Labels window" Command="{Binding OpenPrintBarcodeWindowCommand}" />
-                                        <CheckBox VerticalAlignment="Center" />
+                                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding hasBarcode}" />
                                     </DockPanel>
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Notes:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
-                                    <TextBox Text="{Binding CurrentItem.notes}" AcceptsReturn="True" AcceptsTab="True" MinLines="3" MaxLines="5" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
-                            <!-- xml:lang="en-US" SpellCheck.IsEnabled="True" Note:MS implementation throws Exceptions but works with Win7/Net4 and possibly others -->
+                                <WPFToolkit:TitledItem Title="Notes:" IsEnabled="{Binding IsCurrentItemEditable}">
+                                    <TextBox Text="{Binding notes}" AcceptsReturn="True" AcceptsTab="True" MinLines="3" MaxLines="5" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                                    <!-- xml:lang="en-US" SpellCheck.IsEnabled="True" Note:MS implementation throws Exceptions but works with Win7/Net4 and possibly others -->
                                 </WPFToolkit:TitledItem>
                             </WPFToolkit:TitledItemsControl>
                         </DockPanel>

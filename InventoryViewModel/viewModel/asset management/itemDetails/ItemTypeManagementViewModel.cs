@@ -23,24 +23,36 @@ namespace TEMS_Inventory.views
     {
         public ItemTypeManagementViewModel() : base() { }
 
-        /*
-           // SearchFilter setup done in Window when creating
+        /// <summary>
+        /// Initialize to nothing selected to display details of
+        /// </summary>
+        public override void clear()
+        {
+            base.clear();
 
-            // site & status are specific to an instance so don't use
-            SearchFilter.SiteLocationVisible = false;
-            SearchFilter.SiteLocationEnabled = false;
-            SearchFilter.SelectItemStatusValuesVisible = false;
-            SearchFilter.SelectItemStatusValuesEnabled = false;
+            itemTypeId = 0;
+            name = null;
+            make = null;
+            model = null;
+            expirationRestockCategory = ExpirationCategory.None;
+            cost = 0;
+            weight = 0;
+            unitOfMeasure = null;
+            category = null;
+            batteryCount = 0;
+            batteryType = null;
+            associatedItems = null;
+            isBin = false;
+            isModule = false;
+            vendor = null;
+            notes = null;
+            images = new ObservableCollection<Image>();
+            documents = new ObservableCollection<Document>();
+    }
 
-            // item types are not limited to specific equipment
-            SearchFilter.SelectEquipmentUnitsVisible = false;
-            SearchFilter.SelectEquipmentUnitsEnabled = false;
-
-         */
 
 
-
-        public bool RequiresBatteryCount
+    public bool RequiresBatteryCount
         {
             get
             {
@@ -612,7 +624,7 @@ namespace TEMS_Inventory.views
                 SetProperty(ref _batteryType, value, nameof(batteryType));
                 if (RequiresBatteryCount)
                 {
-                    if (batteryCount < 1) batteryCount = 0;
+                    if (batteryCount < 1) batteryCount = 1;
                 }
                 else
                 {

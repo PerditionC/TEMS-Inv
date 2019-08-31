@@ -22,6 +22,7 @@ namespace DW.WPFToolkit.Converters
     sealed public class IntToBooleanConverterExtension : MarkupExtension, IValueConverter
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static IntToBooleanConverterExtension _instance;
 
         /// <summary>
         /// The comparison operation to perform.
@@ -51,16 +52,23 @@ namespace DW.WPFToolkit.Converters
 
             switch (op)
             {
+                case "==":
                 case "Equal":
                     return val1 == val2;
+                case "!=":
+                case "<>":
                 case "NotEqual":
                     return val1 != val2;
+                case "<":
                 case "LessThan":
                     return val1 < val2;
+                case ">":
                 case "GreaterThan":
                     return val1 > val2;
+                case "<=":
                 case "LessThanOrEqual":
                     return val1 <= val2;
+                case ">=":
                 case "GreaterThanOrEqual":
                     return val1 >= val2;
                 default:
@@ -130,7 +138,7 @@ namespace DW.WPFToolkit.Converters
         /// <returns>this (ourselves)</returns>
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return this;
+            return _instance ?? (_instance = new IntToBooleanConverterExtension());
         }
     }
 }

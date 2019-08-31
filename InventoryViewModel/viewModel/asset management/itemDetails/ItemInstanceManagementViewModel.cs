@@ -8,6 +8,7 @@ using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, 
 #endif
 
 using TEMS.InventoryModel.entity.db;
+using TEMS.InventoryModel.entity.db.query;
 using TEMS.InventoryModel.util.attribute;
 
 namespace TEMS_Inventory.views
@@ -18,6 +19,36 @@ namespace TEMS_Inventory.views
     public class ItemInstanceManagementViewModel : ItemDetailsViewModel
     {
         public ItemInstanceManagementViewModel() : base() { }
+
+        /// <summary>
+        /// Initialize to nothing selected to display details of
+        /// </summary>
+        public override void clear()
+        {
+            base.clear();
+
+            item = null;
+            siteLocation = null;
+            serialNumber = null;
+            grantNumber = null;
+            status = null;
+            inServiceDate = DateTime.MinValue;
+            removedServiceDate = null;
+            isSealBroken = false;
+            hasBarcode = false;
+            notes = null;
+        }
+
+        public bool HasRemovedFromServiceDate
+        {
+            get { return IsCurrentItemEditable && string.Equals("Removed From Inventory", status?.name, StringComparison.InvariantCultureIgnoreCase); }
+        }
+
+        public bool CanHaveSerialNumber
+        {
+            get { return IsCurrentItemEditable && (item?.count == 1); }
+        }
+
 
         /// <summary>
         /// Command to open edit item window with this item selected so can be modified/viewed
@@ -33,12 +64,37 @@ namespace TEMS_Inventory.views
             ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "ManageItem", searchText = (CurrentItem == null) ? null : itemNumber?.ToString() });
         }
 
-        
+
         // primary external id; as used in barcode, e.g. D236-19807-NFR
         [DisplayNameProperty]
         public string itemNumber
         {
-            get { return $"{item?.itemNumber}-{siteLocation?.locSuffix}"; }
+            get
+            {
+                if (CurrentItem is null)
+                {
+                    return "No selection";
+                }
+                else if (CurrentItem is GenericItemResult)
+                {
+                    return $"{item?.itemNumber}-{siteLocation?.locSuffix}";
+                }
+                else if (CurrentItem is GroupHeader)
+                {
+                    if (CurrentItem is BinGroupHeader)
+                        return "Bin";
+                    else if (CurrentItem is ModuleGroupHeader)
+                        return "Module";
+                    else if (CurrentItem is ItemGroupHeader)
+                        return "Item";
+                    else
+                        return "...";
+                }
+                else
+                {
+                    return "";
+                }
+            }
         }
 
         // item specific details for a the specific equipment unit this item instance is part of
@@ -50,6 +106,7 @@ namespace TEMS_Inventory.views
                 SetProperty(ref _item, value, nameof(item));
                 RaisePropertyChanged(nameof(itemNumber));
                 RaisePropertyChanged(nameof(item.itemType));
+                RaisePropertyChanged(nameof(CanHaveSerialNumber));
             }
         }
         private Item _item;
@@ -71,7 +128,11 @@ namespace TEMS_Inventory.views
         public string serialNumber
         {
             get { return _serialNumber; }
-            set { SetProperty(ref _serialNumber, value, nameof(serialNumber)); }
+            set
+            {
+                SetProperty(ref _serialNumber, value, nameof(serialNumber));
+                //RaisePropertyChanged(nameof(CanHaveSerialNumber));
+            }
         }
         private string _serialNumber = null;
 
@@ -86,6 +147,7 @@ namespace TEMS_Inventory.views
             set
             {
                 SetProperty(ref _status, value, nameof(status));
+                RaisePropertyChanged(nameof(HasRemovedFromServiceDate));
             }
         }
         private ItemStatus _status;

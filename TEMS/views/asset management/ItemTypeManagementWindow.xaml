@@ -149,7 +149,7 @@
                             </GroupBox>
 
                             <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
-                                <WPFToolkit:TitledItem Title="DB key:" Visibility="Visible"> <!-- Collapsed except when debugging -->
+                                <WPFToolkit:TitledItem Title="DB key:" Visibility="{Binding IsDebugMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
                                     <TextBox Text="{Binding guid}" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Name:" IsEnabled="{Binding IsCurrentItemEditable}">
@@ -209,7 +209,7 @@
                                                   >
                                         </WPFToolkit:EnhancedComboBox>
                                         <!-- disabled if batteryType is None -->
-                                        <WPFToolkit:NumberBox Number="{Binding CurrentItem.batteryCount}" 
+                                        <WPFToolkit:NumberBox Number="{Binding batteryCount}" 
                                                               ToolTip="Count of batteries required, not used if battery type is None" ToolTipService.ShowOnDisabled="True"
                                                               IsEnabled="{Binding RequiresBatteryCount}"
                                                               UpDownButtonsPosition="Right" UpDownBehavior="ArrowsAndButtons"

@@ -49,7 +49,7 @@ namespace TEMS_Inventory.views
         public override void clear()
         {
             base.clear();
-            _guid = Guid.Empty;
+            guid = Guid.Empty;
         }
 
         /// <summary>

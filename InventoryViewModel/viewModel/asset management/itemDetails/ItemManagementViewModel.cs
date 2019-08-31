@@ -75,6 +75,7 @@ namespace TEMS_Inventory.views
 
                 // need to also update selected item, note we set underlying value and assume same trigger to retrieve PossibleParents triggers retrieval of new value, needed so we don't replace the parent property
                 _SelectedParent = _possibleParents.Where(x => x.id == parent?.id).FirstOrDefault();
+                RaisePropertyChanged(nameof(SelectedParent));
                 return _possibleParents;
             }
         }

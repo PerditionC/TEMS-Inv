@@ -18,6 +18,19 @@ namespace TEMS_Inventory.views
         public ViewModelBase() : base() { }
 
         /// <summary>
+        /// helper used to indicate should show extra debug information
+        /// </summary>
+        /// <returns></returns>
+        public bool IsDebugMode()
+        {
+#if DEBUG
+            return true;
+#else
+            return false;
+#endif
+        }
+
+        /// <summary>
         /// Helper to initialize ICommand objects on first use, otherwise returns existing item.
         /// </summary>
         /// <param name="cmd">the ICommand object to initialize</param>

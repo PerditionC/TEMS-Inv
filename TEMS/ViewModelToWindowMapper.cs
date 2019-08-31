@@ -135,7 +135,7 @@ namespace TEMS_Inventory
                     searchFilterOptionsViewModel = new SearchFilterOptionsViewModel(searchFilter, QueryResultEntitySelector.ItemInstance, searchResultViewModel);
                     winVM = new SearchDetailWindowViewModel(searchFilterOptionsViewModel, searchResultViewModel, detailsPaneVM);
 
-                    win = new ItemManagementWindow(winVM);
+                    win = new ItemInstanceManagementWindow(winVM);
                     break;
                 case "ManageItems":
                     searchFilter = new SearchFilterOptions();

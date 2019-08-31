@@ -105,11 +105,14 @@ namespace TEMS.InventoryModel.entity.db.query
             ItemStatusValues = new List<object>(db.ReferenceData[nameof(ItemStatus)]);
             SelectedItemStatusValues = new List<object>(ItemStatusValues.Where(x => !"Removed From Inventory".Equals((x as ItemStatus)?.name, StringComparison.InvariantCulture)).ToList());
 
-            // Items and ItemTypes are not site specific
+            // Items and ItemTypes are not site and status specific
             if (searchFor != SearchFilterItemInitializeFor.ItemInstance /* == (Item || ItemType) */)
             {
                 SiteLocationEnabled = false;
                 SiteLocationVisible = false;
+
+                SelectItemStatusValuesVisible = false;
+                SelectItemStatusValuesEnabled = false;
             }
 
             // ItemTypes are not trailer specific
@@ -117,6 +120,9 @@ namespace TEMS.InventoryModel.entity.db.query
             {
                 SelectEquipmentUnitsEnabled = false;
                 SelectEquipmentUnitsVisible = false;
+
+                //ItemTypeMatchingEnabled = false;
+                //ItemTypeMatchingVisible = false;
             }
 
             // activate

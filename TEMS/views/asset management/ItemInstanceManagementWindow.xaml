@@ -28,7 +28,7 @@
     </Window.Resources>
 
     <DockPanel Background="OldLace" x:Name="rootItem">
-        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" />
+        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" DataContext="{Binding SearchFilterOptions}" />
 
         <!--  change so left is treeview, on select item open in right side for details
         Note: no add or delete as that is done on Item view (since effects all sites)
@@ -96,8 +96,8 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <DockPanel DockPanel.Dock="Bottom" Margin="3">
                             <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
-                                <WPFToolkit:TitledItem Title="DB key:">
-                                    <TextBox Text="{Binding PrimaryKey}" IsReadOnly="True" IsEnabled="{Binding IsCurrentItemEditable}" ToolTip="Globally Unique Identifier, primary key for database (read-only)" Visibility="Visible" />  <!-- normally Collapsed except when debugging -->
+                                <WPFToolkit:TitledItem Title="DB key:" Visibility="{Binding IsDebugMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                                    <TextBox Text="{Binding guid}" IsReadOnly="True" IsEnabled="{Binding IsCurrentItemEditable}" ToolTip="Globally Unique Identifier, primary key for database (read-only)" Visibility="Visible" />  <!-- normally Collapsed except when debugging -->
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Item:" IsEnabled="{Binding IsCurrentItemEditable}">
                                     <DockPanel>
@@ -108,13 +108,7 @@
                                 <WPFToolkit:TitledItem Title="Site:">
                                     <TextBox Text="{Binding siteLocation.name}" IsEnabled="{Binding IsCurrentItemEditable}" IsReadOnly="True"  ToolTip="Where this item is (the site of the equipment)" />
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Serial #:">
-                                    <WPFToolkit:TitledItem.IsEnabled>
-                                        <MultiBinding Converter="{StaticResource AndMultiValueConverter}">
-                                            <Binding Path="IsCurrentItemEditable" />
-                                            <Binding Path="item.count" Converter="{WPFConverters:IntToBooleanConverter CompareOp=Equal}" ConverterParameter="1" />
-                                        </MultiBinding>
-                                    </WPFToolkit:TitledItem.IsEnabled>
+                                <WPFToolkit:TitledItem Title="Serial #:" IsEnabled="{Binding CanHaveSerialNumber}">
                                     <TextBox Text="{Binding serialNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Serial # or other unique identifier for this item (usually blank)" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Grant #:" IsEnabled="{Binding IsCurrentItemEditable}">
@@ -126,7 +120,7 @@
                                 <WPFToolkit:TitledItem Title="In Service:" IsEnabled="{Binding IsCurrentItemEditable}">
                                     <DatePicker SelectedDate="{Binding inServiceDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Removed:" IsEnabled="{Binding IsCurrentItemEditable}" ToolTip="The date item was removed from service, should be left blank if still in service">
+                                <WPFToolkit:TitledItem Title="Removed:" IsEnabled="{Binding HasRemovedFromServiceDate}" ToolTip="The date item was removed from service, should be left blank if still in service">
                                     <DatePicker Text="{Binding removedServiceDate, Mode=TwoWay, Converter={StaticResource NullableToEmptyStringConverter}}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Seal Broken:" IsEnabled="{Binding IsCurrentItemEditable}">
