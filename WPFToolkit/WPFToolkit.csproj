@@ -228,6 +228,7 @@
     <Compile Include="Converters\NullToBooleanConverter\NullToBooleanDirection.cs" />
     <Compile Include="Converters\NullToVisibilityConverter\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter\NullToVisibilityDirection.cs" />
+    <Compile Include="Converters\RatioConverter\RatioConverter.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\BindingExtension\BindingAdapter.cs" />
     <Compile Include="Helpers\BindingExtension\BindingExtension.cs" />

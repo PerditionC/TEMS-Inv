@@ -2,9 +2,9 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 using System;
+
 using InventoryViewModel;
 using TEMS.InventoryModel.entity.db;
-using TEMS.InventoryModel.entity.db.query;
 using TEMS_Inventory.views;
 
 namespace TEMS.InventoryModel.command.action
@@ -13,64 +13,30 @@ namespace TEMS.InventoryModel.command.action
     /// command invoked when the selected item in the SearchResults pane is changed
     /// this command should update the details pane view model accordingly
     /// </summary>
-    public class UpdateDetailsGeneralInventoryManagementCommand : OnSelectionChangedCommand
+    public class UpdateDetailsGeneralInventoryManagementCommand : UpdateDetailsItemManagementCommand
     {
-        public UpdateDetailsGeneralInventoryManagementCommand(DetailsViewModelBase detailsPaneVM) : base(detailsPaneVM)
-        {
-        }
+        public UpdateDetailsGeneralInventoryManagementCommand(DetailsViewModelBase detailsPaneVM) : base(detailsPaneVM, typeof(ItemInstance)) { }
 
         /// <summary>
-        /// update the details view model based on current selection
+        /// Maps item to detailsPane
         /// </summary>
-        /// <param name="selectedItem">SearchResult to display details about, may be null for nothing selected</param>
-        protected override void UpdateDetailsPane(SearchResult selectedItem)
+        /// <param name="item"></param>
+        protected override void doMapping(ItemBase item)
         {
-            base.UpdateDetailsPane(selectedItem);
-
-            if (selectedItem != null)
+            try
             {
-                // get full item data from DB
-                object item;
-                try
+                if (item is ItemInstance itemInstance)
                 {
-                    if ((selectedItem.id != Guid.Empty) && !(selectedItem is GroupHeader))
-                    {
-                        var db = DataRepository.GetDataRepository;
-                        item = db.Load(selectedItem.id, "ItemInstance");
-                    }
-                    else
-                    {
-                        item = null;
-                    }
+                    // note: order here matters, to ensure id of Instance is one shown
+                    Mapper.GetMapper().Map(itemInstance.item.itemType, detailsPaneVM);
+                    Mapper.GetMapper().Map(itemInstance.item, detailsPaneVM);
+                    Mapper.GetMapper().Map(itemInstance, detailsPaneVM);
                 }
-                catch (Exception e)
-                {
-                    logger.Error(e, $"Failed to load {selectedItem.id} from table {"ItemInstance"}, details will be blank!");
-                    detailsPaneVM.StatusMessage = $"Failed to load ({selectedItem.id}) from database.";
-                    item = null;
-                }
-
-                // update displayed data
-                if (item != null)
-                {
-                    //if (detailsPaneVM is ItemTypeManagementViewModel viewModel)
-                    {
-                        if (detailsPaneVM is GeneralInventoryManagementViewModel detailsPane)
-                        {
-                            if (item is ItemInstance itemInstance)
-                            {
-                                // note: order here matters, to ensure id of Instance is one shown
-                                Mapper.GetMapper().Map(itemInstance.item.itemType, detailsPane);
-                                Mapper.GetMapper().Map(itemInstance.item, detailsPane);
-                                Mapper.GetMapper().Map(itemInstance, detailsPane);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    detailsPaneVM.clear();
-                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Failed to map item to view model.");
+                throw;
             }
         }
     }

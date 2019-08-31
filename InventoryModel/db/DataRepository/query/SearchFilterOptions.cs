@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using TEMS.InventoryModel.entity.db.user;
 using TEMS.InventoryModel.userManager;
 using TEMS.InventoryModel.util;
@@ -67,33 +68,56 @@ namespace TEMS.InventoryModel.entity.db.query
             SearchFilterVisible = searchFilterItems.SearchFilterVisible;
         }
 
+
+        /// <summary>
+        /// only used by Initialize to determine which default options are valid
+        /// </summary>
+        public enum SearchFilterItemInitializeFor
+        {
+            ItemInstance, // default
+            Item,
+            ItemType
+        }
+
         /// <summary>
         /// initialize to default settings
         /// </summary>
-        public void Initialize(string SearchText = null)
+        public void Initialize(string SearchText = null, SearchFilterItemInitializeFor searchFor = SearchFilterItemInitializeFor.ItemInstance)
         {
             // initialize SearchFilter, 
             // Note: search is not triggered until SearchFilterEnabled == true, so can set values in any order
             var db = DataRepository.GetDataRepository;
             User = UserManager.GetUserManager.CurrentUser();
 
-            // default to all choices possible with all selected
-            ItemStatusValues = new List<object>(db.ReferenceData[nameof(ItemStatus)]);
-            SelectedItemStatusValues = new List<object>(ItemStatusValues);
-
-            ItemCategoryValues = new List<object>(db.ReferenceData[nameof(ItemCategory)]);
-            SelectedItemCategoryValues = new List<object>(ItemCategoryValues);
+            // do we want to initialize with search for specific item or general (null)
+            this.SearchText = SearchText;
 
             // load only trailers at currently selected user location
             //EquipmentUnits = new List<object>(db.ReferenceData[nameof(EquipmentUnitType)]);
             EquipmentUnits = new ObservableCollection<Object>(User.currentSite.equipmentUnitTypesAvailable);
             SelectedEquipmentUnits = new List<object>(EquipmentUnits);
 
-            SelectItemStatusValuesVisible = false;
-            // don't include out of service items by default either
+            // default to all categories available and selected
+            ItemCategoryValues = new List<object>(db.ReferenceData[nameof(ItemCategory)]);
+            SelectedItemCategoryValues = new List<object>(ItemCategoryValues);
 
-            // do we want to initialize with search for specific item or general (null)
-            this.SearchText = SearchText;
+            // default to all status values available and selected except out of service items
+            ItemStatusValues = new List<object>(db.ReferenceData[nameof(ItemStatus)]);
+            SelectedItemStatusValues = new List<object>(ItemStatusValues.Where(x => !"Removed From Inventory".Equals((x as ItemStatus)?.name, StringComparison.InvariantCulture)).ToList());
+
+            // Items and ItemTypes are not site specific
+            if (searchFor != SearchFilterItemInitializeFor.ItemInstance /* == (Item || ItemType) */)
+            {
+                SiteLocationEnabled = false;
+                SiteLocationVisible = false;
+            }
+
+            // ItemTypes are not trailer specific
+            if (searchFor == SearchFilterItemInitializeFor.ItemType)
+            {
+                SelectEquipmentUnitsEnabled = false;
+                SelectEquipmentUnitsVisible = false;
+            }
 
             // activate
             SearchFilterEnabled = true;

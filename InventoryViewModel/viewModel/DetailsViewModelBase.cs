@@ -25,11 +25,21 @@ namespace TEMS_Inventory.views
             {
                 SetProperty(ref _CurrentItem, value, nameof(CurrentItem));
                 RaisePropertyChanged(nameof(IsCurrentItemNotNull));
+                RaisePropertyChanged(nameof(IsCurrentItemEditable));
             }
         }
         private SearchResult _CurrentItem = null;
 
+        /// <summary>
+        /// returns true only if current (selected) search result item is not null
+        /// see IsCurrentItemEditable
+        /// </summary>
         public bool IsCurrentItemNotNull { get { return _CurrentItem != null; } }
+
+        /// <summary>
+        /// returns true only if current (selected) search result item is not null and it is an editable item (i.e. represents actual item not header)
+        /// </summary>
+        public virtual bool IsCurrentItemEditable { get { return _CurrentItem != null; } }
 
         /// <summary>
         /// Initialize to nothing selected to display details of

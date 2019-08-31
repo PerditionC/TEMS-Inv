@@ -22,8 +22,8 @@ namespace TEMS_Inventory.views
         }
 
         /// <summary>
-        // internal DB primary key, unique per item
-        // Note: GUID used for replication purposes
+        /// internal DB primary key, unique per item
+        /// Note: GUID used for replication purposes
         /// </summary>
         public Guid guid { get { return _guid; } set { SetProperty(ref _guid, value, nameof(guid)); } }
         private Guid _guid = Guid.Empty;
@@ -52,6 +52,10 @@ namespace TEMS_Inventory.views
             _guid = Guid.Empty;
         }
 
+        /// <summary>
+        /// returns true only if current (selected) search result item is not null and it is an editable item (i.e. represents actual item not header)
+        /// </summary>
+        public override bool IsCurrentItemEditable { get { return base.IsCurrentItemEditable && (CurrentItem.entityType != null); } }
 
         /// <summary>
         /// ICommand to persist information to our backing store pPerform the actual save to DB)

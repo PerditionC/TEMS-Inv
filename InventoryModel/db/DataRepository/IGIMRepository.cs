@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
+using System.Threading.Tasks;
 using TEMS.InventoryModel.entity.db.query;
 
 namespace TEMS.InventoryModel.entity.db
@@ -48,6 +48,12 @@ namespace TEMS.InventoryModel.entity.db
         /// ???
         /// </summary>
         /// <returns></returns>
-        IList<Item> AllBinsAndModules();
+        IList<Item> AllBinsAndModulesAsItems();
+
+        /// <summary>
+        /// ???
+        /// </summary>
+        /// <returns></returns>
+        IList<GenericItemResult> AllBinsAndModules();
     }
 }

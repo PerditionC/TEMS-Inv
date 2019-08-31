@@ -114,7 +114,13 @@ namespace TEMS.InventoryModel.entity.db
 
         // count of batteries item requires, 0 if it doesn't require any
         [NotNull]
-        public int batteryCount { get; set; }
+        public int batteryCount
+        {
+            get { return _batteryCount; }
+            set { SetProperty(ref _batteryCount, value, nameof(batteryCount)); }
+        }
+        private int _batteryCount = 0;
+
         // what type of batteries item requires, set to predefined type "None" if does not require any
         [ManyToOne(nameof(batteryTypeId))]  // in DB as foreign key for BatteryType table
         [FieldLabel(PrettyName: "Battery 55 Type", ToolTip = "Which battery item requires, use 'None' if no batteries are required.")]

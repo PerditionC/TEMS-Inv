@@ -10,9 +10,19 @@
     xmlns:views="clr-namespace:TEMS_Inventory.views"
     xmlns:uc="clr-namespace:TEMS_Inventory.UserControls"
     mc:Ignorable="d"
-    Height="600" Width="960" WindowStartupLocation="CenterOwner"
     Icon="{StaticResource LogoImage}"
-    Title="General Inventory Management" >
+    Title="General Inventory Management"
+    WindowStartupLocation="CenterOwner"
+    MinHeight="480" MinWidth="640"
+    Height="{Binding Source={x:Static SystemParameters.MaximizedPrimaryScreenHeight}, Converter={WPFConverters:RatioConverter}, ConverterParameter='0.9'}" 
+    >
+    <Window.Width>
+        <MultiBinding Converter="{WPFConverters:RatioConverter}">
+            <Binding Source="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}" />
+            <Binding Source="0.9" />
+            <Binding Source="1024" />
+        </MultiBinding>
+    </Window.Width>
     <Window.Resources>
         <WPFConverters:AndMultiValueConverter x:Key="AndMultiValueConverter" />
     </Window.Resources>

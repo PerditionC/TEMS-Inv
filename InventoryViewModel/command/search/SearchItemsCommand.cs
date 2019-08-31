@@ -1,7 +1,10 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.entity.db.query;
@@ -38,15 +41,63 @@ namespace TEMS.InventoryModel.command.action
             return false;
         }
 
+
+        async private void GetItemTreeAsync(SearchFilterOptions criteria)
+        {
+            logger.Info("GetItemTreeAsync");
+            await Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    logger.Info("GetItemTreeAsync query");
+                    var db = DataRepository.GetDataRepository;
+                    var items = db.GetItemTree(resultEntitySelector, criteria, out GenericItemResult item);
+
+                    // update the view, but do so in WPF dispatcher thread
+                    //Dispatcher.BeginInvoke((Action)(() => { searchResultViewModel.Items = items; }));
+                    logger.Info($"GetItemTreeAsync:returned {items.Count} items.");
+                    searchResultViewModel.Items = items;
+
+                    // set selected item if one was returned to be selected
+                    if (item == null)
+                        logger.Info("GetItemTreeAsync: No item auto-selected.");
+                    else
+                        logger.Info($"GetItemTreeAsync: Auto-selected {item.ToString()}");
+                    searchResultViewModel.SelectedItem = item;
+
+                    // updated returned count
+                    if (items.Count > 0)
+                    {
+                        searchResultViewModel.StatusMessage = $"Found {items.First().resultTotal} results.";
+                    }
+                    else
+                    {
+                        searchResultViewModel.StatusMessage = "No matches found.";
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger?.Error(e, $"Failed to load item tree! criteria:{criteria}");
+                    return;
+                }
+            });
+            logger.Info("GetItemTreeAsync end");
+        }
+
         /// <summary>
         /// perform the search based on supplied criteria and return corresponding items
         /// </summary>
         /// <param name="searchFilterOptions">unused</param>
         private void QuerySearchCriteria(object searchFilterOptions)
         {
+            searchResultViewModel.StatusMessage = null;
+
             if (searchFilterOptions is SearchFilterOptions criteria)
             {
-                logger.Info($"QuerySearchCriteria - {criteria.ToString()}");
+                logger.Info($"QuerySearchCriteria - {criteria}");
+                searchResultViewModel.StatusMessage = "Querying database ...";
+                GetItemTreeAsync(criteria);
+                /*
                 var db = DataRepository.GetDataRepository;
                 searchResultViewModel.Items = db.GetItemTree(resultEntitySelector, criteria, out GenericItemResult item);
 
@@ -55,6 +106,7 @@ namespace TEMS.InventoryModel.command.action
                 else
                     logger.Info($"Auto-selected {item.ToString()}");
                 searchResultViewModel.SelectedItem = item;
+                */
             }
         }
     }

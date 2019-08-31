@@ -43,11 +43,14 @@ namespace TEMS_Inventory.views
         /// <summary>
         /// returns a List of all possible Item's that could contain the currently selected item
         /// </summary>
-        public IList<Item> PossibleParents
+        public IList<GenericItemResult> PossibleParents
         {
             get
             {
-                if (_AllBinsAndModules == null) _AllBinsAndModules = DataRepository.GetDataRepository.AllBinsAndModules();
+                if (_AllBinsAndModules == null)
+                {
+                    _AllBinsAndModules = DataRepository.GetDataRepository.AllBinsAndModules();
+                }
 
                 if (itemType == null)
                 {
@@ -57,24 +60,26 @@ namespace TEMS_Inventory.views
                 else if (itemType.isBin)
                 {
                     // bins are top level only
-                    _possibleParents = new List<Item>(0);
+                    _possibleParents = new List<GenericItemResult>(0);
                 }
                 else if (itemType.isModule)
                 {
                     // modules are top level or in a bin only
-                    _possibleParents = _AllBinsAndModules.Where(x => ((unitType == null) || (x.unitType.unitCode == unitType.unitCode)) && x.itemType.isBin).ToList();
+                    _possibleParents = _AllBinsAndModules.Where(x => ((unitType == null) || unitType.name.Equals(x.unitTypeName, StringComparison.InvariantCultureIgnoreCase)) && x.isBin).ToList();
                 }
                 else /* !.isBin && !.isModule == .isItem */
                 {
                     // items can be top level or in a bin or module
-                    _possibleParents = _AllBinsAndModules.Where(x => (unitType == null) || (x.unitType.unitCode == unitType.unitCode)).ToList();
+                    _possibleParents = _AllBinsAndModules.Where(x => (unitType == null) || unitType.name.Equals(x.unitTypeName, StringComparison.InvariantCultureIgnoreCase)).ToList();
                 }
 
+                // need to also update selected item, note we set underlying value and assume same trigger to retrieve PossibleParents triggers retrieval of new value, needed so we don't replace the parent property
+                _SelectedParent = _possibleParents.Where(x => x.id == parent?.id).FirstOrDefault();
                 return _possibleParents;
             }
         }
-        private IList<Item> _AllBinsAndModules = null;
-        private IList<Item> _possibleParents = new List<Item>(0);
+        private IList<GenericItemResult> _AllBinsAndModules = null;
+        private IList<GenericItemResult> _possibleParents = new List<GenericItemResult>(0);
 
 
         #region Open ItemType edit Window
@@ -240,6 +245,7 @@ namespace TEMS_Inventory.views
                 SetProperty(ref _itemType, value, nameof(itemType));
                 RaisePropertyChanged(nameof(itemNumber));
                 RaisePropertyChanged(nameof(PossibleParents));
+                RaisePropertyChanged(nameof(SelectedParent));
             }
         }
         private ItemType _itemType;
@@ -283,8 +289,27 @@ namespace TEMS_Inventory.views
         // same time, but widgets in DMSU may be done at a different time.  Move to ItemInstance if expiration becomes site controlled.
         // see ItemType.expirationRestockCategory to determine if expirationDate required and if annual date or date specific
         public DateTime? expirationDate { get { return _expirationDate; } set { SetProperty(ref _expirationDate, value, nameof(expirationDate)); } }
-
         private DateTime? _expirationDate = null;
+
+        public bool RequiresExpirationDate
+        {
+            get
+            {
+                try
+                {
+                    if (itemType?.expirationRestockCategory != null)
+                    {
+                        return ((itemType?.expirationRestockCategory ?? ExpirationCategory.None) != ExpirationCategory.None);
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.Warn(e, $"Failed to determine if current item requires expiration date - {e.Message}");
+                }
+                return false;
+            }
+        }
+
 
         // bin or module assigned to, null if not in a bin or module; in DB as foreign key for bin/module in Item (this) table
         public Item parent
@@ -296,6 +321,23 @@ namespace TEMS_Inventory.views
             }
         }
         private Item _parent = null;
+        public GenericItemResult SelectedParent
+        {
+            get { return _SelectedParent; }
+            set
+            {
+                SetProperty(ref _SelectedParent, value, nameof(SelectedParent));
+                if (value ==null)
+                {
+                    parent = null;
+                }
+                else
+                {
+                    parent = _SelectedParent.entity as Item;
+                }
+            }
+        }
+        private GenericItemResult _SelectedParent = null;
 
 
         // additional remarks about item
@@ -312,6 +354,7 @@ namespace TEMS_Inventory.views
             {
                 SetProperty(ref _unitType, value, nameof(unitType));
                 RaisePropertyChanged(nameof(itemNumber));
+                RaisePropertyChanged(nameof(PossibleParents));
             }
         }
         private EquipmentUnitType _unitType = null;

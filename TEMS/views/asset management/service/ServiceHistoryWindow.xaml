@@ -7,14 +7,25 @@
     xmlns:inventoryModel="clr-namespace:TEMS.InventoryModel.entity.db;assembly=InventoryModel"
     xmlns:dbQuery="clr-namespace:TEMS.InventoryModel.entity.db.query;assembly=InventoryModel"
     xmlns:WPFToolkit="clr-namespace:DW.WPFToolkit.Controls;assembly=WPFToolkit"
+    xmlns:WPFConverters="clr-namespace:DW.WPFToolkit.Converters;assembly=WPFToolkit"
     xmlns:views="clr-namespace:TEMS_Inventory.views"
     xmlns:uc="clr-namespace:TEMS_Inventory.UserControls"
     mc:Ignorable="d"
-        Height="600" Width="960" WindowStartupLocation="CenterOwner"
-        Icon="/images/MMRSLogo.ico"
-        Title="Service (Maintainence / Repair) History" >
+    Icon="/images/MMRSLogo.ico"
+    Title="Service (Maintainence / Repair) History"
+    WindowStartupLocation="CenterOwner"
+    MinHeight="480" MinWidth="640"
+    Height="{Binding Source={x:Static SystemParameters.MaximizedPrimaryScreenHeight}, Converter={WPFConverters:RatioConverter}, ConverterParameter='0.9'}" 
+    >
+    <views:BasicWindowBase.Width>
+        <MultiBinding Converter="{WPFConverters:RatioConverter}">
+            <Binding Source="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}" />
+            <Binding Source="0.9" />
+            <Binding Source="1024" />
+        </MultiBinding>
+    </views:BasicWindowBase.Width>
 
-    <DockPanel Background="OldLace" x:Name="rootItem">
+    <DockPanel Background="OldLace" x:Name="rootItem" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" DataContext="{Binding SearchFilter}" />
 
         <!--  change so left is treeview, on select item open in right side for details

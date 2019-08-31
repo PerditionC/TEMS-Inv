@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 using System;
+
 using InventoryViewModel;
 using TEMS.InventoryModel.entity.db;
 using TEMS.InventoryModel.entity.db.query;
@@ -45,20 +46,19 @@ namespace TEMS.InventoryModel.command.action
         {
             base.UpdateDetailsPane(selectedItem);
 
+            // clear any existing binding values
+            detailsPaneVM.clear();
+
             if (selectedItem != null)
             {
                 // get full item data from DB
-                object item;
+                object item = null;
                 try
                 {
                     if ((selectedItem.id != Guid.Empty) && !(selectedItem is GroupHeader))
                     {
                         var db = DataRepository.GetDataRepository;
                         item = db.Load(selectedItem.id, tableName);
-                    }
-                    else
-                    {
-                        item = null;
                     }
                 }
                 catch (Exception e)
@@ -69,17 +69,27 @@ namespace TEMS.InventoryModel.command.action
                 }
 
                 // update displayed data
-                if (item != null)
+                if (item is ItemBase itemBase)
                 {
-                    //if (detailsPaneVM is ItemTypeManagementViewModel viewModel)
-                    {
-                        Mapper.GetMapper().Map(item, detailsPaneVM);
-                    }
+                    doMapping(itemBase);
                 }
-                else
-                {
-                    detailsPaneVM.clear();
-                }
+            }
+        }
+
+        /// <summary>
+        /// Maps item to detailsPane
+        /// </summary>
+        /// <param name="item"></param>
+        protected virtual void doMapping(ItemBase item)
+        {
+            try
+            {
+                Mapper.GetMapper().Map(item, detailsPaneVM);
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Failed to map item to view model.");
+                throw;
             }
         }
     }

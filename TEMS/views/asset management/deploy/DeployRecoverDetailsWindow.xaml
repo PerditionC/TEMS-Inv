@@ -7,13 +7,23 @@
     xmlns:inventoryModel="clr-namespace:TEMS.InventoryModel.entity.db;assembly=InventoryModel"
     xmlns:dbQuery="clr-namespace:TEMS.InventoryModel.entity.db.query;assembly=InventoryModel"
     xmlns:WPFToolkit="clr-namespace:DW.WPFToolkit.Controls;assembly=WPFToolkit"
+    xmlns:WPFConverters="clr-namespace:DW.WPFToolkit.Converters;assembly=WPFToolkit"
     xmlns:views="clr-namespace:TEMS_Inventory.views"
     xmlns:uc="clr-namespace:TEMS_Inventory.UserControls"
-        Height="500" Width="800" WindowStartupLocation="CenterOwner"
-        Icon="/images/MMRSLogo.ico"
-        Title="Damaged / Missing Item Details" >
+    WindowStartupLocation="CenterOwner"
+    MinHeight="480" MinWidth="640"
+    Height="{Binding Source={x:Static SystemParameters.MaximizedPrimaryScreenHeight}, Converter={WPFConverters:RatioConverter}, ConverterParameter='0.9'}" 
+    Icon="/images/MMRSLogo.ico"
+    Title="Damaged / Missing Item Details" >
+    <Window.Width>
+        <MultiBinding Converter="{WPFConverters:RatioConverter}">
+            <Binding Source="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}" />
+            <Binding Source="0.9" />
+            <Binding Source="1024" />
+        </MultiBinding>
+    </Window.Width>
 
-    
+
     <DockPanel Background="OldLace">
         <GroupBox Header="Action" Margin="2" MinWidth="150" VerticalAlignment="Center" DockPanel.Dock="Right" >
             <UniformGrid Columns="1" HorizontalAlignment="Center">

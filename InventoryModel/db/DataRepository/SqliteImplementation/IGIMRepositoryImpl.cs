@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using TEMS.InventoryModel.entity.db.query;
 using TEMS.InventoryModel.util;
 
@@ -311,15 +311,13 @@ namespace TEMS.InventoryModel.entity.db
                             queryParamsList.Add(itemNumberParser.siteCode);
                         }
 
-#if false
                         // equipment unit, Note: redundant as also part of item id; overrides drop down selection
-                        if (searchFilter.SelectEquipmentUnitsEnabled && !string.IsNullOrEmpty(itemNumberParser.equipCode))
+                        if (searchFilter.SelectEquipmentUnitsEnabled && !string.IsNullOrEmpty(itemNumberParser.equipCode) && (searchFilter.ItemTypeMatching == SearchFilterItemMatching.OnlyExact))
                         {
                             if (itemDesc.Length > 0) itemDesc += " AND ";
                             itemDesc += "(EquipmentUnitType.unitCode=?)";
                             queryParamsList.Add(itemNumberParser.equipCode);
                         }
-#endif
 
                         // item type, search by id instead of partial description match
                         if (!string.IsNullOrEmpty(itemNumberParser.itemTypeId))
@@ -468,7 +466,7 @@ namespace TEMS.InventoryModel.entity.db
                     var equipList = ((searchFilter.SelectEquipmentUnitsEnabled) ? searchFilter.SelectedEquipmentUnits : searchFilter.EquipmentUnits) ?? searchFilter.EquipmentUnits;
                     if (equipList == null)
                     {
-                        results = getChildItems(searchFilter, null, null, null, queryItems, ref selectedItem);
+                        results = getChildItems(resultEntitySelector, searchFilter, null, null, null, queryItems, ref selectedItem);
                     }
                     else
                     {
@@ -492,7 +490,7 @@ namespace TEMS.InventoryModel.entity.db
                             if (equipObj is EquipmentUnitType equip)
                             {
                                 var equipResult = new EquipmentUnitResult() { name = equip.name, description = equip.description, parent = siteResult };
-                                equipResult.children = getChildItems(searchFilter, site, equip, equipResult, queryItems, ref selectedItem);
+                                equipResult.children = getChildItems(resultEntitySelector, searchFilter, site, equip, equipResult, queryItems, ref selectedItem);
                                 // add equipment to results, pk is equip.name not a Guid
                                 // don't include if nothing for that equipment ???
                                 if (equipResult.childCount > 0)
@@ -549,7 +547,7 @@ namespace TEMS.InventoryModel.entity.db
             return queryCondition;
         }
 
-        private ObservableCollection<SearchResult> getChildItems(SearchFilterOptions searchFilter, SiteLocation site, EquipmentUnitType equip, SearchResult parent, IList<GenericItemResult> itemResults, ref GenericItemResult selectedItem)
+        private ObservableCollection<SearchResult> getChildItems(QueryResultEntitySelector resultEntitySelector, SearchFilterOptions searchFilter, SiteLocation site, EquipmentUnitType equip, SearchResult parent, IList<GenericItemResult> itemResults, ref GenericItemResult selectedItem)
         {
             try
             {
@@ -569,7 +567,8 @@ namespace TEMS.InventoryModel.entity.db
                 foreach (var item in itemResults)
                 {
                     // must be child of current parent (null for top level items), and for current site and equipment unit
-                    if ((item != parentItem) && ((item.parentId == parentItem?.id) || /*(item.parentId == parentItem?.parentItemId) ||*/ ((parentItem == null) && (Guid.Empty == item.parentId))) && ((site == null) || (item.siteLocationId == site.id)) && ((equip == null) || (item.unitTypeName.Equals(equip.name))))
+                    if ((item != parentItem) && ((item.parentId == parentItem?.id) || ((resultEntitySelector == QueryResultEntitySelector.ItemInstance) && (item?.parentId == parentItem?.parentItemId)) ||
+                        ((parentItem == null) && (Guid.Empty == item.parentId))) && ((site == null) || (item.siteLocationId == site.id)) && ((equip == null) || (item.unitTypeName.Equals(equip.name))))
                     {
                         // bins
                         if (item.isBin)
@@ -608,7 +607,7 @@ namespace TEMS.InventoryModel.entity.db
                         // find all children (and so on) for this item
                         if (item.isBin || item.isModule)
                         {
-                            item.children = getChildItems(searchFilter, site, equip, item, itemResults, ref selectedItem);
+                            item.children = getChildItems(resultEntitySelector, searchFilter, site, equip, item, itemResults, ref selectedItem);
                         }
                     }
                 }
@@ -669,9 +668,16 @@ namespace TEMS.InventoryModel.entity.db
             }
         }
 
-        public IList<Item> AllBinsAndModules()
+        public IList<Item> AllBinsAndModulesAsItems()
         {
             return db.LoadRows<Item>("INNER JOIN ItemType on Item.itemTypeId=ItemType.id WHERE (isBin=1) OR (isModule=1)");
+        }
+
+        public IList<GenericItemResult> AllBinsAndModules()
+        {
+            
+            var results = db.QueryAsync<GenericItemResult>("SELECT DISTINCT 'Item' AS entityType, Item.id as id, ItemType.itemTypeId || '-' || Item.itemId AS itemNumber, count AS quantity, parentId, unitTypeName, ItemType.name AS description, isModule, isBin FROM Item INNER JOIN ItemType on Item.itemTypeId=ItemType.id WHERE (isBin=1) OR (isModule=1)", new object[0]).Result;
+            return results;
         }
 
         public IList<ItemInstance> AllItemInstancesForItem(Guid itemPk)

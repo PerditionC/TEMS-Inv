@@ -123,7 +123,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand ExpandCollapseCommand
         {
-            get { return InitializeCommand(ref _ExpandCollapseCommand, new Action<object>(DoExpandCollapse), param => { return (Items != null) && (Items.Count > 0); }); }
+            get { return InitializeCommand(ref _ExpandCollapseCommand, new Action<object>(DoExpandCollapse), _ => { return (Items != null) && (Items.Count > 0); }); }
         }
         private ICommand _ExpandCollapseCommand;
 
@@ -159,8 +159,16 @@ namespace TEMS_Inventory.views
                 {
                     recursiveExpandCollapse(child.children, IsExpanded);
                     // Note: setting IsExpanded true will automatically expand parents, but doesn't collapse them automatically when set false
-                    // don't collapse header
-                    if (!(child is GroupHeader)) child.IsExpanded = IsExpanded;
+                    // so don't expand header, but do need to collapse them
+                    if (IsExpanded)
+                    {
+                        if (!(child is GroupHeader))
+                            child.IsExpanded = true;
+                    }
+                    else
+                    {
+                        child.IsExpanded = false;
+                    }
                 }
             }
         }

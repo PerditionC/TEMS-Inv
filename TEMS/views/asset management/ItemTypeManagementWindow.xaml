@@ -10,12 +10,22 @@
     xmlns:views="clr-namespace:TEMS_Inventory.views"
     xmlns:uc="clr-namespace:TEMS_Inventory.UserControls"
     mc:Ignorable="d"
-        Height="600" Width="960" WindowStartupLocation="CenterOwner"
-        Icon="/images/MMRSLogo.ico"
-        Title="Item Type Management" >
-    <views:BasicWindowBase.InputBindings>
-        <!--<KeyBinding Command="{Binding SaveCommand,Source={Binding ViewModel}}" Key="S" Modifiers="Ctrl"/>-->
-    </views:BasicWindowBase.InputBindings>
+    Icon="{StaticResource LogoImage}"
+    Title="Item Type Management"
+    WindowStartupLocation="CenterOwner"
+    MinHeight="480" MinWidth="640"
+    Height="{Binding Source={x:Static SystemParameters.MaximizedPrimaryScreenHeight}, Converter={WPFConverters:RatioConverter}, ConverterParameter='0.9'}" 
+    >
+    <Window.Width>
+        <MultiBinding Converter="{WPFConverters:RatioConverter}">
+            <Binding Source="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}" />
+            <Binding Source="0.9" />
+            <Binding Source="1024" />
+        </MultiBinding>
+    </Window.Width>
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding Details.SaveCommand}" Key="S" Modifiers="Ctrl"/>
+    </Window.InputBindings>
 
     <DockPanel Background="OldLace" x:Name="rootItem">
         <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" DataContext="{Binding SearchFilterOptions}" />
@@ -62,12 +72,12 @@
                 <DockPanel DockPanel.Dock="Bottom" Margin="3">
                     <Button x:Name="SaveButton" HorizontalAlignment="Center" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding SaveCommand}" Content="_Save" />
                 </DockPanel>
-                <GroupBox Header="{Binding CurrentItem.itemTypeId}" BorderThickness="1" BorderBrush="Gray" MinWidth="50" Background="AliceBlue" >
+                <GroupBox Header="{Binding itemTypeId}" BorderThickness="1" BorderBrush="Gray" MinWidth="50" Background="AliceBlue" >
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <DockPanel DockPanel.Dock="Bottom" Margin="3">
 
                             <!-- Add in pictures and documents section  -->
-                            <GroupBox Header="{Binding ImageHeader}" DockPanel.Dock="Bottom" Margin="3" IsEnabled="{Binding IsCurrentItemNotNull}">
+                            <GroupBox Header="{Binding ImageHeader}" DockPanel.Dock="Bottom" Margin="3" IsEnabled="{Binding IsCurrentItemEditable}">
                                 <DockPanel DockPanel.Dock="Bottom" Margin="3">
                                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="10,0">
                                         <Button x:Name="AddImageButton" HorizontalAlignment="Center" VerticalAlignment="Center" Width="55" Command="{Binding ImageAddCommand}" Content="Add" Margin="0,0,0,10" ToolTip="Add new image associated with this item"/>
@@ -104,7 +114,7 @@
                                     </Grid>
                                 </DockPanel>
                             </GroupBox>
-                            <GroupBox Header="Documents:" DockPanel.Dock="Bottom" Margin="3" IsEnabled="{Binding IsCurrentItemNotNull}">
+                            <GroupBox Header="Documents:" DockPanel.Dock="Bottom" Margin="3" IsEnabled="{Binding IsCurrentItemEditable}">
                                 <DockPanel>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="10,2">
                                         <Button x:Name="ViewDocumentButton" HorizontalAlignment="Center" VerticalAlignment="Center" Width="55" Command="{Binding DocumentViewCommand}" Content="View" ToolTip="Open the document in default program to view selected document" ToolTipService.ShowOnDisabled="True" />
@@ -140,9 +150,9 @@
 
                             <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
                                 <WPFToolkit:TitledItem Title="DB key:" Visibility="Visible"> <!-- Collapsed except when debugging -->
-                                    <TextBox Text="{Binding PrimaryKey}" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
+                                    <TextBox Text="{Binding guid}" IsReadOnly="True" ToolTip="Globally Unique Identifier, primary key for database (read-only)" />
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Name:" IsEnabled="{Binding IsCurrentItemNotNull}">
+                                <WPFToolkit:TitledItem Title="Name:" IsEnabled="{Binding IsCurrentItemEditable}">
                                     <TextBox x:Name="tbName" Text="{Binding name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Name of this item" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="" IsEnabled="{Binding IsCurrentItemNotNull}" Margin="0,5">

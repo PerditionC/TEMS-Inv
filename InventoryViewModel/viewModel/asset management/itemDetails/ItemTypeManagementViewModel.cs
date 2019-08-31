@@ -543,6 +543,10 @@ namespace TEMS_Inventory.views
         public int itemTypeId { get { return _itemTypeId; } set { SetProperty(ref _itemTypeId, value, nameof(itemTypeId)); } }
         private int _itemTypeId = 0;
 
+        // what is displayed, description of item
+        public string name { get { return _name; } set { SetProperty(ref _name, value, nameof(name)); } }
+        private string _name = null;
+
         // item make, manufacturer or name brand, e.g. Abbott
         public string make { get { return _make; } set { SetProperty(ref _make, value, nameof(make)); } }
         private string _make = null;
@@ -592,7 +596,13 @@ namespace TEMS_Inventory.views
         private ItemCategory _category = null;
 
         // count of batteries item requires, 0 if it doesn't require any
-        public int batteryCount { get; set; }
+        public int batteryCount
+        {
+            get { return _batteryCount; }
+            set { SetProperty(ref _batteryCount, value, nameof(batteryCount)); }
+        }
+        private int _batteryCount = 0;
+
         // what type of batteries item requires, set to predefined type "None" if does not require any
         public BatteryType batteryType
         {
@@ -600,6 +610,15 @@ namespace TEMS_Inventory.views
             set
             {
                 SetProperty(ref _batteryType, value, nameof(batteryType));
+                if (RequiresBatteryCount)
+                {
+                    if (batteryCount < 1) batteryCount = 0;
+                }
+                else
+                {
+                    batteryCount = 0;
+                }
+                RaisePropertyChanged(nameof(RequiresBatteryCount));
             }
         }
         private BatteryType _batteryType = null;

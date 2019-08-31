@@ -139,7 +139,7 @@ namespace TEMS_Inventory
                     break;
                 case "ManageItems":
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize(searchText);
+                    searchFilter.Initialize(searchText, SearchFilterOptions.SearchFilterItemInitializeFor.Item);
 
                     detailsPaneVM = new ItemManagementViewModel();
                     onSelectionChangedCommand = new UpdateDetailsItemManagementCommand(detailsPaneVM, typeof(Item));
@@ -151,7 +151,7 @@ namespace TEMS_Inventory
                     break;
                 case "ManageItemTypes":
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize(searchText);
+                    searchFilter.Initialize(searchText, SearchFilterOptions.SearchFilterItemInitializeFor.ItemType);
 
                     detailsPaneVM = new ItemTypeManagementViewModel();
                     onSelectionChangedCommand = new UpdateDetailsItemManagementCommand(detailsPaneVM, typeof(ItemType));
@@ -164,7 +164,7 @@ namespace TEMS_Inventory
                 case "SelectItemType":
                     // TODO this should just be a selection window!!!
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize(searchText);
+                    searchFilter.Initialize(searchText, SearchFilterOptions.SearchFilterItemInitializeFor.ItemType);
 
                     detailsPaneVM = new ItemTypeManagementViewModel();
                     onSelectionChangedCommand = new UpdateDetailsItemManagementCommand(detailsPaneVM, typeof(ItemType));
