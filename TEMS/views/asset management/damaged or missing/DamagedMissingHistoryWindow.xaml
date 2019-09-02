@@ -31,7 +31,13 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <uc:ItemSearchResults DataContext="{Binding SearchResult}" Grid.Column="0" Grid.Row="0"  Margin="3,2,2,3" />
+            <DockPanel>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom" >
+                    <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding SearchResult.ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding SearchResult.ExpandCollapseCommand}" Visibility="{Binding SearchFilterOptions.SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding Details.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
+                </StackPanel>
+                <uc:ItemSearchResults x:Name="DisplayItemList" DataContext="{Binding SearchResult}" />
+            </DockPanel>
 
             <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" />
 

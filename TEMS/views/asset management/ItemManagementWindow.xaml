@@ -144,30 +144,25 @@
                                                           AcceptUpDownOnNull="False" DefaultNumber="1"
                                                           Minimum="1" Step="1" />
                                 </WPFToolkit:TitledItem>
-                                <!--  moved to ItemType
-                                <WPFToolkit:TitledItem Title="Restock:" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                <WPFToolkit:TitledItem Title="Restock:" IsEnabled="False">
                                     <StackPanel Orientation="Horizontal">
-                                        <RadioButton IsChecked="{Binding expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                        <RadioButton IsChecked="{Binding itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
                                                  ConverterParameter={x:Static inventoryModel:ExpirationCategory.None}}" Content="None - no expiration" />
-                                        <RadioButton IsChecked="{Binding expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                        <RadioButton IsChecked="{Binding itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
                                                  ConverterParameter={x:Static inventoryModel:ExpirationCategory.AnnualRestock}}" Content="Annual" 
                                                  Margin="20,0" />
-                                        <RadioButton IsChecked="{Binding expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                        <RadioButton IsChecked="{Binding itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
                                                  ConverterParameter={x:Static inventoryModel:ExpirationCategory.DateSpecificRestock}}" Content="By specific date" />
                                     </StackPanel>
                                 </WPFToolkit:TitledItem>
-                                -->
                                 <WrapPanel>
                                     <WPFToolkit:TitledItem Title="Expiration:" IsEnabled="{Binding IsCurrentItemEditable}">
-                                        <!-- TODO enable if CurrentItem!=NULL and expirationRestockCategory!=None -->
                                         <DatePicker SelectedDate="{Binding expirationDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Long" IsEnabled="{Binding RequiresExpirationDate}" />
                                     </WPFToolkit:TitledItem>
                                     <Label Content="{Binding itemType.expirationRestockCategory}" />
                                 </WrapPanel>
                                 <WPFToolkit:TitledItem Title="Within:" IsEnabled="{Binding IsCurrentItemEditable}">
                                     <WPFToolkit:ComboBoxEx x:Name="ParentComboBox" DisplayMemberPath="description" ItemsSource="{Binding Path=PossibleParents}" SelectedItem="{Binding SelectedParent}" ToolTip="bin or module that contains this item" SelectionBoxNullValueText="Not in a bin or module" NullValueText="N/A"/>
-                                    <!-- <ComboBox x:Name="ParentComboBox" DisplayMemberPath="itemNumber" ItemsSource="{Binding Path=PossibleParents}" SelectedItem="{Binding CurrentItem.parent}" ToolTip="bin or module that contains this item"  KeyDown="ParentComboBox_KeyDown" IsEditable="True" /> -->
-                                    <!--<TextBox Text="{Binding CurrentItem.parent.name}" /> -->
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Notes:" IsEnabled="{Binding IsCurrentItemEditable}">
                                     <TextBox Text="{Binding notes}" AcceptsReturn="True" AcceptsTab="True" MinLines="3" MaxLines="5" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />

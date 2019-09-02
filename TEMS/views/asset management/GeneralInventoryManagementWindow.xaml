@@ -48,17 +48,18 @@
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="3" >
                         <RadioButton Name="SwitchViewSearch" Content="Search results" IsChecked="True"/>
-                        <RadioButton Name="SwitchViewDetails" Content="Item description" IsChecked="True" Margin="10,0" />
+                        <RadioButton Name="SwitchViewDetails" Content="Item description" IsChecked="False" Margin="10,0" />
                     </StackPanel>
                     <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}" />
                 </StackPanel>
 
                 <Grid MinHeight="100" MinWidth="50">
                     <DockPanel Visibility="{Binding IsChecked, ElementName=SwitchViewSearch, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom" >
                             <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding SearchResult.ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding SearchResult.ExpandCollapseCommand}" Visibility="{Binding SearchFilterOptions.SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding Details.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
                         </StackPanel>
-                        <uc:ItemSearchResults x:Name="DisplayItemList" DockPanel.Dock="Left" DataContext="{Binding SearchResult}" />
+                        <uc:ItemSearchResults x:Name="DisplayItemList" DataContext="{Binding SearchResult}" />
                     </DockPanel>
 
                     <!-- readonly view of item and itemtype -->
@@ -213,7 +214,7 @@
                                     </StackPanel>
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Expiration:" >
-                                    <DatePicker SelectedDate="{Binding expirationDate, Mode=OneWay}" IsTodayHighlighted="True" SelectedDateFormat="Long" IsEnabled="False" />
+                                    <DatePicker SelectedDate="{Binding item.expirationDate, Mode=OneWay}" IsTodayHighlighted="True" SelectedDateFormat="Long" IsEnabled="False" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Serial #:" IsEnabled="{Binding CanHaveSerialNumber}"  Margin="0 20 0 0">
                                     <TextBox Text="{Binding serialNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Serial # or other unique identifier for this item (usually blank)" />

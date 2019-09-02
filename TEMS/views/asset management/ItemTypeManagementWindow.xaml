@@ -41,7 +41,7 @@
             </Grid.RowDefinitions>
 
             <DockPanel  Grid.Column="0" Grid.Row="0"  Margin="3,2,2,3" >
-                <Grid MinWidth="50" VerticalAlignment="Stretch" Margin="5,0" DockPanel.Dock="Right">
+                <Grid MinWidth="50" VerticalAlignment="Stretch" Margin="5,0" DataContext="{Binding Details}" DockPanel.Dock="Right">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
@@ -56,7 +56,7 @@
 
                     <Button Grid.Row="1" x:Name="AddButton"    VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding AddCommand}" Content="_Add" ToolTip="Add new item type" />
                     <Button Grid.Row="2" x:Name="CloneButton"  VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding CloneCommand}" Content="_Clone" Visibility="Visible" ToolTip="Add a new item type based on currently selected item" ToolTipService.ShowOnDisabled="True" />
-                    <Button Grid.Row="3" x:Name="EditButton"   VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding EditCommand}" Content="_Edit"  Visibility="Collapsed" ToolTip="Edit currently selected item" ToolTipService.ShowOnDisabled="True" />
+                    <Button Grid.Row="3" x:Name="EditButton"   VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Content="_Edit"  Visibility="Collapsed" ToolTip="Edit currently selected item" ToolTipService.ShowOnDisabled="True" />
                     <Button Grid.Row="4" x:Name="DeleteButton" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding DeleteCommand}" Content="_Delete" ToolTip="Remove currently selected item type from available types (including all items of the selected item type!)" ToolTipService.ShowOnDisabled="True" />
                 </Grid>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
@@ -96,7 +96,7 @@
                                             <ContentPresenter.ContentTemplate>
                                                 <DataTemplate>
                                                     <Grid Background="White" >
-                                                        <Image Name="ImageList" Visibility="Visible" Source="{Binding currentImage.data, Converter={StaticResource ByteArrayToImageConverter}}" ToolTip="{Binding currentImage.description}" />
+                                                        <Image Name="ImageList" Visibility="Visible" Source="{Binding CurrentImage.data, Converter={StaticResource ByteArrayToImageConverter}}" ToolTip="{Binding CurrentImage.description}" />
                                                         <Image Name="EmptyImageList" Visibility="Collapsed"  Source="/images/Portrait.png" ToolTip="no images available" />
                                                     </Grid>
                                                     <DataTemplate.Triggers>
@@ -126,10 +126,10 @@
                                             <DataTemplate>
                                                 <Grid Background="White" >
                                                     <ListBox x:Name="DocumentList"
-                                                             SelectedItem="{Binding currentDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                             SelectedItem="{Binding CurrentDocument, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                              ItemsSource="{Binding documents}"
                                                              DisplayMemberPath="name"
-                                                             ToolTip="{Binding currentDocument.description}" 
+                                                             ToolTip="{Binding CurrentDocument.description}" 
                                                     >
                                                     </ListBox>
                                                     <Border Name="EmptyDocumentList" Visibility="Collapsed" BorderThickness="1" BorderBrush="Black">
@@ -188,6 +188,17 @@
                                                               AcceptUpDownOnNull="False" DefaultNumber="0"
                                                               Minimum="0" Step="1" NumberType="Double"/>
                                     </DockPanel>
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Restock:" IsEnabled="{Binding IsCurrentItemNotNull}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <RadioButton IsChecked="{Binding expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                                 ConverterParameter={x:Static inventoryModel:ExpirationCategory.None}}" Content="None - no expiration" />
+                                        <RadioButton IsChecked="{Binding expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                                 ConverterParameter={x:Static inventoryModel:ExpirationCategory.AnnualRestock}}" Content="Annual" 
+                                                 Margin="20,0" />
+                                        <RadioButton IsChecked="{Binding expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                                 ConverterParameter={x:Static inventoryModel:ExpirationCategory.DateSpecificRestock}}" Content="By specific date" />
+                                    </StackPanel>
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Category:" IsEnabled="{Binding IsCurrentItemNotNull}">
                                     <WPFToolkit:EnhancedComboBox IsEditable="False" 
