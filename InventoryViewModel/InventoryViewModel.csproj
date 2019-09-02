@@ -117,7 +117,6 @@
     <Compile Include="viewModel\asset management\eventHistory\HistoryDeployRecoverViewModel.cs" />
     <Compile Include="viewModel\asset management\eventHistory\HistoryExpirationReplaceViewModel.cs" />
     <Compile Include="viewModel\asset management\eventHistory\HistoryServiceViewModel.cs" />
-    <Compile Include="viewModel\asset management\itemDetails\ItemInstanceManagementViewModel.cs" />
     <Compile Include="viewModel\asset management\itemDetails\ItemTypeManagementViewModel.cs" />
     <Compile Include="viewModel\asset management\itemDetails\ItemManagementViewModel.cs" />
     <Compile Include="viewModel\asset management\EventHistoryViewModelBase.cs" />

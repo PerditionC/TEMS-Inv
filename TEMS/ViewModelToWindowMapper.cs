@@ -125,18 +125,6 @@ namespace TEMS_Inventory
                 case "SiteToEquipMapping":
                     win = new SiteToEquipmentUnitMappingWindow();
                     break;
-                case "ManageItemInstances":
-                    searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize(searchText);
-
-                    detailsPaneVM = new ItemInstanceManagementViewModel();
-                    onSelectionChangedCommand = new UpdateDetailsItemManagementCommand(detailsPaneVM, typeof(ItemInstance));
-                    searchResultViewModel = new SearchResultViewModel(onSelectionChangedCommand);
-                    searchFilterOptionsViewModel = new SearchFilterOptionsViewModel(searchFilter, QueryResultEntitySelector.ItemInstance, searchResultViewModel);
-                    winVM = new SearchDetailWindowViewModel(searchFilterOptionsViewModel, searchResultViewModel, detailsPaneVM);
-
-                    win = new ItemInstanceManagementWindow(winVM);
-                    break;
                 case "ManageItems":
                     searchFilter = new SearchFilterOptions();
                     searchFilter.Initialize(searchText, SearchFilterOptions.SearchFilterItemInitializeFor.Item);

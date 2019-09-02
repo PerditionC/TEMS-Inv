@@ -177,9 +177,6 @@
     <Compile Include="views\asset management\expiration\ExpirationHistoryWindow.xaml.cs">
       <DependentUpon>ExpirationHistoryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="views\asset management\ItemInstanceManagementWindow.xaml.cs">
-      <DependentUpon>ItemInstanceManagementWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="views\asset management\GeneralInventoryManagementWindow.xaml.cs">
       <DependentUpon>GeneralInventoryManagementWindow.xaml</DependentUpon>
     </Compile>
@@ -278,10 +275,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="views\asset management\expiration\ExpirationHistoryWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="views\asset management\ItemInstanceManagementWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

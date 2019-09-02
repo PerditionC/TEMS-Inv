@@ -11,13 +11,9 @@ namespace InventoryViewModel
     public static class Mapper
     {
         private static MapperConfiguration config = new MapperConfiguration(cfg => {
-            cfg.CreateMap<ItemType, ItemTypeManagementViewModel>().ForMember(dest => dest.guid, opt => opt.MapFrom(src => src.id)).ReverseMap();
-            cfg.CreateMap<Item, ItemManagementViewModel>().ForMember(dest => dest.guid, opt => opt.MapFrom(src => src.id)).ReverseMap();
-            cfg.CreateMap<ItemInstance, ItemInstanceManagementViewModel>().ForMember(dest => dest.guid, opt => opt.MapFrom(src => src.id)).ReverseMap();
-
-            cfg.CreateMap<ItemType, GeneralInventoryManagementViewModel>().ReverseMap();
-            cfg.CreateMap<Item, GeneralInventoryManagementViewModel>().ReverseMap();
-            cfg.CreateMap<ItemInstance, GeneralInventoryManagementViewModel>().ForMember(dest => dest.guid, opt => opt.MapFrom(src => src.id)).ReverseMap();
+            cfg.CreateMap<ItemType, ItemTypeManagementViewModel>(MemberList.Source).ForMember(dest => dest.guid, opt => opt.MapFrom(src => src.id)).ReverseMap();
+            cfg.CreateMap<Item, ItemManagementViewModel>(MemberList.Source).ForMember(dest => dest.guid, opt => opt.MapFrom(src => src.id)).ReverseMap();
+            cfg.CreateMap<ItemInstance, GeneralInventoryManagementViewModel>(MemberList.Source).ForMember(dest => dest.guid, opt => opt.MapFrom(src => src.id)).ReverseMap();
         });
 
         private static IMapper mapper = null;

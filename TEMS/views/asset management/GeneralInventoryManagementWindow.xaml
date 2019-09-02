@@ -48,7 +48,7 @@
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="3" >
                         <RadioButton Name="SwitchViewSearch" Content="Search results" IsChecked="True"/>
-                        <RadioButton Name="SwitchViewDetails" Margin="10,0" Content="Item description"/>
+                        <RadioButton Name="SwitchViewDetails" Content="Item description" IsChecked="True" Margin="10,0" />
                     </StackPanel>
                     <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}" />
                 </StackPanel>
@@ -86,7 +86,7 @@
                                     <WPFToolkit:TitledItem Title="Within:" Margin="0,13,0,0" >
                                         <TextBox Text="{Binding parent.itemType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="bin or module that contains this item" />
                                     </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="Unit:" Margin="0,13,0,0" IsEnabled="{Binding CurrentItem, Converter={StaticResource NullToBooleanConverter}}">
+                                    <WPFToolkit:TitledItem Title="Unit:" Margin="0,13,0,0" >
                                         <TextBox Text="{Binding unitType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="equipment unit (trailer) type" />
                                     </WPFToolkit:TitledItem>
                                     <WPFToolkit:TitledItem Title="Vehicle" Margin="0,0,0,10" >
@@ -102,20 +102,6 @@
                                     </WPFToolkit:TitledItem>
                                     <WPFToolkit:TitledItem Title="Count:" IsEnabled="False">
                                         <WPFToolkit:NumberBox Number="{Binding count}" IsReadOnly="True" />
-                                    </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="Restock:" IsEnabled="False">
-                                        <StackPanel Orientation="Horizontal" IsEnabled="False">
-                                            <RadioButton IsChecked="{Binding itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
-                                                 ConverterParameter={x:Static inventoryModel:ExpirationCategory.None}}" Content="None - no expiration" />
-                                            <RadioButton IsChecked="{Binding itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
-                                                 ConverterParameter={x:Static inventoryModel:ExpirationCategory.AnnualRestock}}" Content="Annual" 
-                                                 Margin="20,0" />
-                                            <RadioButton IsChecked="{Binding itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
-                                                 ConverterParameter={x:Static inventoryModel:ExpirationCategory.DateSpecificRestock}}" Content="By specific date" />
-                                        </StackPanel>
-                                    </WPFToolkit:TitledItem>
-                                    <WPFToolkit:TitledItem Title="Expiration:" >
-                                        <DatePicker SelectedDate="{Binding expirationDate, Mode=OneWay}" IsTodayHighlighted="True" SelectedDateFormat="Long" IsEnabled="False" />
                                     </WPFToolkit:TitledItem>
 
                                     <WPFToolkit:TitledItem Title="Weight:" IsEnabled="False">
@@ -215,7 +201,21 @@
                                     <ComboBox x:Name="StatusFilter" DisplayMemberPath="name" ItemsSource="{Binding Path=DataContext.SearchFilterOptions.SearchFilter.ItemStatusValues, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" SelectedItem="{Binding status}" ToolTip="Select status" />
                                     -->
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="Serial #:" IsEnabled="{Binding CanHaveSerialNumber}">
+                                <WPFToolkit:TitledItem Title="Restock:" IsEnabled="False">
+                                    <StackPanel Orientation="Horizontal" IsEnabled="False">
+                                        <RadioButton IsChecked="{Binding item.itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                                 ConverterParameter={x:Static inventoryModel:ExpirationCategory.None}}" Content="None - no expiration" />
+                                        <RadioButton IsChecked="{Binding item.itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                                 ConverterParameter={x:Static inventoryModel:ExpirationCategory.AnnualRestock}}" Content="Annual" 
+                                                 Margin="20,0" />
+                                        <RadioButton IsChecked="{Binding item.itemType.expirationRestockCategory, Converter={StaticResource enumToBooleanConverter}, 
+                                                 ConverterParameter={x:Static inventoryModel:ExpirationCategory.DateSpecificRestock}}" Content="By specific date" />
+                                    </StackPanel>
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Expiration:" >
+                                    <DatePicker SelectedDate="{Binding expirationDate, Mode=OneWay}" IsTodayHighlighted="True" SelectedDateFormat="Long" IsEnabled="False" />
+                                </WPFToolkit:TitledItem>
+                                <WPFToolkit:TitledItem Title="Serial #:" IsEnabled="{Binding CanHaveSerialNumber}"  Margin="0 20 0 0">
                                     <TextBox Text="{Binding serialNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Serial # or other unique identifier for this item (usually blank)" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Grant #:" IsEnabled="{Binding IsCurrentItemEditable}">

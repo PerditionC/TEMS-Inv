@@ -28,8 +28,8 @@ namespace TEMS.InventoryModel.command.action
                 if (item is ItemInstance itemInstance)
                 {
                     // note: order here matters, to ensure id of Instance is one shown
-                    Mapper.GetMapper().Map(itemInstance.item.itemType, detailsPaneVM);
-                    Mapper.GetMapper().Map(itemInstance.item, detailsPaneVM);
+                    //Mapper.GetMapper().Map(itemInstance.item.itemType, detailsPaneVM);
+                    //Mapper.GetMapper().Map(itemInstance.item, detailsPaneVM);
                     Mapper.GetMapper().Map(itemInstance, detailsPaneVM);
                 }
             }
