@@ -61,7 +61,7 @@ namespace TEMS_Inventory.views
 
         private void DoOpenEditItemWindowCommand()
         {
-            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "ManageItem", searchText = (CurrentItem == null) ? null : itemNumber?.ToString() });
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "ManageItems", searchText = (CurrentItem == null) ? null : itemNumber?.ToString() });
         }
 
 

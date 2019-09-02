@@ -46,7 +46,7 @@
 
             <DockPanel Grid.Column="0" Grid.Row="0"  Margin="3,2,2,3" >
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
-                    <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding SearchResult.ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding SearchResult.ExpandCollapseCommand}" Visibility="{Binding ItemSearchFilter.SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding SearchResult.ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding SearchResult.ExpandCollapseCommand}" Visibility="{Binding SearchFilterOptions.SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding Details.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
                 </StackPanel>
                 <uc:ItemSearchResults x:Name="DisplayItemList" DataContext="{Binding SearchResult}" />
@@ -97,7 +97,8 @@
                         <DockPanel DockPanel.Dock="Bottom" Margin="3">
                             <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
                                 <WPFToolkit:TitledItem Title="DB key:" Visibility="{Binding IsDebugMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
-                                    <TextBox Text="{Binding guid}" IsReadOnly="True" IsEnabled="{Binding IsCurrentItemEditable}" ToolTip="Globally Unique Identifier, primary key for database (read-only)" Visibility="Visible" />  <!-- normally Collapsed except when debugging -->
+                                    <TextBox Text="{Binding guid}" IsReadOnly="True" IsEnabled="{Binding IsCurrentItemEditable}" ToolTip="Globally Unique Identifier, primary key for database (read-only)" Visibility="Visible" />
+                                    <!-- normally Collapsed except when debugging -->
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Item:" IsEnabled="{Binding IsCurrentItemEditable}">
                                     <DockPanel>
@@ -118,13 +119,13 @@
                                     <ComboBox x:Name="StatusFilter" DisplayMemberPath="name" ItemsSource="{Binding Path=DataContext.SearchFilterOptions.SearchFilter.ItemStatusValues, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" SelectedItem="{Binding status}" ToolTip="Select status" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="In Service:" IsEnabled="{Binding IsCurrentItemEditable}">
-                                    <DatePicker SelectedDate="{Binding inServiceDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
+                                    <DatePicker SelectedDate="{Binding inServiceDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Short" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Removed:" IsEnabled="{Binding HasRemovedFromServiceDate}" ToolTip="The date item was removed from service, should be left blank if still in service">
                                     <DatePicker Text="{Binding removedServiceDate, Mode=TwoWay, Converter={StaticResource NullableToEmptyStringConverter}}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Seal Broken:" IsEnabled="{Binding IsCurrentItemEditable}">
-                                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding isSealbroken}" />
+                                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding isSealBroken}" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Has Barcode:" IsEnabled="{Binding IsCurrentItemEditable}" ToolTip="Barcode has been printed / barcode is affixed to item">
                                     <DockPanel>

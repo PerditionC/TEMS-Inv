@@ -21,14 +21,17 @@ namespace TEMS_Inventory.views
         /// helper used to indicate should show extra debug information
         /// </summary>
         /// <returns></returns>
-        public bool IsDebugMode()
+        public bool IsDebugMode
         {
-#if DEBUG
-            return true;
-#else
-            return false;
-#endif
+            get { return _IsDebugMode; }
+            set { SetProperty(ref _IsDebugMode, value, nameof(IsDebugMode)); }
         }
+        private bool _IsDebugMode =
+#if DEBUG
+            true;
+#else
+            false;
+#endif
 
         /// <summary>
         /// Helper to initialize ICommand objects on first use, otherwise returns existing item.
@@ -57,7 +60,9 @@ namespace TEMS_Inventory.views
         /// <param name="newWin"></param>
         protected void ShowChildWindow(ShowWindowMessage windowOpts)
         {
+            StatusMessage = $"Opening window {windowOpts.windowName}";
             Mediator.InvokeCallback(nameof(ShowWindowMessage), windowOpts);
+            StatusMessage = string.Empty;
         }
 
         /// <summary>

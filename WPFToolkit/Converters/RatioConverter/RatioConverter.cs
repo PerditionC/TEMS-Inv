@@ -52,7 +52,7 @@ namespace DW.WPFToolkit.Converters
             }
             else
             {
-                ratio = System.Convert.ToDouble(values[1]);
+                ratio = System.Convert.ToDouble(values[1], CultureInfo.InvariantCulture);
             }
 
             // do not let the culture default to local to prevent variable outcome due to decimal syntax
@@ -61,12 +61,19 @@ namespace DW.WPFToolkit.Converters
             // if max size provided, cap to max value
             if (values.Length > 2)
             {
-                double maxSize = System.Convert.ToDouble(values[2]);
+                double maxSize = System.Convert.ToDouble(values[2], CultureInfo.InvariantCulture);
                 if (size > maxSize)
                     size = maxSize;
             }
 
-            return size.ToString("G0", CultureInfo.InvariantCulture);
+            if (targetType == typeof(Double))
+            {
+                return size;
+            }
+            else
+            {
+                return size.ToString("G0", CultureInfo.InvariantCulture);
+            }
         }
 
 

@@ -391,6 +391,10 @@
       <Project>{4a4d8ac9-5aa0-4642-b2b4-07c8dc77223c}</Project>
       <Name>SqliteNet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WpfBindingErrors\WpfBindingErrors.csproj">
+      <Project>{90d08c68-5d3a-4dbf-9ebc-673b5bc91a66}</Project>
+      <Name>WpfBindingErrors</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WPFToolkit\WPFToolkit.csproj">
       <Project>{c126572c-fcdb-419f-afc7-47a19beb1e31}</Project>
       <Name>WPFToolkit</Name>

@@ -83,7 +83,6 @@ namespace TEMS.InventoryModel.util
 
             try
             {
-
                 // if key is valid, then for each registered callback invoke it
                 if (callbacks.ContainsKey(key))
                 {

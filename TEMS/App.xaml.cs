@@ -76,7 +76,7 @@ namespace TEMS_Inventory
         private void EnableWpfBindingErrors()
         {
 #if DEBUG
-            //WpfBindingErrors.BindingExceptionThrower.Attach();
+            WpfBindingErrors.BindingExceptionThrower.Attach();
 #endif
         }
 

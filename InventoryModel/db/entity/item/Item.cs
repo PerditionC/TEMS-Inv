@@ -2,9 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 using System;
-using System.Collections.Generic;
 using SQLite;
-
 using TEMS.InventoryModel.util.attribute;
 
 namespace TEMS.InventoryModel.entity.db

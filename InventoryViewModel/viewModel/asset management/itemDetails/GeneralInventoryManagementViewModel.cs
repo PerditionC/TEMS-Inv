@@ -158,7 +158,21 @@ namespace TEMS_Inventory.views
             ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "DamagedMissing", searchText = (CurrentItem == null) ? null : itemNumber?.ToString() });
         }
 
+        /// <summary>
+        /// Command to remove selected item from items collection and remove (delete or mark deleted) in back end DB
+        /// </summary>
+        public ICommand DeployRecoverItemCommand
+        {
+            get { return InitializeCommand(ref _DeployRecoverItemCommand, param => DoDeployRecoverItemCommand(), param => IsCurrentItemNotNull); }
+        }
+        private ICommand _DeployRecoverItemCommand;
 
+        private void DoDeployRecoverItemCommand()
+        {
+            ShowChildWindow(new ShowWindowMessage { modal = true, childWindow = true, windowName = "DeployRecover", searchText = (CurrentItem == null) ? null : itemNumber?.ToString() });
+        }
+
+        
 
 
         #region SaveCommand

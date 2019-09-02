@@ -40,6 +40,7 @@ namespace TEMS.InventoryModel.entity.db
             AcceptChanges();
         }
 
+
         // internal DB primary key, unique per item
         // Note: GUID used for replication purposes
         [PrimaryKey]
@@ -136,7 +137,7 @@ namespace TEMS.InventoryModel.entity.db
         [NotNull]
         public DateTime inServiceDate { get { return _inServiceDate; } set { SetProperty(ref _inServiceDate, value, nameof(inServiceDate)); } }
 
-        private DateTime _inServiceDate = DateTime.MinValue;
+        private DateTime _inServiceDate = DateTime.Now; //.MinValue;
 
         // when removed from service, null if still in service
         public DateTime? removedServiceDate { get { return _removedServiceDate; } set { SetProperty(ref _removedServiceDate, value, nameof(removedServiceDate)); } }

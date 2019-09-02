@@ -141,7 +141,8 @@
 --BEGIN TRANSACTION;  -- causes issue as when running in DB Browser for SQLite already implied TRANSACTION started
 
 -- allows retrieving current time as ticks
-CREATE VIEW IF NOT EXISTS current_timestamp_ticks AS SELECT ((CAST(strftime('%s', 'now', 'utc') AS bigint) * 1000000) + (strftime('%f', 'now')-round(strftime('%f', 'now')))*1000 + 635019330320182000) AS `timestamp`;
+-- use SELECT strftime('%Y-%m-%d %H:%M:%S', [ticks] / 10000000 - 62135596800, 'unixepoch','localtime'); to get date & time as UTC
+CREATE VIEW IF NOT EXISTS current_timestamp_ticks AS SELECT (((CAST(strftime('%s', 'now', 'utc') AS bigint) + 62135596800) * 10000000) + (strftime('%f', 'now')-round(strftime('%f', 'now')))*1000) AS `timestamp`;
 
 -- defines meta data about this table
 -- Note: we currently only store DB version which could use SQLite PRAGMA option, but this is simpler and allows future additional information, e.g. last sync information

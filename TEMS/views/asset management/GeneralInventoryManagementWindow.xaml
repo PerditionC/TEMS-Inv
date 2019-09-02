@@ -20,7 +20,7 @@
         <MultiBinding Converter="{WPFConverters:RatioConverter}">
             <Binding Source="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}" />
             <Binding Source="0.9" />
-            <Binding Source="1024" />
+            <Binding Source="1024.0" />
         </MultiBinding>
     </Window.Width>
     <Window.Resources>
@@ -55,24 +55,8 @@
 
                 <Grid MinHeight="100" MinWidth="50">
                     <DockPanel Visibility="{Binding IsChecked, ElementName=SwitchViewSearch, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid MinWidth="50" VerticalAlignment="Stretch" Margin="5,0" DockPanel.Dock="Right" Visibility="Collapsed">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="1*" />
-                            </Grid.RowDefinitions>
-
-                            <Button Grid.Row="1" x:Name="AddButton"    VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding AddCommand}" Content="_Add" />
-                            <Button Grid.Row="2" x:Name="EditButton"   VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding EditCommand}" Content="_Edit" />
-                            <Button Grid.Row="3" x:Name="DeleteButton" VerticalAlignment="Center" Height="29" MinWidth="50" MaxWidth="100" Command="{Binding DeleteCommand}" Content="_Delete" />
-                        </Grid>
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" DockPanel.Dock="Bottom">
-                            <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding SearchResult.ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding SearchResult.ExpandCollapseCommand}" Visibility="{Binding ItemSearchFilter.SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding SearchResult.ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding SearchResult.ExpandCollapseCommand}" Visibility="{Binding SearchFilterOptions.SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         </StackPanel>
                         <uc:ItemSearchResults x:Name="DisplayItemList" DockPanel.Dock="Left" DataContext="{Binding SearchResult}" />
                     </DockPanel>
@@ -177,7 +161,7 @@
                             <WPFToolkit:SplitButtonItem Content="Service" Command="{Binding AddServiceDetailsCommand}" />
                             <WPFToolkit:SplitButtonItem Content="Service History" Command="{Binding ViewServiceHistoryCommand}" />
                         </WPFToolkit:SplitButton>
-                        <WPFToolkit:SplitButton Content="Deployment" CommandParameter="{Binding CurrentItem}" Command="{Binding ViewDeployRecoverHistoryCommand}" Width="85" Margin="10,0" >
+                        <WPFToolkit:SplitButton Content="Deployment" Command="{Binding ViewDeployRecoverHistoryCommand}" Width="85" Margin="10,0" >
                             <WPFToolkit:SplitButtonItem CommandParameter="{Binding CurrentItem}" Command="{Binding DeployRecoverItemCommand}" Content="Deploy" />
                             <WPFToolkit:SplitButtonItem CommandParameter="{Binding CurrentItem}" Command="{Binding DeployRecoverItemCommand}" Content="Recover" />
                             <WPFToolkit:SplitButtonItem Content="Deployment History" Command="{Binding ViewDeployRecoverHistoryCommand}" />
@@ -185,13 +169,11 @@
                         <WPFToolkit:SplitButton Content="Dama_ged"  Command="{Binding AddDamagedDetailsCommand}" Width="80" Margin="10,0" >
                             <WPFToolkit:SplitButtonItem Content="Damaged" Command="{Binding AddDamagedDetailsCommand}" />
                             <WPFToolkit:SplitButtonItem Content="Missing" Command="{Binding AddMissingDetailsCommand}" />
-                            <WPFToolkit:SplitButtonItem Content="Damaged/Missing History" Command="{Binding ViewDamagedMissingOverviewCommand}" />
+                            <WPFToolkit:SplitButtonItem Content="Damaged/Missing History" Command="{Binding ViewDamagedMissingHistoryCommand}" />
                         </WPFToolkit:SplitButton>
                     </WrapPanel>
 
-                    <!--
                     <Button x:Name="SaveButton" Margin="0,3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="29" Width="80" Command="{Binding SaveCommand}" Content="_Save" />
-                    -->
                 </DockPanel>
                 <GroupBox BorderThickness="1" BorderBrush="Gray" Background="AliceBlue" MinWidth="50">
                     <GroupBox.Header>
@@ -199,7 +181,7 @@
                             <TextBox Background="Transparent" BorderThickness="0" ToolTip="Identifies this unique item instance" IsReadOnly="True">
                                 <TextBox.Style>
                                     <Style TargetType="{x:Type TextBox}">
-                                        <Setter Property="Text" Value="{Binding CurrentItem.itemNumber, Mode=OneWay}"/>
+                                        <Setter Property="Text" Value="{Binding itemNumber, Mode=OneWay}"/>
                                         <Setter Property="BorderThickness" Value="0" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding CurrentItem}" Value="{x:Null}">
@@ -214,14 +196,13 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <DockPanel DockPanel.Dock="Bottom" Margin="3">
                             <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" >
-                                <!--
                                 <WPFToolkit:TitledItem Title="DB key:" Visibility="{Binding IsDebugMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
                                     <TextBox Text="{Binding guid}" IsReadOnly="True" IsEnabled="{Binding IsCurrentItemEditable}" ToolTip="Globally Unique Identifier, primary key for database (read-only)" Visibility="Visible" />
+                                    <!-- normally Collapsed except when debugging -->
                                 </WPFToolkit:TitledItem>
-                                -->
                                 <WPFToolkit:TitledItem Title="Item:">
                                     <DockPanel>
-                                        <Button DockPanel.Dock="Right" Content="_Edit Item" ToolTip="Shortcut to open Item Management window" Command="{Binding OpenEditItemWindowCommand}" Visibility="{Binding SearchFilter.User.isAdmin, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                        <Button DockPanel.Dock="Right" Content="_Edit Item" ToolTip="Shortcut to open Item Management window" Command="{Binding OpenEditItemWindowCommand}" Visibility="{Binding IsAdmin, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                         <TextBox x:Name="tbName" Text="{Binding item.itemType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="Identifies what the item is" />
                                     </DockPanel>
                                 </WPFToolkit:TitledItem>
@@ -240,14 +221,14 @@
                                 <WPFToolkit:TitledItem Title="Grant #:" IsEnabled="{Binding IsCurrentItemEditable}">
                                     <TextBox Text="{Binding grantNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Information to match item with a grant associated with this item" />
                                 </WPFToolkit:TitledItem>
-                                <WPFToolkit:TitledItem Title="In Service:" IsEnabled="{Binding IsCurrentItemEditable}">
-                                    <DatePicker SelectedDate="{Binding inServiceDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
+                                <WPFToolkit:TitledItem Title="In Service:" IsEnabled="{Binding IsCurrentItemEditable}"  Margin="0 20 0 0">
+                                    <DatePicker SelectedDate="{Binding inServiceDate, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" IsTodayHighlighted="True" SelectedDateFormat="Short" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Removed:" IsEnabled="{Binding HasRemovedFromServiceDate}" ToolTip="The date item was removed from service, should be left blank if still in service">
                                     <DatePicker Text="{Binding removedServiceDate, Mode=TwoWay, Converter={StaticResource NullableToEmptyStringConverter}}" IsTodayHighlighted="True" SelectedDateFormat="Long" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Seal Broken:" IsEnabled="{Binding IsCurrentItemEditable}">
-                                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding isSealbroken}" />
+                                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding isSealBroken}" />
                                 </WPFToolkit:TitledItem>
                                 <WPFToolkit:TitledItem Title="Has Barcode:" IsEnabled="{Binding IsCurrentItemEditable}" ToolTip="Barcode has been printed / barcode is affixed to item">
                                     <DockPanel>

@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.ObjectModel;
-
 using TEMS.InventoryModel.util;
 
 /// <summary>
@@ -18,8 +17,12 @@ namespace TEMS.InventoryModel.entity.db.query
     /// </summary>
     public class SearchResult : NotifyPropertyChanged
     {
-        public SearchResult() : base()
+        public SearchResult() : base() { }
+
+        // WPF tree view calls this over all elements, needs to be fast and simple to minimize application pauses
+        public override string ToString()
         {
+            return description;
         }
 
         /// <summary>
@@ -42,7 +45,8 @@ namespace TEMS.InventoryModel.entity.db.query
         public string entityType
         {
             get { return _entityType; }
-            set {
+            set
+            {
                 SetProperty(ref _entityType, value, nameof(entityType));
                 entity = null;
             }
@@ -57,30 +61,38 @@ namespace TEMS.InventoryModel.entity.db.query
         {
             get
             {
-                if (!_entity.IsAlive || (_entity.Target == null))
+                // no actual item associated with fake header results
+                if (this is GroupHeader)
                 {
-                    // perform the load, note may throw Exception if unable to load value
-                    try
+                    return null;
+                }
+                else
+                {
+                    if (!_entity.IsAlive || (_entity.Target == null))
                     {
-                        if (id == Guid.Empty) throw new ArgumentOutOfRangeException("Unknown entity id!");
-                        if (string.IsNullOrEmpty(entityType)) throw new ArgumentOutOfRangeException("Unknown entity type!");
-                        if (DataRepository.GetDataRepository.Exists(entityType, "id", id))
+                        // perform the load, note may throw Exception if unable to load value
+                        try
                         {
-                            _entity = new WeakReference(DataRepository.GetDataRepository.Load(id, entityType) as ItemBase);
+                            if (id == Guid.Empty) throw new ArgumentOutOfRangeException("Unknown entity id!");
+                            if (string.IsNullOrEmpty(entityType)) throw new ArgumentOutOfRangeException("Unknown entity type!");
+                            if (DataRepository.GetDataRepository.Exists(entityType, "id", id))
+                            {
+                                _entity = new WeakReference(DataRepository.GetDataRepository.Load(id, entityType) as ItemBase);
+                            }
+                            else
+                            {
+                                _entity = new WeakReference(null);
+                            }
                         }
-                        else
+                        catch (Exception e)
                         {
+                            logger.Error(e, $"Error transparently loading entity from DB! type={entityType}, id={id}");
+                            // WARNING! we swallow exception here, could be bad, but we expect failures if item not in DB, etc.
                             _entity = new WeakReference(null);
                         }
                     }
-                    catch (Exception e)
-                    {
-                        logger.Error(e, $"Error transparently loading entity from DB! type={entityType}, id={id}");
-                        // WARNING! we swallow exception here, could be bad, but we expect failures if item not in DB, etc.
-                        _entity = new WeakReference(null);
-                    }
+                    return (ItemBase)_entity.Target;
                 }
-                return (ItemBase)_entity.Target;
             }
             set { SetProperty(ref _entity, new WeakReference(value), nameof(entity)); }
         }
