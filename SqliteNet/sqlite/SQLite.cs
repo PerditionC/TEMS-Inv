@@ -2949,9 +2949,9 @@ namespace SQLite
 
                 var sqlCall = "";
 
-                if (call.Method.Name == "Like" && args.Length == 2)
+                if ((call.Method.Name == "Like" || call.Method.Name == "Match") && args.Length == 2)
                 {
-                    sqlCall = "(" + args[0].CommandText + " like " + args[1].CommandText + ")";
+                    sqlCall = "(" + args[0].CommandText + " " + call.Method.Name.ToLower() + " " + args[1].CommandText + ")";
                 }
                 else if (call.Method.Name == "Contains" && args.Length == 2)
                 {
