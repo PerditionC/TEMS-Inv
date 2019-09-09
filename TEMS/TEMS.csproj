@@ -171,8 +171,8 @@
     <Compile Include="views\asset management\deploy\DeployRecoverHistoryWindow.xaml.cs">
       <DependentUpon>DeployRecoverHistoryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="views\asset management\expiration\ExpirationWindow.xaml.cs">
-      <DependentUpon>ExpirationWindow.xaml</DependentUpon>
+    <Compile Include="views\asset management\expiration\ExpirationDetailsWindow.xaml.cs">
+      <DependentUpon>ExpirationDetailsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="views\asset management\expiration\ExpirationHistoryWindow.xaml.cs">
       <DependentUpon>ExpirationHistoryWindow.xaml</DependentUpon>
@@ -271,8 +271,9 @@
     <Page Include="views\asset management\deploy\DeployRecoverHistoryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="views\asset management\expiration\ExpirationWindow.xaml">
+    <Page Include="views\asset management\expiration\ExpirationDetailsWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="views\asset management\expiration\ExpirationHistoryWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

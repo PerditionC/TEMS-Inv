@@ -71,6 +71,13 @@ namespace TEMS.InventoryModel.command.action
             }
         }
 
+
+        /// <summary>
+        /// the base deploy event to associate with an item instance, information is replicated to any contained item instances
+        /// </summary>
+        public DeployEvent deployEvent;
+
+
         /// <summary>
         /// applies status change to all applicable parameter
         /// if parameter is a single item then updates it,
@@ -78,7 +85,7 @@ namespace TEMS.InventoryModel.command.action
         /// updates if applicable
         /// </summary>
         /// <param name="parameters"></param>
-        protected static void ApplyIfStatus(object parameter, ItemStatus requiredStatus, ItemStatus newStatus, Func<ItemInstance, DeployEvent> GetNewEvent)
+        protected static void ApplyIfStatus(object parameter, ItemStatus requiredStatus, ItemStatus newStatus, DeployEvent deployEvent, Func<ItemInstance, DeployEvent, DeployEvent> GetDeployEvent)
         {
             logger.Trace(nameof(ApplyIfStatus));
             if ((newStatus == null) || (newStatus.id == Guid.Empty))
@@ -91,7 +98,7 @@ namespace TEMS.InventoryModel.command.action
             {
                 if (parameter is ItemInstance itemInstance)
                 {
-                    if (requiredStatus.id.Equals(itemInstance.statusId)) UpdateStatus(itemInstance, newStatus, CheckEvent(itemInstance, newStatus, GetNewEvent(itemInstance)));
+                    if (requiredStatus.id.Equals(itemInstance.statusId)) UpdateStatus(itemInstance, newStatus, CheckEvent(itemInstance, newStatus, deployEvent));
                     return;
                 }
 
@@ -102,7 +109,7 @@ namespace TEMS.InventoryModel.command.action
                     if (requiredStatus.id.Equals(itemResult.statusId))
                     {
                         var item = db.Load<ItemInstance>(itemResult.id);
-                        UpdateStatus(item, newStatus, CheckEvent(item, newStatus, GetNewEvent(item)));
+                        UpdateStatus(item, newStatus, CheckEvent(item, newStatus, deployEvent));
                     }
                     return;
                 }
@@ -116,7 +123,7 @@ namespace TEMS.InventoryModel.command.action
                         if (requiredStatus.id.Equals(i.statusId))
                         {
                             var item = db.Load<ItemInstance>(i.id);
-                            UpdateStatus(item, newStatus, CheckEvent(item, newStatus, GetNewEvent(item)));
+                            UpdateStatus(item, newStatus, CheckEvent(item, newStatus, GetDeployEvent(item, deployEvent)));
                         }
                     }
                 }

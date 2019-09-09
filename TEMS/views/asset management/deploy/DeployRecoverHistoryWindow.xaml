@@ -7,6 +7,7 @@
     xmlns:inventoryModel="clr-namespace:TEMS.InventoryModel.entity.db;assembly=InventoryModel"
     xmlns:dbQuery="clr-namespace:TEMS.InventoryModel.entity.db.query;assembly=InventoryModel"
     xmlns:WPFToolkit="clr-namespace:DW.WPFToolkit.Controls;assembly=WPFToolkit"
+    xmlns:WPFConverters="clr-namespace:DW.WPFToolkit.Converters;assembly=WPFToolkit"                       
     xmlns:views="clr-namespace:TEMS_Inventory.views"
     xmlns:uc="clr-namespace:TEMS_Inventory.UserControls"
     mc:Ignorable="d"
@@ -15,7 +16,7 @@
         Title="Deploy (and Recover) History" >
 
     <DockPanel Background="OldLace" x:Name="rootItem">
-        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" DataContext="{Binding SearchFilter}" />
+        <uc:ItemSearchFilter x:Name="isf" DockPanel.Dock="Top" Margin="2" DataContext="{Binding SearchFilterOptions}" />
 
         <!--  change so left is treeview, on select item open in right side for details
         Note: no add or delete as that is done on Item view (since effects all sites)
@@ -36,8 +37,8 @@
                     <CheckBox HorizontalAlignment="Center" Margin="3" Content="{Binding SearchResult.ExpandCollapseCommandText}" IsThreeState="False" CommandParameter="{Binding IsChecked, RelativeSource={RelativeSource Self}, Mode=OneWay}" Command="{Binding SearchResult.ExpandCollapseCommand}" Visibility="{Binding SearchFilterOptions.SearchFilter.SearchFilterVisible,Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding Details.StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}"  Height="22" Opacity="0.9" />
                     <UniformGrid DockPanel.Dock="Bottom" HorizontalAlignment="Center" Rows="1" Margin="0,5">
-                        <RadioButton IsChecked="{Binding StatusAvailable}">Available Items</RadioButton>
-                        <RadioButton IsChecked="{Binding StatusDeployed}" Margin="7,0,0,0">Deployed Items</RadioButton>
+                        <RadioButton IsChecked="{Binding SearchFilterOptions.StatusAvailable}">Available Items</RadioButton>
+                        <RadioButton IsChecked="{Binding SearchFilterOptions.StatusDeployed}" Margin="7,0,0,0">Deployed Items</RadioButton>
                     </UniformGrid>
                 </StackPanel>
                 <uc:ItemSearchResults x:Name="DisplayItemList" DataContext="{Binding SearchResult}" />
@@ -45,11 +46,11 @@
 
             <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" />
 
-            <DockPanel Grid.Column="2" Grid.Row="0" Margin="5,2,2,3" >
+            <DockPanel Grid.Column="2" Grid.Row="0" Margin="5,2,2,3" DataContext="{Binding Details}" >
                 <DockPanel DockPanel.Dock="Bottom" Margin="3">
                     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="0,7,0,5">
-                        <Button x:Name="DeployButton" Content="Deploy" CommandParameter="{Binding SelectedItems}" Command="{Binding DeployRecoverCommand}" Margin="10,3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="29" Width="80" Visibility="{Binding DeployRecoverMode}" />
-                        <Button x:Name="RecoverButton" Content="Recover" CommandParameter="{Binding SelectedItems}" Command="{Binding DeployRecoverCommand}" Margin="10,3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="29" Width="80" Visibility="Collapsed" />
+                        <Button x:Name="DeployButton" Content="Deploy" Command="{Binding DeployRecoverCommand}" Margin="10,3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="29" Width="80" Visibility="{Binding DeployMode, Converter={WPFConverters:BooleanToVisibilityConverter}}" />
+                        <Button x:Name="RecoverButton" Content="Recover" Command="{Binding DeployRecoverCommand}" Margin="10,3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="29" Width="80" Visibility="{Binding RecoverMode, Converter={WPFConverters:BooleanToVisibilityConverter}}" />
                         <Button x:Name="UpdateEventButton" Content="Update" Command="{Binding UpdateCommand}" Margin="10,3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="29" Width="80" Visibility="Visible" />
                     </WrapPanel>
                 </DockPanel>
@@ -59,7 +60,7 @@
                             <TextBox Background="Transparent" BorderThickness="0" ToolTip="Identifies this unique item instance" >
                                 <TextBox.Style>
                                     <Style TargetType="{x:Type TextBox}">
-                                        <Setter Property="Text" Value="{Binding CurrentItem.itemNumber, Mode=OneWay}"/>
+                                        <Setter Property="Text" Value="{Binding itemNumber, Mode=OneWay}"/>
                                         <Setter Property="BorderThickness" Value="0" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding CurrentItem}" Value="{x:Null}">

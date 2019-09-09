@@ -97,7 +97,7 @@ namespace TEMS_Inventory.views
                 {
                     logger.Trace("Showing " + msg.windowName);
                     // retrieve window with possibly updated ViewModel with any other msg parameters, e.g. SearchText
-                    Window window = ViewModelToWindowMapper.GetWindow(msg.windowName, msg.searchText);
+                    Window window = ViewModelToWindowMapper.GetWindow(msg.windowName, msg.searchText, msg.args);
                     if (window != null)
                     {
                         window.Owner = App.Current.MainWindow; /* this */

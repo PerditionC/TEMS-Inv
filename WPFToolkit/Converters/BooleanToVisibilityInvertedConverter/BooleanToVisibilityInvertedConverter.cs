@@ -31,6 +31,8 @@ using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Markup;
+using NLog;
 
 namespace DW.WPFToolkit.Converters
 {
@@ -48,13 +50,17 @@ namespace DW.WPFToolkit.Converters
     ///     <CheckBox Content="Hide" x:Name="HideCheckBox" />
     ///     
     ///     <Label Content="Text" Visibility="{Binding IsChecked, ElementName=HideCheckBox, Converter={StaticResource BooleanToVisibilityInvertedConverter}}" />
+    ///     <Label Content="More Text" Visibility="{Binding IsChecked, ElementName=HideCheckBox, Converter={BooleanToVisibilityInvertedConverter}}" />
     ///     
     /// </StackPanel>
     /// ]]>
     /// </code>
     /// </example>
-    public sealed class BooleanToVisibilityInvertedConverter : IValueConverter
+    public sealed class BooleanToVisibilityInvertedConverter : MarkupExtension, IValueConverter
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static BooleanToVisibilityInvertedConverter _instance;
+
         /// <summary>
         /// Converts a Boolean value to a <see cref="System.Windows.Visibility" /> enumeration value.
         /// </summary>
@@ -82,6 +88,12 @@ namespace DW.WPFToolkit.Converters
         {
             return ((value is Visibility) &&
                     (((Visibility)value) == Visibility.Collapsed));
+        }
+
+        // return a instance of converter so don't have to explicitly create
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return _instance ?? (_instance = new BooleanToVisibilityInvertedConverter());
         }
     }
 }

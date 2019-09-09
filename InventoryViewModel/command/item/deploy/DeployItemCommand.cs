@@ -37,25 +37,18 @@ namespace TEMS.InventoryModel.command.action
         /// <param name="parameters"></param>
         private void DeployItem(object parameter)
         {
-            ApplyIfStatus(parameter, statusAvailable, statusDeployed, GetNewEvent);
+            ApplyIfStatus(parameter, statusAvailable, statusDeployed, deployEvent, GetNewDeployEvent);
         }
+
 
         /// <summary>
         /// creates a new DeployEvent to store information about this deployment
         /// </summary>
         /// <param name="itemInstance"></param>
         /// <returns></returns>
-        private DeployEvent GetNewEvent(ItemInstance itemInstance)
+        private DeployEvent GetNewDeployEvent(ItemInstance itemInstance, DeployEvent baseDeployEvent)
         {
-            var deployEvent = new DeployEvent
-            {
-                // set default/common values, specific event values set by caller
-                itemInstance = itemInstance,
-                deployBy = UserManager.GetUserManager.CurrentUser().userId,
-                deployDate = DateTime.Now,
-                notes = this.Notes
-            };
-            return deployEvent;
+            return new DeployEvent(baseDeployEvent, itemInstance);
         }
     }
 }

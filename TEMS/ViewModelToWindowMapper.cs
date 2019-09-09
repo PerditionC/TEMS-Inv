@@ -23,7 +23,7 @@ namespace TEMS_Inventory
         /// <param name="view">which window to return</param>
         /// <param name="searchText">optional, usually null, for windows with a SearchFilter, sets the initial searchText</param>
         /// <returns></returns>
-        public static Window GetWindow(string view, string searchText = null)
+        public static Window GetWindow(string view, string searchText = null, object args = null)
         {
             // needed view models for Search Detail Windows, i.e. windows with search pane, results tree pane, and details pane
             DetailsViewModelBase detailsPaneVM;
@@ -50,16 +50,18 @@ namespace TEMS_Inventory
                     win = new GeneralInventoryManagementWindow(winVM);
                     break;
                 case "DeployRecoverDetails":
-                    win = new DeployRecoverDetailsWindow(new DetailsDeployRecoverViewModel(null));
+                    win = new DeployRecoverDetailsWindow(new DetailsDeployRecoverViewModel(args as DeployEvent));
                     break;
                 case "DeployRecover":
                     searchFilter = new SearchFilterOptions();
-                    searchFilter.Initialize(searchText);
-
+                    searchFilter.Initialize(searchText, enabled:false);
+                    searchFilter.SearchFilterVisible = false;
                     detailsPaneVM = new HistoryDeployRecoverViewModel();
                     onSelectionChangedCommand = new UpdateDetailsHistoryDeployRecoverCommand(detailsPaneVM);
                     searchResultViewModel = new SearchResultViewModel(onSelectionChangedCommand);
                     searchFilterOptionsViewModel = new SearchFilterOptionsViewModel(searchFilter, QueryResultEntitySelector.ItemInstance, searchResultViewModel);
+                    searchFilterOptionsViewModel.StatusAvailable = true;
+                    searchFilter.SearchFilterEnabled = true;
                     winVM = new SearchDetailWindowViewModel(searchFilterOptionsViewModel, searchResultViewModel, detailsPaneVM);
 
                     win = new DeployRecoverHistoryWindow(winVM);

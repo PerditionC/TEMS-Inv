@@ -12,22 +12,29 @@
     xmlns:uc="clr-namespace:TEMS_Inventory.UserControls"
     WindowStartupLocation="CenterOwner"
     MinHeight="480" MinWidth="640"
-    Height="{Binding Source={x:Static SystemParameters.MaximizedPrimaryScreenHeight}, Converter={WPFConverters:RatioConverter}, ConverterParameter='0.9'}" 
     Icon="/images/MMRSLogo.ico"
-    Title="Damaged / Missing Item Details" >
+    Title="Item Deployment Details" >
     <Window.Width>
         <MultiBinding Converter="{WPFConverters:RatioConverter}">
             <Binding Source="{x:Static SystemParameters.MaximizedPrimaryScreenWidth}" />
-            <Binding Source="0.9" />
-            <Binding Source="1024" />
+            <Binding Source="1.0" />
+            <Binding Source="640" />
         </MultiBinding>
     </Window.Width>
+    <Window.Height>
+        <MultiBinding Converter="{WPFConverters:RatioConverter}">
+            <Binding Source="{x:Static SystemParameters.MaximizedPrimaryScreenHeight}" />
+            <Binding Source="1.0" />
+            <Binding Source="480" />
+        </MultiBinding>
+    </Window.Height>
 
 
     <DockPanel Background="OldLace">
         <GroupBox Header="Action" Margin="2" MinWidth="150" VerticalAlignment="Center" DockPanel.Dock="Right" >
             <UniformGrid Columns="1" HorizontalAlignment="Center">
-                <Button Width="135" Margin="2,5" Content="Return to Inventory" ToolTip="Set item status to 'Available' to return item normal inventory, i.e. damage has been repaired" />
+                <Button Width="135" Margin="2,5" Content="Deploy" />
+                <Button Width="135" Margin="2,5" Content="Return to Inventory" ToolTip="Set item status to 'Available' to return item normal inventory, i.e. recovered" />
                 <Button Width="135" Margin="2,5" Content="Send for Repairs" ToolTip="Set item status to 'Out for Repair' and begin Service dialog" />
                 <Button Width="135" Margin="2,5" Content="Replace Item" ToolTip="Mark this item 'Removed From Inventory', then create a replacement item# and allow updating" />
             </UniformGrid>
@@ -35,43 +42,39 @@
         <GroupBox Header="Item MMRS#" Margin="2" Background="WhiteSmoke">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                 <DockPanel>
-                    <!--
-                        Discovery Date ##/##/####
-                        Event Type  Damage / Missing
-                        Details "user supplied"
-                        Reported By - autocomplete input based on login names and past reporters ** Not tied to DB users
-                        Input By - DB user who input, auto input on save, no need to specify as user is logged in
-                        -->
-                    <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" DockPanel.Dock="Top">
+                    <WPFToolkit:TitledItemsControl Margin="2,10,2,2" x:Name="DetailView" DockPanel.Dock="Top" >
                         <WPFToolkit:TitledItem Title="Item #:">
-                            <TextBox Background="WhiteSmoke" x:Name="itemNumber" Text="{Binding ItemNumber}" IsReadOnly="True" ToolTip="MMRS# Unique identifier for this specific item" />
+                            <TextBox Background="WhiteSmoke" x:Name="itemNumber" Text="{Binding DeployEvent.itemInstance.itemNumber, Mode=OneWay}" IsReadOnly="True" ToolTip="MMRS# Unique identifier for this specific item" />
                         </WPFToolkit:TitledItem>
                         <WPFToolkit:TitledItem Title="Description:">
-                            <TextBox Background="WhiteSmoke" Text="{Binding Name}" IsReadOnly="True" ToolTip="Name or description of the type of item" />
+                            <TextBox Background="WhiteSmoke" Text="{Binding DeployEvent.itemInstance.item.itemType.name, Mode=OneWay}" IsReadOnly="True" ToolTip="Name or description of the type of item" />
                         </WPFToolkit:TitledItem>
-                        <WPFToolkit:TitledItem Title="Event Type:">
-                            <TextBox Background="WhiteSmoke" Text="{Binding EventType}" IsReadOnly="True" ToolTip="Was item damaged or is it missing?" />
+                        <WPFToolkit:TitledItem Title="Deploy Date:" Margin="0 20 0 0" >
+                            <DatePicker Text="{Binding DeployEvent.deployDate}" ToolTip="Date when it was deployed (used)" IsEnabled="{Binding IsAdmin}" />
                         </WPFToolkit:TitledItem>
-                        <WPFToolkit:TitledItem Title="Date Discovery:">
-                            <DatePicker Text="9/9/2017" ToolTip="Date when it was discovered item is damaged or missing" />
+                        <WPFToolkit:TitledItem Title="Deploy By:">
+                            <TextBox Text="{Binding Path=DeployEvent.deployBy, Mode=TwoWay}" IsEnabled="{Binding IsAdmin}" ToolTip="Who deployed this item (who recorded it)" />
                         </WPFToolkit:TitledItem>
-                        <WPFToolkit:TitledItem Title="Details:">
-                            <TextBox Text="{Binding Path=name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                            ToolTip="User supplied information about the damage / missing event" 
+                        <WPFToolkit:TitledItem Title="Recover Date:" Margin="0 20 0 0" >
+                            <DatePicker Text="{Binding DeployEvent.recoverDate}" ToolTip="Date when it was returned (made available again)" IsEnabled="{Binding IsAdmin}" />
+                        </WPFToolkit:TitledItem>
+                        <WPFToolkit:TitledItem Title="Recover By:" >
+                            <TextBox Text="{Binding Path=DeployEvent.recoverBy, Mode=TwoWay}" IsReadOnly="{Binding IsAdmin, Converter={WPFConverters:InverseBooleanConverter}}" ToolTip="Who recovered / returned to inventory this item (who recorded it)" />
+                        </WPFToolkit:TitledItem>
+                        <WPFToolkit:TitledItem Title="Details:" Margin="0 20 0 0" >
+                            <TextBox Text="{Binding Path=DeployEvent.notes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                            ToolTip="User supplied information about the deployment" 
                             TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True"
                             HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Height="180" 
                             FontSize="13" FontFamily="Georgia"
                             />
                         </WPFToolkit:TitledItem>
-                        <WPFToolkit:TitledItem Title="Reported By:">
-                            <TextBox Text="{Binding Path=name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding DataContext.isDetailViewInActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DockPanel}}" ToolTip="Name of this item" />
-                        </WPFToolkit:TitledItem>
                     </WPFToolkit:TitledItemsControl>
 
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <UniformGrid Columns="2" Rows="1">
-                            <Button Padding="5,0" Margin="0,0,5,0" Content="Save Changes" />
-                            <Button Padding="5,0" Margin="5,0,0,0" Grid.Column="2" Content="Cancel" />
+                        <UniformGrid Columns="2" Rows="1" >
+                            <Button Padding="5,0" Margin="5,0,0,0" Grid.Column="1" Content="Save Changes" Visibility="{Binding IsAdmin, Converter={WPFConverters:BooleanToVisibilityHiddenConverter}}" />
+                            <Button Padding="20,0" Margin="5,0,0,0" Grid.Column="2" Content="Cancel" />
                         </UniformGrid>
                     </StackPanel>
                 </DockPanel>

@@ -82,7 +82,7 @@ namespace TEMS.InventoryModel.entity.db.query
         /// <summary>
         /// initialize to default settings
         /// </summary>
-        public void Initialize(string SearchText = null, SearchFilterItemInitializeFor searchFor = SearchFilterItemInitializeFor.ItemInstance)
+        public void Initialize(string SearchText = null, SearchFilterItemInitializeFor searchFor = SearchFilterItemInitializeFor.ItemInstance, bool enabled=true)
         {
             // initialize SearchFilter, 
             // Note: search is not triggered until SearchFilterEnabled == true, so can set values in any order
@@ -126,7 +126,7 @@ namespace TEMS.InventoryModel.entity.db.query
             }
 
             // activate
-            SearchFilterEnabled = true;
+            SearchFilterEnabled = enabled;
         }
 
 

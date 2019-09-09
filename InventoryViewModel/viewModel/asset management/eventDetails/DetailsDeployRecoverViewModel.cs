@@ -1,6 +1,7 @@
 ﻿// This is an independent project of an individual developer. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
+using TEMS.InventoryModel.command.action;
 using TEMS.InventoryModel.entity.db;
 
 namespace TEMS_Inventory.views
@@ -12,6 +13,9 @@ namespace TEMS_Inventory.views
         public DeployEvent DeployEvent { get { return Event as DeployEvent; } set { Event = value; } }
 
         // Recover Item Command
+        private RecoverItemCommand recoverCommand = new RecoverItemCommand();
+        private DeployItemCommand deployCommand = new DeployItemCommand();
+
 
 
 
@@ -35,29 +39,5 @@ namespace TEMS_Inventory.views
         }
         private bool _StatusAvailable = true;
 
-        /*
-        private void updateStatusSearchFilter()
-        {
-            // save if currently disabled or not so we don't enable too early (if currently not enabled)
-            var wasEnabled = SearchFilter.SearchFilterEnabled;
-            // force as disabled while we update
-            SearchFilter.SearchFilterEnabled = false;
-            SearchFilter.SelectedItemStatusValues.Clear();
-            if (_StatusAvailable)
-            {
-                // will auto change, but we want to happen immediately
-                deployRecoverCommands.DeployRecoverItemInstanceCommandText = DeployRecoverItemInstanceAction.MenuDeploy;
-                SearchFilter.SelectedItemStatusValues.Add(deployRecoverCommands.statusAvailable);
-            }
-            else
-            {
-                // will auto change, but we want to happen immediately
-                deployRecoverCommands.DeployRecoverItemInstanceCommandText = DeployRecoverItemInstanceAction.MenuRecover;
-                SearchFilter.SelectedItemStatusValues.Add(deployRecoverCommands.statusDeployed);
-            }
-            // trigger update is currently enabled
-            SearchFilter.SearchFilterEnabled = wasEnabled;
-        }
-        */
     }
 }

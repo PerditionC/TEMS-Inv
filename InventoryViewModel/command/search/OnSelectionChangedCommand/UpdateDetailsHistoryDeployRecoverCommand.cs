@@ -31,6 +31,7 @@ namespace TEMS.InventoryModel.command.action
             if (detailsPaneVM is HistoryDeployRecoverViewModel viewModel)
             {
                 viewModel.EventList = new ObservableCollection<ItemBase>(((IEnumerable)DataRepository.GetDataRepository.GetDeploymentEvents(selectedItem)).Cast<ItemBase>());
+                detailsPaneVM.StatusMessage = $"{((viewModel.EventList.Count > 0)?viewModel.EventList.Count.ToString():"No")} deployment events.";
             }
         }
     }

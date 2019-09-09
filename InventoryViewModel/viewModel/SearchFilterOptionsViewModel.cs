@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 #if NET40
 using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, while in .Net4.5+ it moved to System.dll
 #endif
@@ -209,5 +210,53 @@ namespace TEMS_Inventory.views // InventoryViewModel.viewModel
             }
         }
 
+
+        /// <summary>
+        /// updates SearchFilter status categories selected to just be status
+        /// </summary>
+        /// <param name="status"></param>
+        private void UpdateStatusCategory(string status)
+        {
+            SearchFilter.SelectedItemStatusValues = new List<object>(SearchFilter.ItemStatusValues.Where(x => string.Equals(status,(x as ItemStatus)?.name, StringComparison.InvariantCulture)).ToList());
+        }
+
+
+        // quick search filter change for available vs deployed items
+
+        /// <summary>
+        /// set search criteria to limit to available items and update criteria to not included deployed items
+        /// </summary>
+        public bool StatusAvailable
+        {
+            get { return _StatusAvailable; }
+            set
+            {
+                SetProperty(ref _StatusAvailable, value, nameof(StatusAvailable));
+                SetProperty(ref _StatusDeployed, !value, nameof(StatusDeployed));
+                if (value)
+                    UpdateStatusCategory("Available");
+                else
+                    UpdateStatusCategory("Deployed");
+            }
+        }
+        private bool _StatusAvailable = true;
+
+        /// <summary>
+        /// set search criteria to limit to deployed items and update criteria to not included available items
+        /// </summary>
+        public bool StatusDeployed
+        {
+            get { return _StatusDeployed; }
+            set
+            {
+                SetProperty(ref _StatusDeployed, value, nameof(StatusDeployed));
+                SetProperty(ref _StatusAvailable, !value, nameof(StatusAvailable));
+                if (value)
+                    UpdateStatusCategory("Deployed");
+                else
+                    UpdateStatusCategory("Available");
+            }
+        }
+        private bool _StatusDeployed = false;
     }
 }

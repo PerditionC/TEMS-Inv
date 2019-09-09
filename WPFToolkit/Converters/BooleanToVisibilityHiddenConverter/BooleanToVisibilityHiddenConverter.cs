@@ -29,6 +29,7 @@ THE SOFTWARE
 
 using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 using NLog;
@@ -36,61 +37,64 @@ using NLog;
 namespace DW.WPFToolkit.Converters
 {
     /// <summary>
-    /// Represents the converter that converts Boolean values to its opposite.
+    /// Represents the converter that converts Boolean values to and from System.Windows.Visibility enumeration values like the <see cref="System.Windows.Controls.BooleanToVisibilityConverter" /> 
+    /// but allows use directly without creating a Resource first and sets Visibility to Hidden instead of Collapsed on false.
     /// </summary>
     /// <example>
     /// <code lang="XAML">
     /// <![CDATA[
     /// <StackPanel>
     ///     <StackPanel.Resources>
-    ///         <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+    ///         <Converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     ///     </StackPanel.Resources>
     /// 
-    ///     <CheckBox Content="Disable" x:Name="DisableCheckBox" />
+    ///     <CheckBox Content="Show" x:Name="ShowCheckBox" />
     ///     
-    ///     <Label Content="Text" IsEnabled="{Binding IsChecked, ElementName=DisableCheckBox, Converter={StaticResource InverseBooleanConverter}}" />
+    ///     <Label Content="Text" Visibility="{Binding IsChecked, ElementName=ShowCheckBox, Converter={StaticResource BooleanToVisibilityConverter}}" />
+    ///     <Label Content="More Text" Visibility="{Binding IsChecked, ElementName=ShowCheckBox, Converter={BooleanToVisibilityConverter}}" />
     ///     
     /// </StackPanel>
     /// ]]>
     /// </code>
     /// </example>
-    public sealed class InverseBooleanConverter : MarkupExtension, IValueConverter
+    public sealed class BooleanToVisibilityHiddenConverter : MarkupExtension, IValueConverter
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        private static InverseBooleanConverter _instance;
+        private static BooleanToVisibilityHiddenConverter _instance;
 
         /// <summary>
-        /// Converts Boolean values to its opposite.
+        /// Converts a Boolean value to a <see cref="System.Windows.Visibility" /> enumeration value.
         /// </summary>
         /// <param name="value">The Boolean value to convert. This value can be a standard Boolean value or a nullable Boolean value.</param>
         /// <param name="targetType">This parameter is not used.</param>
         /// <param name="parameter">This parameter is not used.</param>
         /// <param name="culture">This parameter is not used.</param>
-        /// <returns>true only if the parameter is false; otherwise false. In case of null its false.</returns>
+        /// <returns><see cref="System.Windows.Visibility.Visible" /> if value is true; otherwise, <see cref="System.Windows.Visibility.Collapsed" />.</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var flag = false;
             if ((value is bool) || (value is bool?)) flag = (bool)value;
-            return value == null ? false : !flag;
+            return (flag ? Visibility.Visible : Visibility.Hidden);
         }
 
         /// <summary>
-        /// Converts Boolean values to its opposite.
+        /// Converts a <see cref="System.Windows.Visibility" /> enumeration value to a Boolean value.
         /// </summary>
-        /// <param name="value">The Boolean value to convert.</param>
+        /// <param name="value">A <see cref="System.Windows.Visibility" /> enumeration value.</param>
         /// <param name="targetType">This parameter is not used.</param>
         /// <param name="parameter">This parameter is not used.</param>
         /// <param name="culture">This parameter is not used.</param>
-        /// <returns>false if value is true; otherwise, true.</returns>
+        /// <returns>true if value is <see cref="System.Windows.Visibility.Visible" />; otherwise, false.</returns>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Convert(value, targetType, parameter, culture);
+            return ((value is Visibility) &&
+                    (((Visibility)value) == Visibility.Visible));
         }
 
         // return a instance of converter so don't have to explicitly create
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
-            return _instance ?? (_instance = new InverseBooleanConverter());
+            return _instance ?? (_instance = new BooleanToVisibilityHiddenConverter());
         }
     }
 }

@@ -48,7 +48,7 @@ namespace TEMS.InventoryModel.command.action
         /// <param name="parameter"></param>
         private void RecoverItem(object parameter)
         {
-            ApplyIfStatus(parameter, statusDeployed, itemStatus, GetLastEvent);
+            ApplyIfStatus(parameter, statusDeployed, itemStatus, deployEvent, GetLastDeployEvent);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace TEMS.InventoryModel.command.action
         /// </summary>
         /// <param name="itemInstanceId"></param>
         /// <returns></returns>
-        private static DeployEvent GetLastEvent(ItemInstance itemInstance)
+        private static DeployEvent GetLastDeployEvent(ItemInstance itemInstance, DeployEvent baseDeployEvent)
         {
             var deployEvent = DataRepository.GetDataRepository.GetLatestDeploymentEventFor(itemInstance.id);
             if ((deployEvent == null) || (deployEvent.recoverDate != null))
@@ -66,8 +66,8 @@ namespace TEMS.InventoryModel.command.action
                 logger.Warn($"Item {itemInstance.itemNumber} is not deployed, unable to get event and/or already recovered.");
                 return null;
             }
-            deployEvent.recoverBy = UserManager.GetUserManager.CurrentUser().userId;
-            deployEvent.recoverDate = DateTime.Now;
+            deployEvent.recoverDate = baseDeployEvent.recoverDate;
+            deployEvent.recoverBy = baseDeployEvent.recoverBy;
             return deployEvent;
         }
     }

@@ -24,6 +24,18 @@ namespace TEMS.InventoryModel.entity.db
             _id = id;
         }
 
+        // create a new deploy event that has same event information, but tied to different item instance (i.e. for items deployed for same event)
+        public DeployEvent(DeployEvent deployEvent, ItemInstance itemInstance) : this()
+        {
+            deployDate = deployEvent.deployDate;
+            deployBy = deployEvent.deployBy;
+            recoverDate = deployEvent.recoverDate;
+            recoverBy = deployEvent.recoverBy;
+            notes = deployEvent.notes;
+
+            this.itemInstance = itemInstance;
+        }
+
         // primary key
         [PrimaryKey]
         public Guid id { get { return _id; } set { SetProperty(ref _id, value, nameof(id)); } }

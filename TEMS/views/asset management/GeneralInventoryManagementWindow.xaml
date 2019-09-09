@@ -50,7 +50,6 @@
                         <RadioButton Name="SwitchViewSearch" Content="Search results" IsChecked="True"/>
                         <RadioButton Name="SwitchViewDetails" Content="Item description" IsChecked="False" Margin="10,0" />
                     </StackPanel>
-                    <TextBlock x:Name="StatusBar" HorizontalAlignment="Stretch" Margin="10,0,10,2" Text="{Binding StatusMessage, Converter={StaticResource NullableToEmptyStringConverter}}" />
                 </StackPanel>
 
                 <Grid MinHeight="100" MinWidth="50">
@@ -144,16 +143,16 @@
             <DockPanel Grid.Column="2" Grid.Row="0" Margin="5,2,2,3" DataContext="{Binding Details}" >
                 <DockPanel DockPanel.Dock="Bottom" Margin="3">
                     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="0,7,0,5">
-                        <WPFToolkit:SplitButton Content="Ser_vice"  Command="{Binding AddServiceDetailsCommand}" Width="80" Margin="10,0" >
+                        <WPFToolkit:SplitButton Content="Ser_vice"  Command="{Binding AddServiceDetailsCommand}" IsEnabled="{Binding IsCurrentItemEditable}" Width="80" Margin="10,0" >
                             <WPFToolkit:SplitButtonItem Content="Service" Command="{Binding AddServiceDetailsCommand}" />
                             <WPFToolkit:SplitButtonItem Content="Service History" Command="{Binding ViewServiceHistoryCommand}" />
                         </WPFToolkit:SplitButton>
-                        <WPFToolkit:SplitButton Content="Deployment" Command="{Binding ViewDeployRecoverHistoryCommand}" Width="85" Margin="10,0" >
+                        <WPFToolkit:SplitButton Content="Deployment" Command="{Binding ViewDeployRecoverHistoryCommand}" IsEnabled="{Binding IsCurrentItemEditable}" Width="85" Margin="10,0" >
                             <WPFToolkit:SplitButtonItem CommandParameter="{Binding CurrentItem}" Command="{Binding DeployRecoverItemCommand}" Content="Deploy" />
                             <WPFToolkit:SplitButtonItem CommandParameter="{Binding CurrentItem}" Command="{Binding DeployRecoverItemCommand}" Content="Recover" />
                             <WPFToolkit:SplitButtonItem Content="Deployment History" Command="{Binding ViewDeployRecoverHistoryCommand}" />
                         </WPFToolkit:SplitButton>
-                        <WPFToolkit:SplitButton Content="Dama_ged"  Command="{Binding AddDamagedDetailsCommand}" Width="80" Margin="10,0" >
+                        <WPFToolkit:SplitButton Content="Dama_ged"  Command="{Binding AddDamagedDetailsCommand}" IsEnabled="{Binding IsCurrentItemEditable}" Width="80" Margin="10,0" >
                             <WPFToolkit:SplitButtonItem Content="Damaged" Command="{Binding AddDamagedDetailsCommand}" />
                             <WPFToolkit:SplitButtonItem Content="Missing" Command="{Binding AddMissingDetailsCommand}" />
                             <WPFToolkit:SplitButtonItem Content="Damaged/Missing History" Command="{Binding ViewDamagedMissingHistoryCommand}" />

@@ -97,15 +97,17 @@ namespace TEMS.InventoryModel.entity.db
         {
             if (item != null)
             {
-                var pkList = new List<string>() { DatabaseHelper.GetPrimaryKey(item) };
-                if (item.childCount > 0) item.children.GetValues(DatabaseHelper.GetPrimaryKey, ref pkList);
+                var pk = DatabaseHelper.GetPrimaryKey(item);
+                if (pk != null)
+                {
+                    var pkList = new List<string>() { pk };
+                    if (item.childCount > 0) item.children.GetValues(DatabaseHelper.GetPrimaryKey, ref pkList);
 
-                return db.LoadRows<DeployEvent>($"WHERE itemInstanceId IN ({pkList.PrimaryKeysToCommaSeparatedList()})");
+                    return db.LoadRows<DeployEvent>($"WHERE itemInstanceId IN ({pkList.PrimaryKeysToCommaSeparatedList()})");
+                }
             }
-            else
-            {
-                return new List<DeployEvent>(0);
-            }
+
+            return new List<DeployEvent>(0);
         }
 
         #endregion deployment

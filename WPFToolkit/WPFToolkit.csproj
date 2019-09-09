@@ -217,6 +217,8 @@
     <Compile Include="Controls\WPFMessageBox\WPFMessageBoxScrollViewerControl.cs" />
     <Compile Include="Controls\WPFMessageBox\WPFMessageBoxTextControl.cs" />
     <Compile Include="Converters\AndMultiValueConverter\AndMultiValueConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityHiddenConverter\BooleanToVisibilityHiddenConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityInvertedConverter\BooleanToVisibilityInvertedConverter.cs" />
     <Compile Include="Converters\ByteArrayToImageConverter\ByteArrayToImageConverter.cs" />
     <Compile Include="Converters\DebugDummyConverter.cs" />

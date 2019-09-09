@@ -35,15 +35,6 @@ namespace TEMS_Inventory.views
         public ReferenceDataCache cache { get; private set; } = DataRepository.GetDataRepository.ReferenceData;
         
         /// <summary>
-        /// does active user have administrative privileges or just normal user privileges
-        /// false if limited to user privileges
-        /// </summary>
-        public bool IsAdmin
-        {
-            get { return UserManager.GetUserManager.CurrentUser().isAdmin; }
-        }
-
-        /// <summary>
         /// Initialize to nothing selected to display details of
         /// </summary>
         public override void clear()

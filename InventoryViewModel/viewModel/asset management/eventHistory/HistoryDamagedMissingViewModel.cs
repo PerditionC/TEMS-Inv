@@ -34,7 +34,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand DamagedCommand
         {
-            get { return InitializeCommand(ref _DamagedCommand, param => DoDamagedCommand(), param => IsCurrentItemNotNull); }
+            get { return InitializeCommand(ref _DamagedCommand, param => DoDamagedCommand(), param => IsEventSelected); }
         }
         private ICommand _DamagedCommand;
 
@@ -59,7 +59,7 @@ namespace TEMS_Inventory.views
         /// </summary>
         public ICommand MissingCommand
         {
-            get { return InitializeCommand(ref _MissingCommand, param => DoMissingCommand(), param => IsCurrentItemNotNull); }
+            get { return InitializeCommand(ref _MissingCommand, param => DoMissingCommand(), param => IsEventSelected); }
         }
         private ICommand _MissingCommand;
 

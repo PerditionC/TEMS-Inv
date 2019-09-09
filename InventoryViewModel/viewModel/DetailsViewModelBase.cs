@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 using TEMS.InventoryModel.entity.db.query;
+using TEMS.InventoryModel.userManager;
 using TEMS.InventoryModel.util;
 
 namespace TEMS_Inventory.views
@@ -47,6 +48,15 @@ namespace TEMS_Inventory.views
         public virtual void clear()
         {
             StatusMessage = "";
+        }
+
+        /// <summary>
+        /// does active user have administrative privileges or just normal user privileges
+        /// false if limited to user privileges
+        /// </summary>
+        public bool IsAdmin
+        {
+            get { return UserManager.GetUserManager.CurrentUser().isAdmin; }
         }
     }
 }
