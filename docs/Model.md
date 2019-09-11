@@ -36,3 +36,5 @@
 
 ### view models
 ![view model class hierarchy](images/hierarchy/ViewModels.png)
+
+![item entity class hierarchy](images/hierarchy/entities.png)

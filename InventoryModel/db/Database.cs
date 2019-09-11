@@ -777,9 +777,11 @@ namespace TEMS.InventoryModel.entity.db
 
         public void SyncToDb(string replicaDB)
         {
-            var replicaDBConnection = new SQLiteConnection(replicaDB, storeDateTimeAsTicks: true);
-            var dbSync = new DBSync(replicaDBConnection);
-            dbSync.SyncOneWay(dbPath, tablesToSync);
+            using (var replicaDBConnection = new SQLiteConnection(replicaDB, storeDateTimeAsTicks: true))
+            {
+                var dbSync = new DBSync(replicaDBConnection);
+                dbSync.SyncOneWay(dbPath, tablesToSync);
+            }
         }
 
         public void SyncWithDb(string replicaDB)

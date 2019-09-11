@@ -35,10 +35,14 @@ namespace TEMS_Inventory
 
         private void SetPassword_Click(object sender, RoutedEventArgs e)
         {
-            var pw = passwordBox.Text.ToSecureString();
-            if (ViewModel.SetPasswordCommand.CanExecute(pw))
-                ViewModel.SetPasswordCommand.Execute(pw);
-            pw?.Clear();
+            using (var pw = passwordBox.Text.ToSecureString())
+            {
+                if (ViewModel.SetPasswordCommand.CanExecute(pw))
+                {
+                    ViewModel.SetPasswordCommand.Execute(pw);
+                }
+                pw?.Clear();
+            }
 
             this.Close();
         }
