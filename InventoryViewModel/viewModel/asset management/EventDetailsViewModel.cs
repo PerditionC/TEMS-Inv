@@ -12,7 +12,7 @@ using TEMS.InventoryModel.entity.db;
 
 namespace TEMS_Inventory.views
 {
-    public class EventDetailsViewModel : DetailsViewModelBase
+    public class EventDetailsViewModel : ViewModelBase
     {
         public EventDetailsViewModel(ItemBase Event) : base()
         {

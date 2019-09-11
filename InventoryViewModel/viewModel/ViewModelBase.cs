@@ -5,10 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 #if NET40
 using System.Windows.Input;  // ICommand in .Net4.0 is in PresentationCore.dll, while in .Net4.5+ it moved to System.dll
 #endif
+
 using NLog;
+using TEMS.InventoryModel.userManager;
 using TEMS.InventoryModel.util;
 
 namespace TEMS_Inventory.views
@@ -32,6 +35,15 @@ namespace TEMS_Inventory.views
 #else
             false;
 #endif
+
+        /// <summary>
+        /// does active user have administrative privileges or just normal user privileges
+        /// false if limited to user privileges
+        /// </summary>
+        public bool IsAdmin
+        {
+            get { return UserManager.GetUserManager.CurrentUser().isAdmin; }
+        }
 
         /// <summary>
         /// Helper to initialize ICommand objects on first use, otherwise returns existing item.

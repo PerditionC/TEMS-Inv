@@ -49,14 +49,5 @@ namespace TEMS_Inventory.views
         {
             StatusMessage = "";
         }
-
-        /// <summary>
-        /// does active user have administrative privileges or just normal user privileges
-        /// false if limited to user privileges
-        /// </summary>
-        public bool IsAdmin
-        {
-            get { return UserManager.GetUserManager.CurrentUser().isAdmin; }
-        }
     }
 }

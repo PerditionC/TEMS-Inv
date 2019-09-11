@@ -34,3 +34,5 @@
 * ServiceDetails - opens window to insert / update specific service event
 * ViewDocument - opens window/external program to view document
 
+### view models
+![view model class hierarchy](images/hierarchy/ViewModels.png)
