@@ -18,7 +18,6 @@ namespace Tems_Inventory.InventoryViewModel.Tests
     using TEMS.InventoryModel.entity.db.query;
     using TEMS.InventoryModel.entity.db.user;
     using TEMS.InventoryModel.userManager;
-    using TEMS.InventoryModel.util;
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
     [TestFixture]
@@ -78,6 +77,7 @@ namespace Tems_Inventory.InventoryViewModel.Tests
 
             searchFilter.SearchFilterEnabled = true;
             searchFilterOptionsViewModel.SearchTextCommand.Execute(null);
+            searchFilterOptionsViewModel.SearchFilterCommand.WaitForSearchToComplete();
             Assert.NotNull(searchResultViewModel.Items);
             Assert.GreaterOrEqual(searchResultViewModel.Items.Count, 1);
 
@@ -117,6 +117,7 @@ namespace Tems_Inventory.InventoryViewModel.Tests
             searchWin.SearchFilterOptions.SearchFilter.SearchText = SampleItemNumber;
             searchWin.SearchFilterOptions.SearchFilter.SearchFilterEnabled = true;
             searchWin.SearchFilterOptions.SearchTextCommand.Execute(null);
+            searchWin.SearchFilterOptions.SearchFilterCommand.WaitForSearchToComplete();
             Assert.NotNull(searchWin.SearchResult.Items);
             Assert.AreEqual(searchWin.SearchResult.Items.Count, 1);
 

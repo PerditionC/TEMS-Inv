@@ -18,6 +18,23 @@ namespace TEMS.InventoryModel.command.action
     /// </summary>
     public class SearchItemsCommand : RelayCommand
     {
+        public enum SearchStatus
+        {
+            NoSearch,
+            Pending,
+            Complete
+        }
+
+        /// <summary>
+        /// state of search, none started, till pending, or results available
+        /// </summary>
+        public SearchStatus searchStatus
+        {
+            get { return _searchStatus; }
+            set { SetProperty(ref _searchStatus, value, nameof(searchStatus)); }
+        }
+        private SearchStatus _searchStatus = SearchStatus.NoSearch;
+
         private QueryResultEntitySelector resultEntitySelector = QueryResultEntitySelector.ItemInstance;
         private SearchResultViewModel searchResultViewModel = null;
 
@@ -39,6 +56,20 @@ namespace TEMS.InventoryModel.command.action
             if (searchFilterOptions is SearchFilterOptions criteria)
                 return criteria.User != null;
             return false;
+        }
+
+
+        /// <summary>
+        /// helper routine for testing, should not be called by normal applications
+        /// will cause the current thread to sleep, periodically checking for the query to complete
+        /// Only returns once query has completed.
+        /// </summary>
+        public void WaitForSearchToComplete()
+        {
+            while (searchStatus != SearchItemsCommand.SearchStatus.Complete)
+            {
+                System.Threading.Thread.Sleep(100); // give async query time to complete
+            }
         }
 
 
@@ -80,6 +111,10 @@ namespace TEMS.InventoryModel.command.action
                     logger?.Error(e, $"Failed to load item tree! criteria:{criteria}");
                     return;
                 }
+                finally
+                {
+                    searchStatus = SearchStatus.Complete;
+                }
             });
             logger.Info("GetItemTreeAsync end");
         }
@@ -91,10 +126,12 @@ namespace TEMS.InventoryModel.command.action
         private void QuerySearchCriteria(object searchFilterOptions)
         {
             searchResultViewModel.StatusMessage = null;
+            searchStatus = SearchStatus.NoSearch;
 
             if (searchFilterOptions is SearchFilterOptions criteria)
             {
                 logger.Info($"QuerySearchCriteria - {criteria}");
+                searchStatus = SearchStatus.Pending;
                 searchResultViewModel.StatusMessage = "Querying database ...";
                 GetItemTreeAsync(criteria);
                 /*

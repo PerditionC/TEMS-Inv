@@ -196,14 +196,16 @@ namespace Tems_Inventory.Tests
             Assert.NotNull(entity);
 
             searchResult.id = Guid.Empty;
-            Assert.Throws(typeof(ArgumentOutOfRangeException), () => entity = searchResult.entity);
+            //Assert.Throws(typeof(ArgumentOutOfRangeException), () => entity = searchResult.entity);
+            Assert.IsNull(searchResult.entity);
 
             searchResult.id = new Guid("584da062-0a37-4a6d-9d8b-202e202e202e");
             entity = searchResult.entity;
             Assert.NotNull(entity);
 
             searchResult.entityType = null;
-            Assert.Throws(typeof(ArgumentOutOfRangeException), () => entity = searchResult.entity);
+            //Assert.Throws(typeof(ArgumentOutOfRangeException), () => entity = searchResult.entity);
+            Assert.IsNull(searchResult.entity);
 
             searchResult.entityType = "BatteryType";
             BatteryType noBattery = searchResult.entity as BatteryType;
@@ -354,7 +356,7 @@ namespace Tems_Inventory.Tests
         }
 
         [Test]
-        public void SearchItemsCommand()
+        public void SearchItemsCommandTest()
         {
             var db = DataRepository.GetDataRepository;
             Assert.NotNull(db);
@@ -368,7 +370,7 @@ namespace Tems_Inventory.Tests
                 User = UserManager.GetUserManager.CurrentUser(),
                 SiteLocationEnabled = false,
                 SearchFilterEnabled = true,
-                SearchText = "Airway Kit, King, Size 4",
+                SearchText = "Airway Kit",
                 SelectEquipmentUnitsEnabled = false,
                 SelectItemStatusValuesEnabled = false,
                 SelectItemCategoryValuesEnabled = false
@@ -388,6 +390,7 @@ namespace Tems_Inventory.Tests
             Assert.IsNull(resultVM.CurrentItem);  // nothing selected to display details of
             Assert.That(searchResultViewModel.Items.Count, Is.EqualTo(0)); // no search results or empty search results
             searchCmd.Execute(searchFilter);
+            searchCmd.WaitForSearchToComplete();
             Assert.That(searchResultViewModel.Items.Count, Is.GreaterThan(0));
 
             searchResultViewModel.SelectedItem = searchResultViewModel.Items.First();
@@ -505,6 +508,7 @@ namespace Tems_Inventory.Tests
             Assert.IsNull(resultVM.CurrentItem);  // nothing selected to display details of
             Assert.That(searchResultViewModel.Items.Count, Is.EqualTo(0)); // no search results or empty search results
             searchCmd.Execute(searchFilter);
+            searchCmd.WaitForSearchToComplete();
             Assert.That(searchResultViewModel.Items.Count, Is.GreaterThan(0));
 
             searchResultViewModel.SelectedItem = searchResultViewModel.Items.First();
